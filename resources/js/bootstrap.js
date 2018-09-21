@@ -12,6 +12,9 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
+
+    // Admin LTE
+    require('admin-lte');
 } catch (e) {}
 
 /**
