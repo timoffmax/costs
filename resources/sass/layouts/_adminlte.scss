@@ -1,3 +1,4 @@
+// Common
 .brand-image {
   max-width: 34px;
 }
@@ -5,4 +6,25 @@
 .user-profile-image {
   width: 2.1rem;
   height: auto;
+}
+
+// Sidebar
+.sidebar {
+  .nav-sidebar {
+    .nav-link {
+      &.router-link-active {
+        background-color: #3f51b5;
+        color: #fff;
+      }
+    }
+  }
+}
+
+// Prepared text styles
+.text-blue {
+  color: $blue;
+}
+
+.text-red {
+  color: $red;
 }

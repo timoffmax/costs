@@ -29685,3 +29685,16 @@ readers do not read off random characters that represent icons */
   height: auto;
 }
 
+.sidebar .nav-sidebar .nav-link.router-link-active {
+  background-color: #3f51b5;
+  color: #fff;
+}
+
+.text-blue {
+  color: #3490dc;
+}
+
+.text-red {
+  color: #e3342f;
+}
+

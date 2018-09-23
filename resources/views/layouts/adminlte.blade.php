@@ -179,7 +179,7 @@
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                             <li class="nav-item">
                                 <router-link to="/dashboard" class="nav-link">
-                                    <i class="fas fa-tachometer-alt nav-icon"></i>
+                                    <i class="fas fa-tachometer-alt nav-icon text-blue"></i>
                                     <p>Dashboard</p>
                                 </router-link>
                             </li>
@@ -192,7 +192,7 @@
                             <li class="nav-item">
                                 <a href="{{ route('logout') }}" class="nav-link"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="fas fa-power-off nav-icon"></i>
+                                    <i class="fas fa-power-off nav-icon text-red"></i>
                                     <p>Logout</p>
                                 </a>
                             </li>
