@@ -183,17 +183,34 @@
                                     <p>Dashboard</p>
                                 </router-link>
                             </li>
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-cogs text-purple"></i>
+                                    <p>
+                                        {{ __('Management') }}
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <router-link to="/users" class="nav-link">
+                                            <i class="fas fa-users nav-icon text-orange"></i>
+                                            <p>{{ __('Users') }}</p>
+                                        </router-link>
+                                    </li>
+                                </ul>
+                            </li>
                             <li class="nav-item">
                                 <router-link to="/profile" class="nav-link">
                                     <i class="fas fa-user nav-icon"></i>
-                                    <p>Profile</p>
+                                    <p>{{ __('Profile') }}</p>
                                 </router-link>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('logout') }}" class="nav-link"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="fas fa-power-off nav-icon text-red"></i>
-                                    <p>Logout</p>
+                                    <p>{{ __('Logout') }}</p>
                                 </a>
                             </li>
                         </ul>

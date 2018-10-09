@@ -13,10 +13,15 @@ window.Vue = require('vue');
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
+// Form validation
+import { Form, HasError, AlertError } from 'vform';
+
+window.Form = Form;
+Vue.component(HasError.name, HasError);
+Vue.component(AlertError.name, AlertError);
+
 // List of routes
 import { routes } from './routes';
-
-
 const router = new VueRouter({mode: 'history', routes: routes});
 
 /**
