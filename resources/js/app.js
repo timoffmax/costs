@@ -9,6 +9,9 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+// Libs
+import moment from 'moment';
+
 // Vue Router init
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
@@ -24,13 +27,23 @@ Vue.component(AlertError.name, AlertError);
 import { routes } from './routes';
 const router = new VueRouter({mode: 'history', routes: routes});
 
+// Global filters
+import Vue2Filters from 'vue2-filters';
+Vue.use(Vue2Filters);
+
+Vue.filter('dateMoment', function (date, format) {
+    if (!date) {
+        return '';
+    }
+
+    return moment(date).format(format);
+});
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
 const app = new Vue({
     el: '#app',
