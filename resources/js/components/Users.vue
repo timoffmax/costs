@@ -1,4 +1,4 @@
-template>
+<template>
     <div class="container container-fluid">
         <div class="row mt-5">
             <div class="col-12">
@@ -130,10 +130,9 @@ template>
         },
         methods: {
             loadUsers() {
-                axios.get('api/users', ).then(
+                axios.get('api/user').then(
                     (response) => {
-                        console.log(response);
-                        this.users = response.data;
+                        this.users = response.data.data;
                     },
                 );
             },
