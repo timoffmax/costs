@@ -21,6 +21,7 @@
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Role</th>
+                                    <th>Registered At</th>
                                     <th>Manage</th>
                                 </tr>
                             </thead>
@@ -30,6 +31,7 @@
                                     <td>{{ user.name }}</td>
                                     <td>{{ user.email }}</td>
                                     <td><span class="tag tag-success">{{ userRoles[user.role_id] }}</span></td>
+                                    <td>{{ user.created_at }}</td>
                                     <td>
                                         <a href="#"><i class="fas fa-edit text-green"></i></a>
                                         /
