@@ -29,7 +29,7 @@
                                     <td>{{ user.id }}</td>
                                     <td>{{ user.name }}</td>
                                     <td>{{ user.email }}</td>
-                                    <td><span class="tag tag-success">{{ user.role_id }}</span></td>
+                                    <td><span class="tag tag-success">{{ userRoles[user.role_id] }}</span></td>
                                     <td>
                                         <a href="#"><i class="fas fa-edit text-green"></i></a>
                                         /
@@ -96,8 +96,7 @@
                                        :class="{'is-invalid': newUserForm.errors.has('passwordConfirm')}"
                                 >
                                     <option value="">Select Role</option>
-                                    <option value="1">User</option>
-                                    <option value="2">Admin</option>
+                                    <option v-for="(id, role) in userRoles" :value="role">{{ id }}</option>
                                 </select>
                                 <has-error :form="newUserForm" field="role"></has-error>
                             </div>
@@ -118,6 +117,7 @@
         data() {
             return {
                 users: {},
+                userRoles: {},
                 newUserForm: new Form({
                     name: '',
                     email: '',
@@ -136,11 +136,21 @@
                     },
                 );
             },
+            loadRoles() {
+                axios.get('api/userRole').then(
+                    (response) => {
+                        this.userRoles = response.data;
+                    },
+                );
+            },
             createUser() {
                 this.newUserForm.post('api/user');
             },
         },
         created() {
+            // Load user roles to use role names instead of IDs
+            this.loadRoles();
+
             // Load users to the table
             this.loadUsers();
         }
