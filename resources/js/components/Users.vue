@@ -146,7 +146,20 @@
                 );
             },
             createUser() {
-                this.newUserForm.post('api/user');
+                this.$Progress.start();
+
+                // Add new user
+                this.newUserForm.post('api/user')
+                    .then(response => {
+                        this.$Progress.finish();
+                    })
+                    .catch(error => {
+                        this.$Progress.fail();
+                    })
+                ;
+
+                // Refresh the table content
+                this.loadUsers();
             },
         },
         created() {

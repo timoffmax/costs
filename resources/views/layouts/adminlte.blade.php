@@ -227,6 +227,7 @@
                 <div class="content">
                     <div class="container-fluid">
                         <router-view></router-view>
+                        <vue-progress-bar></vue-progress-bar>
                     </div><!-- /.container-fluid -->
                 </div>
                 <!-- /.content -->
@@ -237,7 +238,7 @@
             <footer class="main-footer">
                 <!-- To the right -->
                 <div class="float-right d-none d-sm-inline">
-                    Anything you want
+                    Big brother is watching you
                 </div>
                 <!-- Default to the left -->
                 <strong>Copyright &copy; {{ date('Y') }} <a href="https://github.com/timoffmax">Timofey Maksymenko</a>.</strong> All rights reserved.
