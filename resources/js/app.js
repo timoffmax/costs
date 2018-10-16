@@ -13,6 +13,10 @@ window.Vue = require('vue');
  * Add libs
  */
 import moment from 'moment';
+import swal from 'sweetalert2';
+
+window.moment = moment;
+window.swal = swal;
 
 /**
  * Add Vue plugins
@@ -56,6 +60,15 @@ const options = {
     inverse: false
 };
 Vue.use(VueProgressBar, options);
+
+// Setup notifications
+const toast = swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000
+});
+window.toast = toast;
 
 /**
  * Create Vue instance

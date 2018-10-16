@@ -152,9 +152,28 @@
                 this.newUserForm.post('api/user')
                     .then(response => {
                         this.$Progress.finish();
+
+                        // Close the modal and clean the form
+                        let modal = $('#addUserModal');
+                        modal.find('form').get(0).reset();
+                        modal.modal('hide');
+
+                        // Show success message
+                        toast({
+                            type: 'success',
+                            title: 'User added successfully'
+                        });
                     })
                     .catch(error => {
                         this.$Progress.fail();
+
+                        // Show error message
+                        let responseData = error.response.data;
+
+                        toast({
+                            type: 'error',
+                            title: responseData.message
+                        });
                     })
                 ;
 
