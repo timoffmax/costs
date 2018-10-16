@@ -47,9 +47,9 @@ Vue.filter('dateMoment', function (date, format) {
 // Vue progress bar
 import VueProgressBar from 'vue-progressbar';
 const options = {
-    color: 'orange',
+    color: '#7af2ff',
     failedColor: '#874b4b',
-    thickness: '5px',
+    thickness: '3px',
     transition: {
         speed: '0.2s',
         opacity: '0.6s',
