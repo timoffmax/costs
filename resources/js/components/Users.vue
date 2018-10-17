@@ -35,7 +35,7 @@
                                     <td>
                                         <a href="#"><i class="fas fa-edit text-green"></i></a>
                                         /
-                                        <a href="#"><i class="fas fa-trash text-red"></i></a>
+                                        <a href="#" @click="deleteUser(user)"><i class="fas fa-trash text-red"></i></a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -153,6 +153,9 @@
                     .then(response => {
                         this.$Progress.finish();
 
+                        // Refresh the table content
+                        this.loadUsers();
+
                         // Close the modal and clean the form
                         let modal = $('#addUserModal');
                         modal.find('form').get(0).reset();
@@ -176,9 +179,46 @@
                         });
                     })
                 ;
+            },
+            deleteUser(user) {
+                swal({
+                    title: 'Are you sure?',
+                    html: `You're going to delete user <span class="font-weight-bold">${user.name}</span>!`,
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.value) {
+                        this.$Progress.start();
 
-                // Refresh the table content
-                this.loadUsers();
+                        // Delete user
+                        axios.delete(`api/user/${user.id}`)
+                            .then(response => {
+                                // Update progress bar
+                                this.$Progress.finish();
+
+                                // Update the table
+                                this.loadUsers();
+
+                                // Show the success message
+                                toast({
+                                    type: 'success',
+                                    title: 'User has been deleted'
+                                });
+                            })
+                            .catch(error => {
+                                this.$Progress.fail();
+
+                                toast({
+                                    type: 'error',
+                                    title: 'Server error! Can`t delete the user.'
+                                });
+                            })
+                        ;
+                    }
+                })
             },
         },
         created() {
