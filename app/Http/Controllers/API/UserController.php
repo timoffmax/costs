@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\User;
+use App\UserRole;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -30,15 +31,17 @@ class UserController extends Controller
         // Validate data
         $this->validate($request, [
             'name' => 'required|string|max:50',
+            'role_id' => 'required|integer',
             'email' => 'required|string|email|max:150|unique:users',
             'password' => 'required|string|min:8|max:30',
+            'passwordConfirmation' => 'required|required_with:password|same:password|string|min:8|max:30',
         ]);
 
         return User::create([
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
-            'role_id' => $request['role'],
+            'role_id' => $request['role_id'],
         ]);
     }
 
@@ -54,7 +57,7 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a user
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -62,7 +65,30 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // Get data
+        $user = User::findOrFail($id);
+        $formData = $request->all();
+
+        // Validate data
+        if (isset($formData['password'])) {
+            $this->validate($request, [
+                'name' => 'required|string|max:50',
+                'role_id' => 'required|integer',
+                'email' => 'required|string|email|max:150|unique:users',
+                'password' => 'required|string|min:8|max:30',
+                'passwordConfirmation' => 'required|required_with:password|same:password|string|min:8|max:30',
+            ]);
+        } else {
+            $this->validate($request, [
+                'name' => 'required|string|max:50',
+                'role_id' => 'required|integer',
+                'email' => 'required|string|email|max:150|unique:users',
+            ]);
+        }
+
+        // Save
+        $user->fill($formData);
+        $user->save();
     }
 
     /**
