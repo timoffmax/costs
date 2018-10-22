@@ -65,28 +65,17 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Get data
         $user = User::findOrFail($id);
         $formData = $request->all();
 
-        // Validate data
-        if (isset($formData['password'])) {
-            $this->validate($request, [
-                'name' => 'required|string|max:50',
-                'role_id' => 'required|integer',
-                'email' => 'required|string|email|max:150|unique:users',
-                'password' => 'required|string|min:8|max:30',
-                'passwordConfirmation' => 'required|required_with:password|same:password|string|min:8|max:30',
-            ]);
-        } else {
-            $this->validate($request, [
-                'name' => 'required|string|max:50',
-                'role_id' => 'required|integer',
-                'email' => 'required|string|email|max:150|unique:users',
-            ]);
-        }
+        $this->validate($request, [
+            'name' => 'required|string|max:50',
+            'role_id' => 'required|integer',
+            'email' => "required|string|email|max:150|unique:users,email,{$user->id}",
+            'password' => 'sometimes|required|string|min:8|max:30',
+            'passwordConfirmation' => 'required_with:password|same:password|string|min:8|max:30',
+        ]);
 
-        // Save
         $user->fill($formData);
         $user->save();
     }
