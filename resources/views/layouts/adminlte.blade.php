@@ -198,6 +198,12 @@
                                             <p>{{ __('Users') }}</p>
                                         </router-link>
                                     </li>
+                                    <li class="nav-item">
+                                        <router-link to="/apiUsers" class="nav-link">
+                                            <i class="fas fa-unlock nav-icon text-orange"></i>
+                                            <p>{{ __('API users') }}</p>
+                                        </router-link>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="nav-item">
