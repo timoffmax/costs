@@ -29878,3 +29878,14 @@ readers do not read off random characters that represent icons */
   color: #9561e2;
 }
 
+.user-background {
+  background: url("/img/user-profile-background.jpg");
+  background-repeat: no-repeat;
+  background-size: 1900px 300px;
+}
+
+.user-profile-image-main {
+  width: 84px;
+  margin: auto;
+}
+

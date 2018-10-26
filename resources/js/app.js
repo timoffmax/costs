@@ -70,6 +70,9 @@ const toast = swal.mixin({
 });
 window.toast = toast;
 
+// Add SVG support
+Vue.prototype.svg = require('./svg');
+
 /**
  * Add Laravel Passport components
  */

@@ -1,5 +1,5 @@
+require('laravel-mix-svg');
 const mix = require('laravel-mix');
-
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -13,4 +13,10 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/app.js', 'public/js')
     .sourceMaps()
-    .sass('resources/sass/app.scss', 'public/css');
+    .sass('resources/sass/app.scss', 'public/css')
+;
+
+mix.svg({
+    assets: ['./resources/svg/'], // a list of directories to search svg images
+    output: './resources/js/svg.js', // Where the craeted js file needs to go.
+});
