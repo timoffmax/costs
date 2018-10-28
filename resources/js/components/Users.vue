@@ -87,7 +87,7 @@
                                 <has-error :form="userForm" field="role_id"></has-error>
                             </div>
 
-                            <div v-show="modal.showPasswordFields">
+                            <div v-if="modal.showPasswordFields">
                                 <div class="form-group">
                                     <input type="password"
                                            v-model="userForm.password"
@@ -300,8 +300,13 @@
                 this.modal.showPasswordFields = !this.modal.showPasswordFields;
 
                 // Clear
-                this.userForm.password = null;
-                this.userForm.passwordConfirmation = null;
+                if (this.modal.showPasswordFields) {
+                    this.userForm.password = null;
+                    this.userForm.passwordConfirmation = null;
+                } else {
+                    this.userForm.password = undefined;
+                    this.userForm.passwordConfirmation = undefined;
+                }
             },
         },
         computed: {
@@ -326,11 +331,11 @@
 <style lang="scss" scoped>
     a.link-dashed {
         text-decoration: none;
-        border-bottom: 2px dashed #0000ff;
+        border-bottom: 2px dashed;
 
         &:hover {
-            color: #dd0000;
-            border-bottom: 2px dashed #dd0000;
+            color: #0000ff;
+            border-bottom: 2px dashed #0000ff;
         }
     }
 </style>

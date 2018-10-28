@@ -239,8 +239,13 @@
                 this.showPasswordFields = !this.showPasswordFields;
 
                 // Clear
-                this.profileForm.password = null;
-                this.profileForm.passwordConfirmation = null;
+                if (this.modal.showPasswordFields) {
+                    this.userForm.password = null;
+                    this.userForm.passwordConfirmation = null;
+                } else {
+                    this.userForm.password = undefined;
+                    this.userForm.passwordConfirmation = undefined;
+                }
             },
         },
         created() {
