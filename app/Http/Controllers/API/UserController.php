@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\User;
-use App\UserRole;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -88,6 +87,12 @@ class UserController extends Controller
         ]);
 
         $user->fill($formData);
+
+        // Encrypt password
+        if (isset($request['password'])) {
+            $user->password = Hash::make($request['password']);
+        }
+
         $user->save();
     }
 

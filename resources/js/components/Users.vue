@@ -326,7 +326,6 @@
 <style lang="scss" scoped>
     a.link-dashed {
         text-decoration: none;
-        color: #0000ff;
         border-bottom: 2px dashed #0000ff;
 
         &:hover {

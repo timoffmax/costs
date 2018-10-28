@@ -10,7 +10,7 @@
                             <div v-html="svg('user', 'img-circle')" class="user-profile-image-main" />
                         </div>
 
-                        <h3 class="profile-username text-center">Nina Mcintire</h3>
+                        <h3 class="profile-username text-center">{{ profile.name }}</h3>
 
                         <p class="text-muted text-center">Software Engineer</p>
 
@@ -84,51 +84,79 @@
                     <div class="card-body">
                         <div class="tab-content">
                             <div class="tab-pane active show" id="settings">
-                                <form class="form-horizontal">
+                                <form class="form-horizontal" @submit.prevent="updateProfile">
                                     <div class="form-group">
-                                        <label for="inputName" class="col-sm-2 control-label">Name</label>
+                                        <label for="profileInputName" class="col-sm-6 control-label">Name</label>
 
-                                        <div class="col-sm-10">
-                                            <input type="email" class="form-control" id="inputName" placeholder="Name">
+                                        <div class="col-md-12 col-lg-6">
+                                            <input type="text"
+                                                   id="profileInputName"
+                                                   v-model="profileForm.name"
+                                                   class="form-control"
+                                                   :class="{'is-invalid': profileForm.errors.has('name')}"
+                                                   placeholder="Name">
+                                            <has-error :form="profileForm" field="name"></has-error>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail" class="col-sm-2 control-label">Email</label>
 
-                                        <div class="col-sm-10">
-                                            <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                                    <div class="form-group">
+                                        <label for="profileInputEmail" class="col-sm-6 control-label">E-mail</label>
+
+                                        <div class="col-md-12 col-lg-6">
+                                            <input type="email"
+                                                   id="profileInputEmail"
+                                                   v-model="profileForm.email"
+                                                   class="form-control"
+                                                   :class="{'is-invalid': profileForm.errors.has('email')}"
+                                                   placeholder="E-mail">
+                                            <has-error :form="profileForm" field="email"></has-error>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="inputName2" class="col-sm-2 control-label">Name</label>
 
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="inputName2" placeholder="Name">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputExperience" class="col-sm-2 control-label">Experience</label>
 
-                                        <div class="col-sm-10">
-                                            <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputSkills" class="col-sm-2 control-label">Skills</label>
+                                    <div v-show="showPasswordFields">
+                                        <div class="form-group">
+                                            <label for="profileInputPassword" class="col-sm-6 control-label">Password</label>
 
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
+                                            <div class="col-md-12 col-lg-6">
+                                                <input type="password"
+                                                       id="profileInputPassword"
+                                                       v-model="profileForm.password"
+                                                       class="form-control"
+                                                       :class="{'is-invalid': profileForm.errors.has('password')}"
+                                                       placeholder="Password">
+                                                <has-error :form="profileForm" field="password"></has-error>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-2 col-sm-10">
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
-                                                </label>
+
+                                        <div class="form-group">
+                                            <label for="profileInputPasswordConfirmation" class="col-sm-6 control-label">Password confirmation</label>
+
+                                            <div class="col-md-12 col-lg-6">
+                                                <input type="password"
+                                                       id="profileInputPasswordConfirmation"
+                                                       v-model="profileForm.passwordConfirmation"
+                                                       class="form-control"
+                                                       :class="{'is-invalid': profileForm.errors.has('passwordConfirmation')}"
+                                                       placeholder="Password confirmation">
+                                                <has-error :form="profileForm" field="passwordConfirmation"></has-error>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-10">
+                                            <a href="#"
+                                               class="link-dashed"
+                                               @click="togglePasswordFields"
+                                            >
+                                                <span v-show="!showPasswordFields">Change password</span>
+                                                <span v-show="showPasswordFields">Don't change the password</span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
                                             <button type="submit" class="btn btn-danger">Submit</button>
@@ -150,6 +178,92 @@
 
 <script>
     export default {
+        data () {
+            return {
+                profile: {},
+                profileForm: new Form({
+                    id: null,
+                    name: '',
+                    email: '',
+                    password: '',
+                    passwordConfirmation: '',
+                    photo: '',
+                }),
+                showPasswordFields: false,
+            };
+        },
+        methods: {
+            loadProfile() {
+                // Get current user data
+                axios.get('api/profile').then(
+                    (response) => {
+                        this.profile = response.data;
+
+                        // Fill form
+                        this.profileForm.fill(this.profile);
+                    },
+                );
+            },
+            updateProfile() {
+                this.$Progress.start();
+
+                // Add new user
+                this.profileForm.put(`api/profile/${this.profileForm.id}`)
+                    .then(response => {
+                        this.$Progress.finish();
+
+                        // Refresh content
+                        this.loadProfile();
+
+                        // Show success message
+                        toast({
+                            type: 'success',
+                            title: 'Profile updated successfully'
+                        });
+                    })
+                    .catch(error => {
+                        this.$Progress.fail();
+
+                        // Show error message
+                        let responseData = error.response.data;
+
+                        toast({
+                            type: 'error',
+                            title: responseData.message
+                        });
+                    })
+                ;
+            },
+            togglePasswordFields() {
+                // Show / hide fields
+                this.showPasswordFields = !this.showPasswordFields;
+
+                // Clear
+                this.profileForm.password = null;
+                this.profileForm.passwordConfirmation = null;
+            },
+        },
+        created() {
+            this.loadProfile();
+        },
         mounted() {}
     }
 </script>
+
+<style lang="scss" scoped>
+    .user-profile-image-main {
+        width: 84px;
+        margin: auto;
+    }
+
+    a.link-dashed {
+        text-decoration: none;
+        /*color: #0000ff;*/
+        border-bottom: 2px dashed;
+
+        &:hover {
+            color: #0000ff;
+            border-bottom: 2px dashed #0000ff;
+        }
+    }
+</style>
