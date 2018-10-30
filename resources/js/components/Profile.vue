@@ -8,7 +8,7 @@
                     <div class="card-body box-profile">
                         <div class="text-center">
                             <div v-if="!profile.photo" v-html="svg('user', 'img-circle')" class="user-profile-image-main" />
-                            <img v-else :src="profile.photo" :alt="profile.name" class="img-circle user-profile-image-main">
+                            <img v-else :src="profileImageUrl" :alt="profile.name" class="img-circle user-profile-image-main">
                         </div>
 
                         <h3 class="profile-username text-center">{{ profile.name }}</h3>
@@ -273,6 +273,14 @@
 
                 reader.readAsDataURL(file);
             },
+        },
+        computed: {
+            profileImageUrl() {
+                // Preview new profile image before upload
+                if (this.profileForm.photo) {
+                    return this.profileForm.photo !== this.profile.photo ? this.profileForm.photo : this.profile.photo;
+                }
+            }
         },
         created() {
             this.loadProfile();
