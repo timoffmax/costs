@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Intervention\Image\Facades\Image;
 
 class ProfileController extends Controller
 {
@@ -54,8 +55,23 @@ class ProfileController extends Controller
         $user->fill($formData);
 
         // Encrypt password
-        if (isset($request['password'])) {
+        if ($request->password) {
             $user->password = Hash::make($request['password']);
+        }
+
+        // Processing profile image
+        if ($request->photo && !file_exists($request->photo)) {
+            // Get extension and create unique name
+            $extension = explode('/', explode(';', $request->photo)[0])[1];
+            $filename = uniqid('profile_image_', true) . ".{$extension}";
+            $fullPath = public_path('img/profile/') . $filename;
+
+            // Create image from Base64 and update user info
+            $result = Image::make($request->photo)->save($fullPath);
+
+            if ($result) {
+                $user->photo = public_path('img/profile/') . $filename;
+            }
         }
 
         $user->save();

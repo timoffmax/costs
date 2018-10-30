@@ -113,6 +113,20 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label for="profileInputImage" class="col-sm-6 control-label">Profile image</label>
+
+                                        <div class="col-md-12 col-lg-6">
+                                            <input type="file"
+                                                   id="profileInputImage"
+                                                   @change="encodeProfileImage"
+                                                   class="form-control"
+                                                   :class="{'is-invalid': profileForm.errors.has('photo')}"
+                                            >
+                                            <has-error :form="profileForm" field="photo"></has-error>
+                                        </div>
+                                    </div>
+
 
                                     <div v-show="showPasswordFields">
                                         <div class="form-group">
@@ -159,7 +173,7 @@
 
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
-                                            <button type="submit" class="btn btn-danger">Submit</button>
+                                            <button type="submit" class="btn btn-outline-success">Update</button>
                                         </div>
                                     </div>
                                 </form>
@@ -246,6 +260,17 @@
                     this.userForm.password = undefined;
                     this.userForm.passwordConfirmation = undefined;
                 }
+            },
+            // Image to base64
+            encodeProfileImage(e) {
+                let file = e.target.files[0];
+                let reader = new FileReader();
+                
+                reader.onloadend = () => {
+                    this.profileForm.photo = reader.result;
+                };
+
+                reader.readAsDataURL(file);
             },
         },
         created() {
