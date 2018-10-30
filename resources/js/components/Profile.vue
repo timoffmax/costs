@@ -253,12 +253,12 @@
                 this.showPasswordFields = !this.showPasswordFields;
 
                 // Clear
-                if (this.modal.showPasswordFields) {
-                    this.userForm.password = null;
-                    this.userForm.passwordConfirmation = null;
+                if (this.showPasswordFields) {
+                    this.profileForm.password = null;
+                    this.profileForm.passwordConfirmation = null;
                 } else {
-                    this.userForm.password = undefined;
-                    this.userForm.passwordConfirmation = undefined;
+                    this.profileForm.password = undefined;
+                    this.profileForm.passwordConfirmation = undefined;
                 }
             },
             // Image to base64
@@ -288,7 +288,6 @@
 
     a.link-dashed {
         text-decoration: none;
-        /*color: #0000ff;*/
         border-bottom: 2px dashed;
 
         &:hover {
