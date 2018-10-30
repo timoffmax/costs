@@ -7,7 +7,8 @@
                 <div class="card card-primary card-outline">
                     <div class="card-body box-profile">
                         <div class="text-center">
-                            <div v-html="svg('user', 'img-circle')" class="user-profile-image-main" />
+                            <div v-if="!profile.photo" v-html="svg('user', 'img-circle')" class="user-profile-image-main" />
+                            <img v-else :src="profile.photo" :alt="profile.name" class="img-circle user-profile-image-main">
                         </div>
 
                         <h3 class="profile-username text-center">{{ profile.name }}</h3>
@@ -283,6 +284,7 @@
 <style lang="scss" scoped>
     .user-profile-image-main {
         width: 84px;
+        height: 84px;
         margin: auto;
     }
 

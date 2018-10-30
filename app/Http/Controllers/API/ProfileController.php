@@ -52,29 +52,42 @@ class ProfileController extends Controller
             'passwordConfirmation' => 'required_with:password|same:password|string|min:8|max:30',
         ]);
 
+        $originalData = clone $user;
         $user->fill($formData);
 
         // Encrypt password
-        if ($request->password) {
+        if (!empty($request->password)) {
             $user->password = Hash::make($request['password']);
         }
 
         // Processing profile image
-        if ($request->photo) {
+        $oldPhoto = $originalData->photo;
+        $photoWasChanged = false;
+
+        if (!empty($request->photo) && $request->photo !== $originalData->photo) {
             // Get extension and create unique name
             $extension = explode('/', explode(';', $request->photo)[0])[1];
             $filename = uniqid('profile_image_', true) . ".{$extension}";
-            $fullPath = public_path('img/profile/') . $filename;
+            $fullPath = public_path("img/profile/{$filename}");
 
             // Create image from Base64 and update user info
-            $result = Image::make($request->photo)->save($fullPath);
+            $result = Image::make($request->photo)
+                ->resize(128, 128)
+                ->save($fullPath);
 
             if ($result) {
-                $user->photo = public_path('img/profile/') . $filename;
+                $user->photo = "img/profile/{$filename}";
+                $photoWasChanged = true;
+                $oldPhoto = public_path($oldPhoto);
             }
         }
 
-        $user->save();
+        if ($user->save()) {
+            // Remove old profile photo
+            if ($photoWasChanged && !empty($oldPhoto) && file_exists($oldPhoto)) {
+                unlink($oldPhoto);
+            }
+        }
     }
 
     /**
