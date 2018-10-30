@@ -60,7 +60,7 @@ class ProfileController extends Controller
         }
 
         // Processing profile image
-        if ($request->photo && !file_exists($request->photo)) {
+        if ($request->photo) {
             // Get extension and create unique name
             $extension = explode('/', explode(';', $request->photo)[0])[1];
             $filename = uniqid('profile_image_', true) . ".{$extension}";

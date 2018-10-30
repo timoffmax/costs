@@ -14,7 +14,7 @@ class ModifyUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('photo')->default('profile.png')->after('password');
+            $table->string('photo')->nullable()->after('password');
             $table->integer('role_id')->unsigned()->default(1)->after('name');
 
             $table->foreign('role_id', 'fk_users_role_id')
