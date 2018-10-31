@@ -183,29 +183,31 @@
                                     <p>Dashboard</p>
                                 </router-link>
                             </li>
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-cogs text-purple"></i>
-                                    <p>
-                                        {{ __('Management') }}
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <router-link to="/users" class="nav-link">
-                                            <i class="fas fa-users nav-icon text-orange"></i>
-                                            <p>{{ __('Users') }}</p>
-                                        </router-link>
-                                    </li>
-                                    <li class="nav-item">
-                                        <router-link to="/apiUsers" class="nav-link">
-                                            <i class="fas fa-unlock nav-icon text-orange"></i>
-                                            <p>{{ __('API users') }}</p>
-                                        </router-link>
-                                    </li>
-                                </ul>
-                            </li>
+                            @can('isAdmin')
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-cogs text-purple"></i>
+                                        <p>
+                                            {{ __('Management') }}
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <router-link to="/users" class="nav-link">
+                                                <i class="fas fa-users nav-icon text-orange"></i>
+                                                <p>{{ __('Users') }}</p>
+                                            </router-link>
+                                        </li>
+                                        <li class="nav-item">
+                                            <router-link to="/apiUsers" class="nav-link">
+                                                <i class="fas fa-unlock nav-icon text-orange"></i>
+                                                <p>{{ __('API users') }}</p>
+                                            </router-link>
+                                        </li>
+                                    </ul>
+                                </li>
+                            @endcan
                             <li class="nav-item">
                                 <router-link to="/profile" class="nav-link">
                                     <i class="fas fa-user nav-icon"></i>

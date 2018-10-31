@@ -30,8 +30,8 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function role(): string
+    public function role()
     {
-        return $this->hasOne(UserRole::class, 'id', 'role_id');
+        return $this->belongsTo(UserRole::class);
     }
 }
