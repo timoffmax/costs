@@ -183,7 +183,7 @@
                                     <p>Dashboard</p>
                                 </router-link>
                             </li>
-                            @can('isAdmin')
+                            @can('viewAll', \App\User::class)
                                 <li class="nav-item has-treeview">
                                     <a href="#" class="nav-link">
                                         <i class="nav-icon fas fa-cogs text-purple"></i>
@@ -257,5 +257,11 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+
+    @auth
+        <script>
+            window.user = @json(auth()->user());
+        </script>
+    @endauth
 </body>
 </html>

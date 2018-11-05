@@ -23,10 +23,12 @@ class UserController extends Controller
     /**
      * Display a list of users.
      *
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function index()
     {
+        $this->authorize('viewAll', User::class);
+
         return User::latest()->paginate(10);
     }
 
@@ -38,6 +40,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
+
         // Validate data
         $this->validate($request, [
             'name' => 'required|string|max:50',
@@ -59,11 +63,14 @@ class UserController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user, int $id)
     {
-        //
+        $userModel = User::findOrFail($id);
+
+        $this->authorize('view', $userModel);
     }
 
     /**
@@ -73,27 +80,32 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
-        $user = User::findOrFail($id);
+        // Check permissions
+        $userModel = User::findOrFail($id);
+
+        $this->authorize('update', $userModel);
+
+        // Get form and validate
         $formData = $request->all();
 
         $this->validate($request, [
             'name' => 'required|string|max:50',
             'role_id' => 'required|integer',
-            'email' => "required|string|email|max:150|unique:users,email,{$user->id}",
+            'email' => "required|string|email|max:150|unique:users,email,{$userModel->id}",
             'password' => 'sometimes|required|string|min:8|max:30',
             'passwordConfirmation' => 'required_with:password|same:password|string|min:8|max:30',
         ]);
 
-        $user->fill($formData);
+        $userModel->fill($formData);
 
         // Encrypt password
         if (isset($request['password'])) {
-            $user->password = Hash::make($request['password']);
+            $userModel->password = Hash::make($request['password']);
         }
 
-        $user->save();
+        $userModel->save();
     }
 
     /**
@@ -102,9 +114,13 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        // Check permissions
+        $userModel = User::findOrFail($id);
+
+        $this->authorize('delete', $userModel);
+
+        $userModel->delete();
     }
 }

@@ -10,12 +10,25 @@ use App\Http\Controllers\Controller;
 class UserRoleController extends Controller
 {
     /**
+     * Create a new controller instance.
+     * Require auth.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
+    /**
      * Display a listing of the roles.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
+        $this->authorize('viewAll', UserRole::class);
+
         $roles = UserRole::all();
         $arrayOfRoles = [];
 
@@ -30,11 +43,14 @@ class UserRoleController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * $param   User $user
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
-       //
+        if ($user->cannot('create', User::class)) {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
@@ -45,7 +61,12 @@ class UserRoleController extends Controller
      */
     public function show($id)
     {
-        //
+        // Check permissions
+        $userRoleModel = User::findOrFail($id);
+
+        if ($user->cannot('view', $userRoleModel)) {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
