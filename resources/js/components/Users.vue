@@ -1,12 +1,12 @@
 <template>
     <div class="container container-fluid">
         <div class="row mt-5">
-            <div class="col-12">
+            <div class="col-12" v-if="$gate.allow('viewAll', 'user')">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Users List</h3>
                         <div class="card-tools">
-                            <button class="btn btn-success" @click="showUserModal()">
+                            <button class="btn btn-success" v-if="$gate.allow('create', 'user')" @click="showUserModal()">
                                 Add
                                 <i class="fas fa-user-plus fa-fw"></i>
                             </button>
@@ -33,9 +33,9 @@
                                     <td><span class="tag tag-success">{{ userRoles[user.role_id] | capitalize }}</span></td>
                                     <td>{{ user.created_at | dateMoment('MMMM Do YYYY') }}</td>
                                     <td>
-                                        <a href="#" @click="showUserModal(user)"><i class="fas fa-edit text-green"></i></a>
+                                        <a href="#" v-if="$gate.allow('update', 'user', user)" @click="showUserModal(user)"><i class="fas fa-edit text-green"></i></a>
                                         /
-                                        <a href="#" @click="deleteUser(user)"><i class="fas fa-trash text-red"></i></a>
+                                        <a href="#" v-if="$gate.allow('delete', 'user', user)" @click="deleteUser(user)"><i class="fas fa-trash text-red"></i></a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -44,6 +44,13 @@
                     <!-- /.card-body -->
                 </div>
                 <!-- /.card -->
+            </div>
+            <div class="col-12" v-else>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title text-center text-red">You have no permissions</h3>
+                    </div>
+                </div>
             </div>
         </div>
 

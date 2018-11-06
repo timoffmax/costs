@@ -259,6 +259,7 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     @auth
+        {{-- Translate ACL rules to Frontend --}}
         <script>
             window.user = @json(auth()->user());
         </script>

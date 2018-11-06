@@ -92,6 +92,12 @@ Vue.component(
 );
 
 /**
+ * Import ACL policies
+ */
+import Gate from './Gate';
+Vue.prototype.$gate = new Gate(window.user);
+
+/**
  * Create Vue instance
  */
 
