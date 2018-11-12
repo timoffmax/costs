@@ -1,4 +1,6 @@
 import UserPolicy from './policies/UserPolicy';
+import ApiUserPolicy from "./policies/ApiUserPolicy";
+import UserRolePolicy from "./policies/UserRolePolicy";
 
 export default class Gate
 {
@@ -8,6 +10,8 @@ export default class Gate
 
         this.policies = {
             user: UserPolicy,
+            userRole: UserRolePolicy,
+            apiUser: ApiUserPolicy,
         };
     }
 
