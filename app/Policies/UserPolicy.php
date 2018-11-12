@@ -52,7 +52,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return Auth::user()->role->name === 'admin';
+        return Auth::user()->role->name === 'admin' || $user->id === $model->id;
     }
 
     /**
@@ -64,6 +64,6 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        return Auth::user()->role->name === 'admin';
+        return Auth::user()->role->name === 'admin' || $user->id === $model->id;
     }
 }

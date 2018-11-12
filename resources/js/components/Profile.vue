@@ -1,7 +1,6 @@
 <template>
     <div class="container container-fluid">
-        <div class="row mt-5">
-
+        <div class="row mt-5" v-if="$gate.allow('view', 'user', profile)">
             <div class="col-md-3">
                 <!-- Profile Image -->
                 <div class="card card-primary card-outline">
@@ -171,8 +170,7 @@
                                         </div>
                                     </div>
 
-
-                                    <div class="form-group">
+                                    <div class="form-group" v-if="$gate.allow('update', 'user', profile)">
                                         <div class="col-sm-offset-2 col-sm-10">
                                             <button type="submit" class="btn btn-outline-success">Update</button>
                                         </div>
@@ -210,7 +208,7 @@
         methods: {
             loadProfile() {
                 // Get current user data
-                axios.get('api/profile').then(
+                axios.get(`api/user/${window.user.id}`).then(
                     (response) => {
                         this.profile = response.data;
 
@@ -223,7 +221,7 @@
                 this.$Progress.start();
 
                 // Add new user
-                this.profileForm.put(`api/profile/${this.profileForm.id}`)
+                this.profileForm.put(`api/user/${window.user.id}`)
                     .then(response => {
                         this.$Progress.finish();
 
