@@ -72,6 +72,9 @@ class UserController extends Controller
 
         $this->authorize('view', $userModel);
 
+        // Add role name as property
+        $userModel->role = $userModel->role->name;
+
         return $userModel;
     }
 
