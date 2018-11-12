@@ -1,7 +1,9 @@
 export const routes = [
-    { path: '/', component: require('./components/Dashboard.vue') },
-    { path: '/dashboard', component: require('./components/Dashboard.vue') },
-    { path: '/profile', component: require('./components/Profile.vue') },
-    { path: '/users', component: require('./components/Users.vue') },
-    { path: '/apiUsers', component: require('./components/ApiUsers.vue') },
+    { path: '/', component: require('./components/Dashboard') },
+    { path: '/dashboard', component: require('./components/Dashboard') },
+    { path: '/profile', component: require('./components/Profile') },
+    { path: '/users', component: require('./components/Users') },
+    { path: '/apiUsers', component: require('./components/ApiUsers') },
+    { path: '/forbidden', component: require('./components/errors/Forbidden') },
+    { path: '/notFound', component: require('./components/errors/NotFound') },
 ];

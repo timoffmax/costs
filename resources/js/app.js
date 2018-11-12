@@ -92,6 +92,18 @@ Vue.component(
 );
 
 /**
+ * Add custom components
+ */
+Vue.component(
+    'forbidden-page',
+    require('./components/errors/Forbidden')
+);
+Vue.component(
+    'not-found-page',
+    require('./components/errors/Forbidden')
+);
+
+/**
  * Import ACL policies
  */
 import Gate from './Gate';
