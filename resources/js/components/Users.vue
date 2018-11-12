@@ -1,7 +1,7 @@
 <template>
     <div class="container container-fluid">
-        <div class="row mt-5">
-            <div class="col-12" v-if="$gate.allow('viewAll', 'user')">
+        <div class="row mt-5" v-if="$gate.allow('viewAll', 'user')">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Users List</h3>
@@ -26,7 +26,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="user in users">
+                                <tr v-for="user in users.data">
                                     <td>{{ user.id }}</td>
                                     <td>{{ user.name }}</td>
                                     <td>{{ user.email }}</td>
@@ -42,16 +42,16 @@
                         </table>
                     </div>
                     <!-- /.card-body -->
+                    <div class="card-footer">
+                        <pagination  :data="users" @pagination-change-page="loadUsers"/>
+                    </div>
                 </div>
                 <!-- /.card -->
             </div>
-            <div class="col-12" v-else>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title text-center text-red">You have no permissions</h3>
-                    </div>
-                </div>
-            </div>
+        </div>
+
+        <div v-else>
+            <forbidden-page />
         </div>
 
         <!--modal-->
@@ -157,10 +157,10 @@
             };
         },
         methods: {
-            loadUsers() {
-                axios.get('api/user').then(
+            loadUsers(page = 1) {
+                axios.get(`api/user?page=${page}`).then(
                     (response) => {
-                        this.users = response.data.data;
+                        this.users = response.data;
                     },
                 );
             },

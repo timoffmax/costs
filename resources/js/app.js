@@ -73,6 +73,13 @@ window.toast = toast;
 // Add SVG support
 Vue.prototype.svg = require('./svg');
 
+// Pagination
+Vue.component(
+    'pagination',
+    require('laravel-vue-pagination')
+);
+
+
 /**
  * Add Laravel Passport components
  */

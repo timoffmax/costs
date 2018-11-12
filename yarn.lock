@@ -3833,6 +3833,13 @@ laravel-mix@^2.0, laravel-mix@^2.1.11:
     webpack-notifier "^1.5.1"
     yargs "^8.0.2"
 
+laravel-vue-pagination@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/laravel-vue-pagination/-/laravel-vue-pagination-2.2.0.tgz#bd55e9c76650274b1b89850d7b02c25aa565adec"
+  integrity sha512-zjhQNvaC+v1kcMULsHeBIWdR5MTaKLjTptBECA4dYYrVrVKXzl0EddmiHwb0I4lmekQgWAPORiJaJGTB9GjrGw==
+  dependencies:
+    vue "^2.5.17"
+
 lazy-cache@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/lazy-cache/-/lazy-cache-1.0.4.tgz#a1d78fc3a50474cb80845d3b3b6e1da49a446e8e"
@@ -6963,7 +6970,7 @@ vue2-filters@^0.3.0:
   resolved "https://registry.yarnpkg.com/vue2-filters/-/vue2-filters-0.3.0.tgz#3d6b71169fb14b32a2ddbfa45f94d9a0fdee1094"
   integrity sha512-/i2gHtSfedzbgaC6rHuWTggCW9G6mLWZQ8TQgYciE2ei9iOlyB4iobubNr/7APjoYmupFtXv125yZfXygPV2+A==
 
-vue@^2.5.7:
+vue@^2.5.17, vue@^2.5.7:
   version "2.5.17"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
   integrity sha512-mFbcWoDIJi0w0Za4emyLiW72Jae0yjANHbCVquMKijcavBGypqlF7zHRgMa5k4sesdv7hv2rB4JPdZfR+TPfhQ==
