@@ -5,5 +5,5 @@ export const routes = [
     { path: '/users', component: require('./components/Users') },
     { path: '/apiUsers', component: require('./components/ApiUsers') },
     { path: '/forbidden', component: require('./components/errors/Forbidden') },
-    { path: '/notFound', component: require('./components/errors/NotFound') },
+    { path: '*', component: require('./components/errors/NotFound') },
 ];
