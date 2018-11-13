@@ -37,6 +37,7 @@ class CreateTableAccount extends Migration
     public function down()
     {
         Schema::table('account', function (Blueprint $table) {
+            $table->dropForeign('fk_account_user_id');
             $table->dropForeign('fk_account_type_id');
         });
 
