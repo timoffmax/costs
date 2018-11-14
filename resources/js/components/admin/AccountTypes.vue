@@ -115,7 +115,6 @@
                 if (accountType) {
                     // Set modal params
                     this.modal.mode = 'edit';
-                    this.modal.showPasswordFields = false;
                     this.modal.title = 'Edit the account type';
                     this.modal.buttonTitle = 'Save';
 
@@ -124,7 +123,6 @@
                 } else {
                     // Set modal params
                     this.modal.mode = 'create';
-                    this.modal.showPasswordFields = true;
                     this.modal.title = 'Add a new account type';
                     this.modal.buttonTitle = 'Create';
                 }
