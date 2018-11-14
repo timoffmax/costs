@@ -32,6 +32,7 @@ class AccountController extends Controller
 
         $pageSize = $request['pageSize'] ?? 10;
         $paginatedResult = Account::with('user')
+            ->with('type')
             ->paginate($pageSize)
         ;
 

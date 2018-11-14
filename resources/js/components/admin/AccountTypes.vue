@@ -129,6 +129,8 @@
 
                 // Show modal
                 $(this.$refs.accountTypeModal).modal('show');
+
+                return false;
             },
             createAccountType() {
                 this.$Progress.start();

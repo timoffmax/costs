@@ -20,6 +20,7 @@
                                     <th>ID</th>
                                     <th>User</th>
                                     <th>Name</th>
+                                    <th>Type</th>
                                     <th>Balance</th>
                                     <th class="text-right">Manage</th>
                                 </tr>
@@ -29,6 +30,7 @@
                                     <td>{{ account.id }}</td>
                                     <td>{{ account.user.name }}</td>
                                     <td>{{ account.name }}</td>
+                                    <td>{{ account.type.name }}</td>
                                     <td>{{ account.balance }}</td>
                                     <td class="text-right">
                                         <a href="#" v-if="$gate.allow('update', 'account', account)" @click="showAccountModal(account)"><i class="fas fa-edit text-green"></i></a>
@@ -93,6 +95,16 @@
                                     <option v-for="(id, type) in accountTypes" :value="type">{{ id }}</option>
                                 </select>
                                 <has-error :form="accountForm" field="type_id"></has-error>
+                            </div>
+                            <div class="form-group">
+                                <input type="text"
+                                       v-model="accountForm.balance"
+                                       class="form-control"
+                                       :class="{'is-invalid': accountForm.errors.has('balance')}"
+                                       placeholder="Balance"
+                                       pattern="\d+\.\d{2}"
+                                >
+                                <has-error :form="accountForm" field="balance"></has-error>
                             </div>
                         </div>
                         <div class="modal-footer">
