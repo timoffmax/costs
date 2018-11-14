@@ -18,7 +18,7 @@ class CreateTableAccount extends Migration
             $table->string('name', 100)->nullable(false);
             $table->integer('type_id')->unsigned()->nullable(false);
             $table->integer('user_id')->unsigned()->nullable(false);
-            $table->decimal('sum', 10, 2)->default('0.00');
+            $table->decimal('balance', 10, 2)->default('0.00');
 
             $table->foreign('type_id', 'fk_account_type_id')
                 ->references('id')
