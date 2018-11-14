@@ -19,6 +19,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
+                                    <th class="text-right">Manage</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -208,7 +209,7 @@
                     if (result.value) {
                         this.$Progress.start();
 
-                        // Delete user
+                        // Delete
                         axios.delete(`api/accountType/${accountType.id}`)
                             .then(response => {
                                 // Update progress bar

@@ -6,7 +6,16 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 
-
+/**
+ * Class User
+ *
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $photo
+ * @property int $role_id
+ * @property UserRole $role
+ */
 class User extends Authenticatable
 {
     use Notifiable;
@@ -30,8 +39,23 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /**
+     * Get role
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function role()
     {
         return $this->belongsTo(UserRole::class);
+    }
+
+    /**
+     * Get list of accounts
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function accounts()
+    {
+        return $this->hasMany(Account::class, 'user_id');
     }
 }

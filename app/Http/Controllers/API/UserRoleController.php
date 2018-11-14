@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\User;
 use App\UserRole;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -43,14 +42,11 @@ class UserRoleController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * $param   User $user
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, User $user)
+    public function store(Request $request)
     {
-        if ($user->cannot('create', User::class)) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('create', UserRole::class);
     }
 
     /**
@@ -61,12 +57,11 @@ class UserRoleController extends Controller
      */
     public function show($id)
     {
-        // Check permissions
-        $userRoleModel = User::findOrFail($id);
+        $userRoleModel = UserRole::findOrFail($id);
 
-        if ($user->cannot('view', $userRoleModel)) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('view', $userRoleModel);
+
+        return $userRoleModel;
     }
 
     /**
@@ -78,7 +73,9 @@ class UserRoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $userRoleModel = UserRole::findOrFail($id);
+
+        $this->authorize('update', $userRoleModel);
     }
 
     /**
@@ -89,6 +86,8 @@ class UserRoleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $userRoleModel = UserRole::findOrFail($id);
+
+        $this->authorize('delete', $userRoleModel);
     }
 }

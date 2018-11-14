@@ -33,15 +33,16 @@ class AccountTypeController extends Controller
 
         $types = AccountType::all();
 
-        if (isset($request['mode']) && $request['mode'] === 'array') {
-            $arrayOfTypes = [];
+        // Prepare a simple list (id => name)
+        if (isset($request['mode']) && $request['mode'] === 'simple') {
+            $simplifiedList = [];
 
             foreach ($types as $type) {
-                $arrayOfTypes[$type->id] = $type->name;
+                $simplifiedList[$type->id] = $type->name;
             }
         }
 
-        return $arrayOfTypes ?? $types;
+        return $simplifiedList ?? $types;
     }
 
     /**

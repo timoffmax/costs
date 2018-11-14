@@ -22,7 +22,7 @@
                                     <th>Email</th>
                                     <th>Role</th>
                                     <th>Registered At</th>
-                                    <th>Manage</th>
+                                    <th class="text-right">Manage</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -32,7 +32,7 @@
                                     <td>{{ user.email }}</td>
                                     <td><span class="tag tag-success">{{ userRoles[user.role_id] | capitalize }}</span></td>
                                     <td>{{ user.created_at | dateMoment('MMMM Do YYYY') }}</td>
-                                    <td>
+                                    <td class="text-right">
                                         <a href="#" v-if="$gate.allow('update', 'user', user)" @click="showUserModal(user)"><i class="fas fa-edit text-green"></i></a>
                                         /
                                         <a href="#" v-if="$gate.allow('delete', 'user', user)" @click="deleteUser(user)"><i class="fas fa-trash text-red"></i></a>
