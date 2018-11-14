@@ -29882,3 +29882,8 @@ readers do not read off random characters that represent icons */
   color: #ffed4a;
 }
 
+.btn.btn-link.btn-as-link {
+  padding: 0;
+  border: 0;
+}
+

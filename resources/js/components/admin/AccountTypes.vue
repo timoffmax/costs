@@ -27,13 +27,13 @@
                                     <td class="w-25">{{ accountType.id }}</td>
                                     <td class="w-50">{{ accountType.name }}</td>
                                     <td class="w-25 text-right">
-                                        <a href="#" v-if="$gate.allow('update', 'accountType', accountType)" @click="showAccountTypeModal(accountType)">
+                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'accountType', accountType)" @click="showAccountTypeModal(accountType); return false;">
                                             <i class="fas fa-edit text-green"></i>
-                                        </a>
+                                        </button>
                                         /
-                                        <a href="#" v-if="$gate.allow('delete', 'accountType', accountType)" @click="deleteAccountType(accountType)">
+                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'accountType', accountType)" @click="deleteAccountType(accountType)">
                                             <i class="fas fa-trash text-red"></i>
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>

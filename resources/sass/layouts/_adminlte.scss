@@ -44,3 +44,9 @@
 .text-yellow {
   color: $yellow;
 }
+
+// Style buttons as links
+.btn.btn-link.btn-as-link {
+  padding: 0;
+  border: 0;
+}

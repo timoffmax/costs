@@ -33,9 +33,13 @@
                                     <td>{{ account.type.name }}</td>
                                     <td>{{ account.balance }}</td>
                                     <td class="text-right">
-                                        <a href="#" v-if="$gate.allow('update', 'account', account)" @click="showAccountModal(account)"><i class="fas fa-edit text-green"></i></a>
+                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'account', account)" @click="showAccountModal(account)">
+                                            <i class="fas fa-edit text-green"></i>
+                                        </button>
                                         /
-                                        <a href="#" v-if="$gate.allow('delete', 'account', account)" @click="deleteAccount(account)"><i class="fas fa-trash text-red"></i></a>
+                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'account', account)" @click="deleteAccount(account)">
+                                            <i class="fas fa-trash text-red"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
