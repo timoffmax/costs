@@ -192,7 +192,7 @@
                                             <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
-                                    <ul class="nav nav-treeview">
+                                    <ul class="nav nav-treeview ml-3">
                                         <li class="nav-item">
                                             <router-link to="/users" class="nav-link">
                                                 <i class="fas fa-users nav-icon text-orange"></i>
@@ -202,7 +202,19 @@
                                         <li class="nav-item">
                                             <router-link to="/apiUsers" class="nav-link">
                                                 <i class="fas fa-unlock nav-icon text-orange"></i>
-                                                <p>{{ __('API users') }}</p>
+                                                <p>{{ __('API Users') }}</p>
+                                            </router-link>
+                                        </li>
+                                        <li class="nav-item">
+                                            <router-link to="/accounts" class="nav-link">
+                                                <i class="fas fa-unlock nav-icon text-orange"></i>
+                                                <p>{{ __('Accounts') }}</p>
+                                            </router-link>
+                                        </li>
+                                        <li class="nav-item">
+                                            <router-link to="/accountTypes" class="nav-link">
+                                                <i class="fas fa-unlock nav-icon text-orange"></i>
+                                                <p>{{ __('Account Types') }}</p>
                                             </router-link>
                                         </li>
                                     </ul>

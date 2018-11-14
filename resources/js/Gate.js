@@ -1,6 +1,8 @@
 import UserPolicy from './policies/UserPolicy';
 import ApiUserPolicy from "./policies/ApiUserPolicy";
 import UserRolePolicy from "./policies/UserRolePolicy";
+import AccountTypePolicy from "./policies/AccountTypePolicy";
+import AccountPolicy from "./policies/AccountPolicy";
 
 export default class Gate
 {
@@ -12,6 +14,8 @@ export default class Gate
             user: UserPolicy,
             userRole: UserRolePolicy,
             apiUser: ApiUserPolicy,
+            account: AccountPolicy,
+            accountType: AccountTypePolicy,
         };
     }
 
