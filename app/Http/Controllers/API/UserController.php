@@ -21,16 +21,36 @@ class UserController extends Controller
         $this->middleware('auth:api');
     }
 
+
     /**
-     * Display a list of users.
+     * Display list of users
      *
+     * @param Request $request
      * @return array
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAll', User::class);
 
-        return User::latest()->paginate(10);
+        $users = User::latest();
+
+        // Prepare a simple list (id => name)
+        if (isset($request['mode']) && $request['mode'] === 'simple') {
+            $simplifiedList = [];
+
+            foreach ($users->get() as $user) {
+                $simplifiedList[$user->id] = $user->name;
+            }
+
+            return $simplifiedList;
+        }
+
+        // Get paginated result
+        $pageSize = $request['pageSize'] ?? 10;
+        $paginatedList = $users->paginate($pageSize);
+
+        return $paginatedList;
     }
 
     /**
