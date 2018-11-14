@@ -207,13 +207,13 @@
                                         </li>
                                         <li class="nav-item">
                                             <router-link to="/accounts" class="nav-link">
-                                                <i class="fas fa-unlock nav-icon text-orange"></i>
+                                                <i class="fas fa-coins nav-icon text-yellow"></i>
                                                 <p>{{ __('Accounts') }}</p>
                                             </router-link>
                                         </li>
                                         <li class="nav-item">
                                             <router-link to="/accountTypes" class="nav-link">
-                                                <i class="fas fa-unlock nav-icon text-orange"></i>
+                                                <i class="fas fa-money-check-alt nav-icon text-yellow"></i>
                                                 <p>{{ __('Account Types') }}</p>
                                             </router-link>
                                         </li>
@@ -222,7 +222,7 @@
                             @endcan
                             <li class="nav-item">
                                 <router-link to="/profile" class="nav-link">
-                                    <i class="fas fa-user nav-icon"></i>
+                                    <i class="fas fa-user nav-icon text-green"></i>
                                     <p>{{ __('Profile') }}</p>
                                 </router-link>
                             </li>
