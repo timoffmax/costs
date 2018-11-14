@@ -89,7 +89,6 @@
                 modal: {
                     target: this.$refs.accountTypeModal,
                     mode: 'create',
-                    showPasswordFields: true,
                     title: 'Add a new account type',
                     buttonTitle: 'Create',
                 },
