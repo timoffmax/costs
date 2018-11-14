@@ -33,7 +33,7 @@ class UserController extends Controller
     {
         $this->authorize('viewAll', User::class);
 
-        $users = User::latest();
+        $users = User::latest()->with('role');
 
         // Prepare a simple list (id => name)
         if (isset($request['mode']) && $request['mode'] === 'simple') {
@@ -88,12 +88,11 @@ class UserController extends Controller
      */
     public function show(int $id)
     {
-        $userModel = User::findOrFail($id);
+        $userModel = User::findOrFail($id)
+            ->with('role')
+        ;
 
         $this->authorize('view', $userModel);
-
-        // Add role name as property
-        $userModel->role = $userModel->role->name;
 
         return $userModel;
     }

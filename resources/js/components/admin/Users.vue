@@ -30,7 +30,7 @@
                                     <td>{{ user.id }}</td>
                                     <td>{{ user.name }}</td>
                                     <td>{{ user.email }}</td>
-                                    <td><span class="tag tag-success">{{ userRoles[user.role_id] | capitalize }}</span></td>
+                                    <td><span class="badge badge-success">{{ user.role.name | capitalize }}</span></td>
                                     <td>{{ user.created_at | dateMoment('MMMM Do YYYY') }}</td>
                                     <td class="text-right">
                                         <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'user', user)" @click="showUserModal(user)">
