@@ -28,7 +28,7 @@
                             <tbody>
                                 <tr v-for="account in accounts.data">
                                     <td>{{ account.id }}</td>
-                                    <td>{{ account.user.name }}</td>
+                                    <td><router-link :to="`/user/${account.user.id}`">{{ account.user.name }}</router-link></td>
                                     <td>{{ account.name }}</td>
                                     <td>{{ account.type.name }}</td>
                                     <td>{{ account.balance }}</td>

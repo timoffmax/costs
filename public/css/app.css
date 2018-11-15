@@ -29887,3 +29887,9 @@ readers do not read off random characters that represent icons */
   border: 0;
 }
 
+.user-profile-image-main {
+  width: 84px;
+  height: 84px;
+  margin: auto;
+}
+

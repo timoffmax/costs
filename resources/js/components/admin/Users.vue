@@ -28,7 +28,7 @@
                             <tbody>
                                 <tr v-for="user in users.data">
                                     <td>{{ user.id }}</td>
-                                    <td>{{ user.name }}</td>
+                                    <td><router-link :to="`/user/${user.id}`">{{ user.name }}</router-link></td>
                                     <td>{{ user.email }}</td>
                                     <td><span class="badge badge-success">{{ user.role.name | capitalize }}</span></td>
                                     <td>{{ user.created_at | dateMoment('MMMM Do YYYY') }}</td>

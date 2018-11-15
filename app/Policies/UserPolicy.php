@@ -11,6 +11,22 @@ class UserPolicy
     use HandlesAuthorization;
 
     /**
+     * Don't check permissions for admin
+     *
+     * @param $user
+     * @param $ability
+     * @return bool
+     */
+    public function before($user, $ability): bool
+    {
+        if (Auth::user()->role->name === 'admin') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Determine whether the user can view the model.
      *
      * @param  \App\User  $user
@@ -18,7 +34,7 @@ class UserPolicy
      */
     public function viewAll(User $user)
     {
-        return Auth::user()->role->name === 'admin';
+        return false;
     }
 
     /**

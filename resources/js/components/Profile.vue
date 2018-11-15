@@ -12,17 +12,17 @@
 
                         <h3 class="profile-username text-center">{{ profile.name }}</h3>
 
-                        <p class="text-muted text-center">{{ profile.role.name | capitalize }}</p>
+                        <p v-if="profile.role" class="text-muted text-center">{{ profile.role.name | capitalize }}</p>
 
                         <ul class="list-group list-group-unbordered mb-3">
                             <li class="list-group-item">
-                                <b>Followers</b> <a class="float-right">1,322</a>
+                                <b>Accounts</b> <a v-if="profile.accounts" class="float-right">{{ Object.keys(profile.accounts).length }}</a>
                             </li>
                             <li class="list-group-item">
-                                <b>Following</b> <a class="float-right">543</a>
+                                <b>Money</b> <a v-if="profile.accounts" class="float-right">{{ allAccountsAmount }}</a>
                             </li>
                             <li class="list-group-item">
-                                <b>Friends</b> <a class="float-right">13,287</a>
+                                <b>Transactions</b> <a class="float-right">xxx</a>
                             </li>
                         </ul>
 
@@ -278,6 +278,15 @@
                 if (this.profileForm.photo) {
                     return this.profileForm.photo !== this.profile.photo ? this.profileForm.photo : this.profile.photo;
                 }
+            },
+            allAccountsAmount() {
+                let sum = 0;
+
+                for (let account of this.profile.accounts) {
+                    sum += parseFloat(account.balance);
+                }
+
+                return sum.toFixed(2);
             }
         },
         created() {
@@ -288,12 +297,6 @@
 </script>
 
 <style lang="scss" scoped>
-    .user-profile-image-main {
-        width: 84px;
-        height: 84px;
-        margin: auto;
-    }
-
     a.link-dashed {
         text-decoration: none;
         border-bottom: 2px dashed;
