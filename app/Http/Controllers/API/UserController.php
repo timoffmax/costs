@@ -88,8 +88,9 @@ class UserController extends Controller
      */
     public function show(int $id)
     {
-        $userModel = User::findOrFail($id)
-            ->with('role')
+        $userModel = User::with('role')
+            ->with('accounts')
+            ->findOrFail($id)
         ;
 
         $this->authorize('view', $userModel);
@@ -146,7 +147,7 @@ class UserController extends Controller
                 ->save($fullPath);
 
             if ($result) {
-                $userModel->photo = "img/profile/{$filename}";
+                $userModel->photo = "/img/profile/{$filename}";
                 $photoWasChanged = true;
                 $oldPhoto = public_path($oldPhoto);
             }
