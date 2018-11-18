@@ -17,6 +17,14 @@ class CreateTableAccountType extends Migration
             $table->increments('id')->unsigned();
             $table->string('name', 50)->nullable(false);
         });
+
+        // Insert default types
+        DB::table('account_type')->insert(
+            [
+                ['name' => 'cash'],
+                ['name' => 'credit card'],
+            ]
+        );
     }
 
     /**
