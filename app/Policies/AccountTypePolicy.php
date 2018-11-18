@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Account;
+use App\AccountType;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Auth;
@@ -42,9 +42,10 @@ class AccountTypePolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\User  $user
+     * @param  \App\AccountType $model
      * @return mixed
      */
-    public function view(User $user, Account $model)
+    public function view(User $user, AccountType $model)
     {
         return false;
     }
@@ -52,10 +53,10 @@ class AccountTypePolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\User  $user
+     * @param  \App\AccountType $model
      * @return mixed
      */
-    public function create(Account $account)
+    public function create(AccountType $account)
     {
         return false;
     }
@@ -64,10 +65,10 @@ class AccountTypePolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $model
+     * @param  \App\AccountType  $model
      * @return mixed
      */
-    public function update(User $user, Account $model)
+    public function update(User $user, AccountType $model)
     {
         return false;
     }
@@ -76,10 +77,10 @@ class AccountTypePolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $model
+     * @param  \App\AccountType $model
      * @return mixed
      */
-    public function delete(User $user, User $model)
+    public function delete(User $user, AccountType $model)
     {
         return false;
     }
