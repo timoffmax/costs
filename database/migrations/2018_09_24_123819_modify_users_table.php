@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -22,6 +23,15 @@ class ModifyUsersTable extends Migration
                 ->on('user_role');
         });
 
+        // Create default admin user
+        DB::table('users')->insert([
+            [
+                'name' => 'Admin',
+                'email' => 'admin@costs.local',
+                'password' => Hash::make('admin'),
+                'role_id' => 2,
+            ],
+        ]);
     }
 
     /**
