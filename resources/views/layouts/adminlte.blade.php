@@ -68,7 +68,7 @@
                 <!-- Brand Logo -->
                 <a href="{{ url('/') }}" class="brand-link">
                     @svg('svg/logo.svg', 'brand-image elevation-3')
-                    <span class="brand-text font-weight-light">{{ config('app.name', 'Laravel') }}</span>
+                    <span class="brand-text font-weight-light">{{ config('app.name', 'Costs') }}</span>
                 </a>
 
                 <!-- Sidebar -->
@@ -76,10 +76,14 @@
                     <!-- Sidebar user panel (optional) -->
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
-                            @svg('svg/user.svg', 'user-profile-image elevation-2')
+                            @if(Auth::user()->photo)
+                                <img src="{{ Auth::user()->photo }}" alt="{{ Auth::user()->name }}">
+                            @else
+                                @svg('svg/user.svg', 'user-profile-image elevation-2')
+                            @endif
                         </div>
                         <div class="info">
-                            <a href="#" class="d-block">{{ Auth::user()->name }}</a>
+                            <router-link to="/profile" class="d-block">{{ Auth::user()->name }}</router-link>
                         </div>
                     </div>
 
@@ -124,6 +128,12 @@
                                             <router-link to="/accountTypes" class="nav-link">
                                                 <i class="fas fa-money-check-alt nav-icon text-yellow"></i>
                                                 <p>{{ __('Account Types') }}</p>
+                                            </router-link>
+                                        </li>
+                                        <li class="nav-item">
+                                            <router-link to="/transactionTypes" class="nav-link">
+                                                <i class="fas fa-exchange-alt nav-icon text-yellow"></i>
+                                                <p>{{ __('Transactions Types') }}</p>
                                             </router-link>
                                         </li>
                                     </ul>

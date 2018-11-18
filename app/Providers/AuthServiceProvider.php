@@ -6,8 +6,11 @@ use App\Account;
 use App\AccountType;
 use App\Policies\AccountPolicy;
 use App\Policies\AccountTypePolicy;
+use App\Policies\TransactionTypePolicy;
 use App\Policies\UserPolicy;
 use App\Policies\UserRolePolicy;
+use App\Transaction;
+use App\TransactionType;
 use App\User;
 use App\UserRole;
 use Illuminate\Support\Facades\Gate;
@@ -27,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         UserRole::class => UserRolePolicy::class,
         Account::class => AccountPolicy::class,
         AccountType::class => AccountTypePolicy::class,
+        TransactionType::class => TransactionTypePolicy::class,
     ];
 
 

@@ -3,6 +3,7 @@ import ApiUserPolicy from "./policies/ApiUserPolicy";
 import UserRolePolicy from "./policies/UserRolePolicy";
 import AccountTypePolicy from "./policies/AccountTypePolicy";
 import AccountPolicy from "./policies/AccountPolicy";
+import TransactionTypePolicy from "./policies/TransactionTypePolicy";
 
 export default class Gate
 {
@@ -16,6 +17,7 @@ export default class Gate
             apiUser: ApiUserPolicy,
             account: AccountPolicy,
             accountType: AccountTypePolicy,
+            transactionType: TransactionTypePolicy,
         };
     }
 
