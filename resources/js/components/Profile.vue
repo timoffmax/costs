@@ -134,6 +134,7 @@
 
                                             <div class="col-md-12 col-lg-6">
                                                 <input type="password"
+                                                       autocomplete="new-password"
                                                        id="profileInputPassword"
                                                        v-model="profileForm.password"
                                                        class="form-control"
@@ -148,6 +149,7 @@
 
                                             <div class="col-md-12 col-lg-6">
                                                 <input type="password"
+                                                       autocomplete="new-password"
                                                        id="profileInputPasswordConfirmation"
                                                        v-model="profileForm.passwordConfirmation"
                                                        class="form-control"
