@@ -18,7 +18,7 @@ class AccountPolicy
      * @param $ability
      * @return bool
      */
-    public function before($user, $ability): bool
+    public function before($user, $ability)
     {
         if (Auth::user()->role->name === 'admin') {
             return true;
