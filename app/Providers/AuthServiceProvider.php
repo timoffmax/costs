@@ -30,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         UserRole::class => UserRolePolicy::class,
         Account::class => AccountPolicy::class,
         AccountType::class => AccountTypePolicy::class,
+        Transaction::class => TransactionPolicy::class,
         TransactionType::class => TransactionTypePolicy::class,
     ];
 

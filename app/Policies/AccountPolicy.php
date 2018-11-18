@@ -50,19 +50,19 @@ class AccountPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\User  $user
+     * @param  \App\Account  $model
      * @return mixed
      */
-    public function create(Account $account)
+    public function create(Account $model)
     {
-        return Auth::user()->id === $account->user_id;
+        return Auth::user()->id === $model->user_id;
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $model
+     * @param  \App\Account  $model
      * @return mixed
      */
     public function update(User $user, Account $model)
@@ -74,10 +74,10 @@ class AccountPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $model
+     * @param  \App\Account  $model
      * @return mixed
      */
-    public function delete(User $user, User $model)
+    public function delete(User $user, Account $model)
     {
         return Auth::user()->role->name === 'admin' || $user->id === $model->id;
     }
