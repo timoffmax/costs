@@ -23,8 +23,6 @@ class AccountPolicy
         if (Auth::user()->role->name === 'admin') {
             return true;
         }
-
-        return false;
     }
 
     /**
