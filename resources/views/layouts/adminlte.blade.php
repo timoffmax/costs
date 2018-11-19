@@ -95,6 +95,12 @@
                                     <i class="fas fa-tachometer-alt nav-icon text-blue"></i>
                                     <p>Dashboard</p>
                                 </router-link>
+                                <li class="nav-item">
+                                    <router-link to="/transactions" class="nav-link">
+                                        <i class="fas fa-exchange-alt nav-icon text-yellow"></i>
+                                        <p>{{ __('Transactions') }}</p>
+                                    </router-link>
+                                </li>
                             </li>
                             @can('viewAll', \App\User::class)
                                 <li class="nav-item has-treeview">
@@ -133,7 +139,7 @@
                                         <li class="nav-item">
                                             <router-link to="/transactionTypes" class="nav-link">
                                                 <i class="fas fa-exchange-alt nav-icon text-yellow"></i>
-                                                <p>{{ __('Transactions Types') }}</p>
+                                                <p>{{ __('Transaction Types') }}</p>
                                             </router-link>
                                         </li>
                                     </ul>
