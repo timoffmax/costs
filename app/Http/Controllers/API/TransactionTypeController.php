@@ -2,24 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\API\interfaces\RestApiControllerInterface;
 use App\TransactionType;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class TransactionTypeController extends Controller
+class TransactionTypeController extends BaseController implements RestApiControllerInterface
 {
-    /**
-     * Create a new controller instance.
-     * Require auth.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
-
-
     /**
      * Display a list of types
      *

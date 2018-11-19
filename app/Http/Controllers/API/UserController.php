@@ -2,26 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\API\interfaces\RestApiControllerInterface;
 use App\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 
-class UserController extends Controller
+class UserController extends BaseController implements RestApiControllerInterface
 {
-    /**
-     * Create a new controller instance.
-     * Require auth.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
-
-
     /**
      * Display list of users
      *

@@ -2,29 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\API\interfaces\RestApiControllerInterface;
 use App\UserRole;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class UserRoleController extends Controller
+class UserRoleController extends BaseController implements RestApiControllerInterface
 {
-    /**
-     * Create a new controller instance.
-     * Require auth.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
 
     /**
-     * Display a listing of the roles.
+     * Display a listing of the roles
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return array|\Illuminate\Database\Eloquent\Collection
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAll', UserRole::class);
 
@@ -38,24 +30,28 @@ class UserRoleController extends Controller
         return $arrayOfRoles;
     }
 
+
     /**
-     * Store a newly created resource in storage.
+     * Create a user role
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\Response|void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
     {
         $this->authorize('create', UserRole::class);
     }
 
+
     /**
-     * Display the specified resource.
+     * Display the specified user role
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show($id)
+    public function show(int $id)
     {
         $userRoleModel = UserRole::findOrFail($id);
 
@@ -64,27 +60,31 @@ class UserRoleController extends Controller
         return $userRoleModel;
     }
 
+
     /**
-     * Update the specified resource in storage.
+     * Display the specified user role
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response|void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $userRoleModel = UserRole::findOrFail($id);
 
         $this->authorize('update', $userRoleModel);
     }
 
+
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified user role
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\Response|void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $userRoleModel = UserRole::findOrFail($id);
 

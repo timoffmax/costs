@@ -2,23 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\API\interfaces\RestApiControllerInterface;
 use App\Transaction;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class TransactionController extends Controller
+class TransactionController extends BaseController implements RestApiControllerInterface
 {
-    /**
-     * Create a new controller instance.
-     * Require auth.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
-
     /**
      * Display a list of transactions
      *
@@ -28,10 +17,17 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAll', Transaction::class);
+        if (isset($request['mode']) && $request['mode'] === 'admin') {
+            // Check if user can view transactions of other users
+            $this->authorize('viewAll', Transaction::class);
+        } else {
+            // Check if user can view own transactions
+            $this->authorize('view', Transaction::class);
+        }
+
 
         $pageSize = $request['pageSize'] ?? 50;
-        $paginatedResult = Transaction::with('user')
+        $paginatedResult = Transaction::with('account')
             ->with('type')
             ->paginate($pageSize)
         ;
@@ -49,6 +45,21 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', Transaction::class);
+
+        // Validate data
+        $this->validate($request, [
+            'name' => 'required|string|max:50',
+            'user_id' => 'required|integer',
+            'type_id' => 'required|integer',
+            'balance' => 'required|numeric|between:0,9999999.99',
+        ]);
+
+        return Account::create([
+            'name' => $request['name'],
+            'user_id' => $request['user_id'],
+            'type_id' => $request['type_id'],
+            'balance' => $request['balance'],
+        ]);
     }
 
     /**
