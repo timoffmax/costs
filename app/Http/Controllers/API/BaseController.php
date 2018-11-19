@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 
 class BaseController extends Controller
 {
-    protected const DEFAULT_PAGE_SIZE = 50;
-
     /**
      * Create a new controller instance.
      * Require auth.
