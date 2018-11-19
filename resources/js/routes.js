@@ -7,7 +7,7 @@ export const routes = [
     { path: '/apiUsers', component: require('./components/admin/ApiUsers') },
     { path: '/accounts', component: require('./components/admin/Accounts') },
     { path: '/accountTypes', component: require('./components/admin/AccountTypes') },
-    // { path: '/transactions', component: require('./components/admin/Transaction') },
+    { path: '/transactions', component: require('./components/Transactions') },
     { path: '/transactionTypes', component: require('./components/admin/TransactionTypes') },
 
     { path: '/forbidden', component: require('./components/errors/Forbidden') },

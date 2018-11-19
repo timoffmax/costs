@@ -26,7 +26,7 @@ class TransactionPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the list of transactions.
      *
      * @param  \App\User  $user
      * @return mixed
@@ -37,9 +37,22 @@ class TransactionPolicy
     }
 
     /**
+     * Determine whether the user can view the list of own transactions
+     *
+     * @param  \App\User  $user
+     * @param  \App\user  $model
+     * @return mixed
+     */
+    public function viewOwn(User $user, User $model)
+    {
+        return $user === $model;
+    }
+
+    /**
      * Determine whether the user can view the model.
      *
      * @param  \App\User  $user
+     * @param  \App\Transaction $model
      * @return mixed
      */
     public function view(User $user, Transaction $model)

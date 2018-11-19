@@ -43,6 +43,21 @@ Vue.filter('dateMoment', function (date, format) {
 
     return moment(date).format(format);
 });
+Vue.filter('transactionAmount', function (transaction) {
+    let formattedValue;
+
+    switch (transaction.type.name) {
+        case 'cost':
+            formattedValue = `-${transaction.sum}`;
+            break;
+
+        case 'income':
+        default:
+            formattedValue = transaction.sum;
+    }
+
+    return formattedValue;
+});
 
 // Vue progress bar
 import VueProgressBar from 'vue-progressbar';

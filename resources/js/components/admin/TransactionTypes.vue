@@ -4,7 +4,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Transaction types List</h3>
+                        <h3 class="card-title">Transaction types list</h3>
                         <div class="card-tools">
                             <button class="btn btn-success" v-if="$gate.allow('create', 'transactionType')" @click="showTransactionTypeModal()">
                                 Add
@@ -115,7 +115,7 @@
                 if (transactionType) {
                     // Set modal params
                     this.modal.mode = 'edit';
-                    this.modal.title = 'Edit the account type';
+                    this.modal.title = 'Edit the transaction type';
                     this.modal.buttonTitle = 'Save';
 
                     // Fill form
@@ -123,7 +123,7 @@
                 } else {
                     // Set modal params
                     this.modal.mode = 'create';
-                    this.modal.title = 'Add a new account type';
+                    this.modal.title = 'Add a new transaction type';
                     this.modal.buttonTitle = 'Create';
                 }
 

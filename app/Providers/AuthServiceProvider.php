@@ -6,6 +6,7 @@ use App\Account;
 use App\AccountType;
 use App\Policies\AccountPolicy;
 use App\Policies\AccountTypePolicy;
+use App\Policies\TransactionPolicy;
 use App\Policies\TransactionTypePolicy;
 use App\Policies\UserPolicy;
 use App\Policies\UserRolePolicy;

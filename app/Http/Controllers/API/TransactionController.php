@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\API\interfaces\RestApiControllerInterface;
 use App\Transaction;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends BaseController implements RestApiControllerInterface
 {
@@ -17,22 +19,20 @@ class TransactionController extends BaseController implements RestApiControllerI
      */
     public function index(Request $request)
     {
-        if (isset($request['mode']) && $request['mode'] === 'admin') {
+        if (empty($result['userId'])) {
             // Check if user can view transactions of other users
             $this->authorize('viewAll', Transaction::class);
+            $transactions = Transaction::getTransactions($request);
         } else {
             // Check if user can view own transactions
-            $this->authorize('view', Transaction::class);
+            $userId = $request['userId'] ?? Auth::user()->id;
+            $userModel = User::findOrFail($userId);
+            $this->authorize('viewOwn', $userModel);
+
+            $transactions = Transaction::getTransactions($request, $userModel);
         }
 
-
-        $pageSize = $request['pageSize'] ?? 50;
-        $paginatedResult = Transaction::with('account')
-            ->with('type')
-            ->paginate($pageSize)
-        ;
-
-        return $paginatedResult;
+        return $transactions;
     }
 
     /**
@@ -44,21 +44,25 @@ class TransactionController extends BaseController implements RestApiControllerI
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Transaction::class);
+        $this->authorize('create', [Transaction::class, $request['user_id']]);
 
         // Validate data
         $this->validate($request, [
             'name' => 'required|string|max:50',
-            'user_id' => 'required|integer',
-            'type_id' => 'required|integer',
-            'balance' => 'required|numeric|between:0,9999999.99',
+            'user_id' => 'required|integer|exists:users,id',
+            'type_id' => 'required|integer|exists:transaction_type,id',
+            'account_id' => 'required|integer|exists:account_type,id',
+            'date' => 'required|date|date_format:Y-m-d',
+            'sum' => 'required|numeric|between:0,9999999.99',
+            'comment' => 'string|max:300',
         ]);
 
-        return Account::create([
-            'name' => $request['name'],
+        return Transaction::create([
             'user_id' => $request['user_id'],
             'type_id' => $request['type_id'],
-            'balance' => $request['balance'],
+            'account_id' => $request['account_id'],
+            'sum' => $request['sum'],
+            '' => $request[''],
         ]);
     }
 
