@@ -21,7 +21,7 @@ class AccountPolicy
     public function before($user, $ability)
     {
         if (Auth::user()->role->name === 'admin') {
-            return true;
+//            return true;
         }
     }
 
@@ -40,6 +40,7 @@ class AccountPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\User  $user
+     * @param  \App\Account  $model
      * @return mixed
      */
     public function view(User $user, Account $model)
@@ -53,9 +54,9 @@ class AccountPolicy
      * @param  \App\Account  $model
      * @return mixed
      */
-    public function create(Account $model)
+    public function create(User $user, Account $model)
     {
-        return Auth::user()->id === $model->user_id;
+        return Auth::user()->id === (int)$model->user_id;
     }
 
     /**

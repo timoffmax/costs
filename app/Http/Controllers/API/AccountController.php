@@ -37,22 +37,22 @@ class AccountController extends BaseController implements RestApiControllerInter
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Account::class);
+        // Fill fields
+        $account = new Account();
+        $account->fill($request->all());
+
+        // Check permissions
+        $this->authorize('create', $account);
 
         // Validate data
         $this->validate($request, [
             'name' => 'required|string|max:50',
-            'user_id' => 'required|integer',
-            'type_id' => 'required|integer',
+            'user_id' => 'required|integer|exists:users,id',
+            'type_id' => 'required|integer|exists:account_type,id',
             'balance' => 'required|numeric|between:0,9999999.99',
         ]);
 
-        return Account::create([
-            'name' => $request['name'],
-            'user_id' => $request['user_id'],
-            'type_id' => $request['type_id'],
-            'balance' => $request['balance'],
-        ]);
+        $account->save();
     }
 
     /**
