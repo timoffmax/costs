@@ -16,8 +16,11 @@ class CreateTableTransaction extends Migration
         Schema::create('transaction', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned()->nullable(false);
+            $table->integer('account_id')->unsigned()->nullable(false);
             $table->integer('type_id')->unsigned()->nullable(false);
             $table->decimal('sum', 10, 2)->default('0.00');
+            $table->decimal('balance_before', 10, 2)->default('0.00');
+            $table->decimal('balance_after', 10, 2)->default('0.00');
             $table->dateTime('date')->nullable(false);
             $table->string('comment', 300)->nullable(true);
             $table->timestamps();
@@ -25,6 +28,9 @@ class CreateTableTransaction extends Migration
             $table->foreign('type_id', 'fk_transaction_type_id')
                 ->references('id')
                 ->on('transaction_type');
+            $table->foreign('account_id', 'fk_transaction_account_id')
+                ->references('id')
+                ->on('account');
             $table->foreign('user_id', 'fk_transaction_user_id')
                 ->references('id')
                 ->on('users');
@@ -38,6 +44,6 @@ class CreateTableTransaction extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('transaction');
     }
 }
