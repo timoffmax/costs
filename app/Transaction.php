@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Transaction
@@ -19,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
  * @property TransactionType $type
  * @property Account $account
  */
-class Transaction extends BaseModel
+class Transaction extends ParseRequestAbstractModel
 {
     /**
      * The table associated with the model.
@@ -29,12 +27,19 @@ class Transaction extends BaseModel
     protected $table = 'transaction';
 
     /**
+     * Automatically fill 'created_at' and 'updated_at' fields
+     *
+     * @var bool
+     */
+    public $timestamps = true;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'type_id', 'account_id', 'sum', 'date', 'comment',
+        'type_id', 'account_id', 'user_id', 'sum', 'date', 'comment',
     ];
 
     /**
@@ -45,34 +50,11 @@ class Transaction extends BaseModel
     protected $hidden = [];
 
     /**
-     * Returns array of transactions, filtered and paginated
-     *
-     * @param Request $request
-     * @param User|null $user
-     * @return Transaction|\Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Builder
-     */
-    public static function getTransactions(Request $request, ?User $user = null)
-    {
-        $pageSize = $request['pageSize'] ?? self::DEFAULT_PAGE_SIZE;
-
-        if (!empty($user)) {
-            $result = self::getUserTransactions($user);
-        } else {
-            $result = self::getAllTransactions();
-        }
-
-        $result = $result->latest();
-        $result = $result->paginate($pageSize);
-
-        return $result;
-    }
-
-    /**
      * Get transactions of all users
      *
      * @return Transaction|\Illuminate\Database\Eloquent\Builder
      */
-    protected static function getAllTransactions()
+    protected static function getAllModels()
     {
         return self::with('user')
             ->with('type')
@@ -86,7 +68,7 @@ class Transaction extends BaseModel
      * @param User $user
      * @return Transaction|\Illuminate\Database\Eloquent\Builder
      */
-    protected static function getUserTransactions(User $user)
+    protected static function getUserModels(User $user)
     {
         return self::with('user')
             ->with('account')

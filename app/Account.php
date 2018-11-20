@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Account
@@ -14,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property AccountType $type
  * @property User $user
  */
-class Account extends Model
+class Account extends ParseRequestAbstractModel
 {
     /**
      * Don't use 'created_at' and 'updated_at' fields
@@ -46,6 +45,30 @@ class Account extends Model
      */
     protected $hidden = [];
 
+    /**
+     * Get accounts of all users
+     *
+     * @return Transaction|\Illuminate\Database\Eloquent\Builder
+     */
+    protected static function getAllModels()
+    {
+        return self::with('user')
+            ->with('type')
+        ;
+    }
+
+    /**
+     * Get accounts of particular user
+     *
+     * @param User $user
+     * @return Transaction|\Illuminate\Database\Eloquent\Builder
+     */
+    protected static function getUserModels(User $user)
+    {
+        return self::with('type')
+            ->where(['user_id' => $user->id])
+        ;
+    }
 
     /**
      * Get the account owner
