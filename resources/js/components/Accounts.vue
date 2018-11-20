@@ -21,7 +21,7 @@
                                     <th v-if="isAdminMode">User</th>
                                     <th>Name</th>
                                     <th>Type</th>
-                                    <th>Balance</th>
+                                    <th class="text-right">Balance</th>
                                     <th class="text-right">Manage</th>
                                 </tr>
                             </thead>
@@ -30,8 +30,8 @@
                                     <td>{{ account.id }}</td>
                                     <td v-if="isAdminMode"><router-link :to="`/user/${account.user.id}`">{{ account.user.name }}</router-link></td>
                                     <td>{{ account.name }}</td>
-                                    <td>{{ account.type.name }}</td>
-                                    <td>{{ account.balance }}</td>
+                                    <td>{{ account.type.name | capitalize }}</td>
+                                    <td class="text-right">{{ account.balance }}</td>
                                     <td class="text-right">
                                         <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'account', account)" @click="showAccountModal(account)">
                                             <i class="fas fa-edit text-green"></i>
@@ -47,7 +47,7 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
-                        <pagination  :data="accounts" @pagination-change-page="loadAccounts"/>
+                        <pagination :data="accounts" @pagination-change-page="loadAccounts"/>
                     </div>
                 </div>
                 <!-- /.card -->
