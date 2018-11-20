@@ -77,7 +77,7 @@
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
                             @if(Auth::user()->photo)
-                                <img src="{{ Auth::user()->photo }}" alt="{{ Auth::user()->name }}">
+                                <img class="img-circle elevation-2" src="{{ Auth::user()->photo }}" alt="{{ Auth::user()->name }}">
                             @else
                                 @svg('svg/user.svg', 'user-profile-image elevation-2')
                             @endif
@@ -101,6 +101,12 @@
                                         <p>{{ __('Transactions') }}</p>
                                     </router-link>
                                 </li>
+                                <li class="nav-item">
+                                    <router-link to="/accounts" class="nav-link">
+                                        <i class="fas fa-coins nav-icon text-yellow"></i>
+                                        <p>{{ __('Accounts') }}</p>
+                                    </router-link>
+                                </li>
                             </li>
                             @can('viewAll', \App\User::class)
                                 <li class="nav-item has-treeview">
@@ -122,12 +128,6 @@
                                             <router-link to="/apiUsers" class="nav-link">
                                                 <i class="fas fa-unlock nav-icon text-orange"></i>
                                                 <p>{{ __('API Users') }}</p>
-                                            </router-link>
-                                        </li>
-                                        <li class="nav-item">
-                                            <router-link to="/accounts" class="nav-link">
-                                                <i class="fas fa-coins nav-icon text-yellow"></i>
-                                                <p>{{ __('Accounts') }}</p>
                                             </router-link>
                                         </li>
                                         <li class="nav-item">

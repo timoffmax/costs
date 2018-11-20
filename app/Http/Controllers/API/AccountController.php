@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Account;
-use App\Http\Controllers\API\interfaces\RestApiControllerInterface;
+use App\Interfaces\RestApiControllerInterface;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AccountController extends BaseController implements RestApiControllerInterface
 {
@@ -17,15 +19,20 @@ class AccountController extends BaseController implements RestApiControllerInter
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAll', Account::class);
+        if (empty($request['userId'])) {
+            // Check if user can view transactions of other users
+            $this->authorize('viewAll', Account::class);
+            $accounts = Account::getAll($request);
+        } else {
+            // Check if user can view own transactions
+            $userId = $request['userId'] ?? Auth::user()->id;
+            $userModel = User::findOrFail($userId);
+            $this->authorize('viewOwn', [Account::class, $userModel]);
 
-        $pageSize = $request['pageSize'] ?? 10;
-        $paginatedResult = Account::with('user')
-            ->with('type')
-            ->paginate($pageSize)
-        ;
+            $accounts = Account::getAll($request, $userModel);
+        }
 
-        return $paginatedResult;
+        return $accounts;
     }
 
     /**

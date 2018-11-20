@@ -37,6 +37,18 @@ class AccountPolicy
     }
 
     /**
+     * Determine whether the user can view the list of own accounts
+     *
+     * @param  \App\User  $user
+     * @param  \App\user  $model
+     * @return mixed
+     */
+    public function viewOwn(User $user, User $model)
+    {
+        return $user->id === $model->id;
+    }
+
+    /**
      * Determine whether the user can view the model.
      *
      * @param  \App\User  $user
@@ -45,18 +57,19 @@ class AccountPolicy
      */
     public function view(User $user, Account $model)
     {
-        return Auth::user()->id === $model->user_id;
+        return $user->id === (int)$model->user_id;
     }
 
     /**
      * Determine whether the user can create models.
      *
+     * @param  \App\User  $user
      * @param  \App\Account  $model
      * @return mixed
      */
     public function create(User $user, Account $model)
     {
-        return Auth::user()->id === (int)$model->user_id;
+        return $user->id === (int)$model->user_id;
     }
 
     /**
@@ -68,7 +81,7 @@ class AccountPolicy
      */
     public function update(User $user, Account $model)
     {
-        return $user->id === $model->id;
+        return $user->id === (int)$model->user_id;
     }
 
     /**
@@ -80,6 +93,6 @@ class AccountPolicy
      */
     public function delete(User $user, Account $model)
     {
-        return Auth::user()->role->name === 'admin' || $user->id === $model->id;
+        return $user->id === (int)$model->user_id;
     }
 }

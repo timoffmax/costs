@@ -5,7 +5,7 @@ export const routes = [
     { path: '/users', component: require('./components/admin/Users') },
     { path: '/user/:id', component: require('./components/admin/User') },
     { path: '/apiUsers', component: require('./components/admin/ApiUsers') },
-    { path: '/accounts', component: require('./components/admin/Accounts') },
+    { path: '/accounts', component: require('./components/Accounts') },
     { path: '/accountTypes', component: require('./components/admin/AccountTypes') },
     { path: '/transactions', component: require('./components/Transactions') },
     { path: '/transactionTypes', component: require('./components/admin/TransactionTypes') },

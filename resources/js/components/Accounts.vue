@@ -18,7 +18,7 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>User</th>
+                                    <th v-if="isAdminMode">User</th>
                                     <th>Name</th>
                                     <th>Type</th>
                                     <th>Balance</th>
@@ -28,7 +28,7 @@
                             <tbody>
                                 <tr v-for="account in accounts.data">
                                     <td>{{ account.id }}</td>
-                                    <td><router-link :to="`/user/${account.user.id}`">{{ account.user.name }}</router-link></td>
+                                    <td v-if="isAdminMode"><router-link :to="`/user/${account.user.id}`">{{ account.user.name }}</router-link></td>
                                     <td>{{ account.name }}</td>
                                     <td>{{ account.type.name }}</td>
                                     <td>{{ account.balance }}</td>
@@ -78,9 +78,8 @@
                                        placeholder="Name">
                                 <has-error :form="accountForm" field="name"></has-error>
                             </div>
-                            <div class="form-group">
-                                <select name="role"
-                                       v-model="accountForm.user_id"
+                            <div class="form-group" v-if="isAdminMode">
+                                <select v-model="accountForm.user_id"
                                        class="form-control"
                                        :class="{'is-invalid': accountForm.errors.has('user_id')}"
                                 >
@@ -90,8 +89,7 @@
                                 <has-error :form="accountForm" field="user_id"></has-error>
                             </div>
                             <div class="form-group">
-                                <select name="role"
-                                       v-model="accountForm.type_id"
+                                <select v-model="accountForm.type_id"
                                        class="form-control"
                                        :class="{'is-invalid': accountForm.errors.has('type_id')}"
                                 >
@@ -129,6 +127,9 @@
                 accounts: {},
                 accountTypes: [],
                 users: [],
+                pageSize: 10,
+                viewMode: 'user',
+                currentUser: user,
                 modal: {
                     target: this.$refs.accountModal,
                     mode: 'create',
@@ -146,7 +147,23 @@
         },
         methods: {
             loadAccounts(page = 1) {
-                axios.get(`api/account?page=${page}`).then(
+                // Prepare query params
+                let queryParams = {
+                    page: page,
+                    pageSize: this.pageSize,
+                };
+
+                if (!this.isAdminMode) {
+                    queryParams.userId = this.currentUser.id;
+                }
+
+                queryParams = Object.keys(queryParams)
+                    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(queryParams[k]))
+                    .join('&')
+                ;
+
+                // Send request
+                axios.get(`api/account?${queryParams}`).then(
                     (response) => {
                         this.accounts = response.data;
                     },
@@ -184,6 +201,8 @@
                     this.modal.mode = 'create';
                     this.modal.title = 'Add a new account';
                     this.modal.buttonTitle = 'Create';
+                    this.accountForm.user_id = this.currentUser.id;
+                    this.accountForm.balance = '0.00';
                 }
 
                 // Show modal
@@ -298,7 +317,10 @@
         },
         computed: {
             formAction() {
-                return this.modal.mode == 'create' ? this.createAccount : this.updateAccount;
+                return this.modal.mode === 'create' ? this.createAccount : this.updateAccount;
+            },
+            isAdminMode() {
+                return this.viewMode === 'admin';
             },
         },
         created() {
@@ -306,9 +328,12 @@
             $(document).on("hidden.bs.modal", this.clearModal);
 
             // Load accounts to the table
-            this.loadUsers();
             this.loadAccountTypes();
             this.loadAccounts();
+
+            if (this.isAdminMode) {
+                this.loadUsers();
+            }
         },
         mounted() {},
     }
