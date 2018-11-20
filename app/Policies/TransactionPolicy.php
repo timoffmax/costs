@@ -45,7 +45,7 @@ class TransactionPolicy
      */
     public function viewOwn(User $user, User $model)
     {
-        return $user === $model;
+        return $user->id === $model->id;
     }
 
     /**
@@ -57,18 +57,19 @@ class TransactionPolicy
      */
     public function view(User $user, Transaction $model)
     {
-        return Auth::user()->id === $model->user_id;
+        return $user->id === (int)$model->user_id;
     }
 
     /**
      * Determine whether the user can create models.
      *
+     * @param  \App\User  $user
      * @param  \App\Transaction  $model
      * @return mixed
      */
-    public function create(Transaction $model)
+    public function create(User $user, Transaction $model)
     {
-        return Auth::user()->id === $model->user_id;
+        return $user->id === (int)$model->user_id;
     }
 
     /**
@@ -80,7 +81,7 @@ class TransactionPolicy
      */
     public function update(User $user, Transaction $model)
     {
-        return $user->id === $model->id;
+        return $user->id === (int)$model->user_id;
     }
 
     /**
@@ -92,6 +93,6 @@ class TransactionPolicy
      */
     public function delete(User $user, Transaction $model)
     {
-        return Auth::user()->role->name === 'admin' || $user->id === $model->id;
+        return $user->id === (int)$model->user_id;
     }
 }

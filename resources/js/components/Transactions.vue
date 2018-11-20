@@ -21,8 +21,9 @@
                                     <th v-if="isAdminMode">User</th>
                                     <th>Date</th>
                                     <th>Account</th>
-                                    <th>Sum</th>
-                                    <th>Balance</th>
+                                    <th class="text-right">Sum</th>
+                                    <th class="text-right">Balance</th>
+                                    <th>Comment</th>
                                     <th class="text-right">Manage</th>
                                 </tr>
                             </thead>
@@ -32,8 +33,9 @@
                                     <td v-if="isAdminMode"><router-link :to="`/user/${transaction.user.id}`">{{ transaction.user.name }}</router-link></td>
                                     <td>{{ transaction.date | dateMoment('MMMM Do YYYY') }}</td>
                                     <td>{{ transaction.account.name }}</td>
-                                    <td :class="getTextClass(transaction)">{{ transaction | transactionAmount }}</td>
-                                    <td>{{ transaction.balance_after }}</td>
+                                    <td :class="getTextClass(transaction)" class="text-right">{{ transaction | transactionAmount }}</td>
+                                    <td class="text-right">{{ transaction.balance_after }}</td>
+                                    <td>{{ transaction.comment }}</td>
                                     <td class="text-right">
                                         <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'transaction', transaction)" @click="showTransactionModal(transaction)">
                                             <i class="fas fa-edit text-green"></i>
@@ -149,7 +151,7 @@
                 currentUser: user,
                 users: [],
                 pageSize: 50,
-                viewMode: 'all',
+                viewMode: 'user',
                 modal: {
                     target: this.$refs.transactionModal,
                     mode: 'create',
@@ -173,9 +175,11 @@
                 let queryParams = {
                     page: page,
                     pageSize: this.pageSize,
-                    mode: this.viewMode,
-                    userId: this.currentUser.id
                 };
+
+                if (!this.isAdminMode) {
+                    queryParams.userId = this.currentUser.id;
+                }
 
                 queryParams = Object.keys(queryParams)
                     .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(queryParams[k]))
@@ -216,6 +220,8 @@
 
                     // Fill form
                     this.transactionForm.fill(transaction);
+                    this.transactionForm.date = this.transactionForm.date.substr(0, 10);
+
                 } else {
                     // Set modal params
                     this.modal.mode = 'create';
@@ -359,7 +365,7 @@
                 return this.modal.mode === 'create' ? this.createTransaction : this.updateTransaction;
             },
             isAdminMode() {
-                return this.viewMode === 'all';
+                return this.viewMode === 'admin';
             },
             currentDate() {
                 return (new Date()).toISOString().substring(0, 10);

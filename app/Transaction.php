@@ -73,7 +73,7 @@ class Transaction extends ParseRequestAbstractModel
         return self::with('user')
             ->with('account')
             ->with('type')
-            ->where(['user_id' => $user])
+            ->where(['user_id' => $user->id])
         ;
     }
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\API\interfaces\RestApiControllerInterface;
+use App\Interfaces\RestApiControllerInterface;
 use App\Transaction;
 use App\User;
 use Illuminate\Http\Request;
@@ -19,17 +19,17 @@ class TransactionController extends BaseController implements RestApiControllerI
      */
     public function index(Request $request)
     {
-        if (empty($result['userId'])) {
+        if (empty($request['userId'])) {
             // Check if user can view transactions of other users
             $this->authorize('viewAll', Transaction::class);
-            $transactions = Transaction::getTransactions($request);
+            $transactions = Transaction::getAll($request);
         } else {
             // Check if user can view own transactions
             $userId = $request['userId'] ?? Auth::user()->id;
             $userModel = User::findOrFail($userId);
-            $this->authorize('viewOwn', $userModel);
+            $this->authorize('viewOwn', [Transaction::class, $userModel]);
 
-            $transactions = Transaction::getTransactions($request, $userModel);
+            $transactions = Transaction::getAll($request, $userModel);
         }
 
         return $transactions;
@@ -44,26 +44,24 @@ class TransactionController extends BaseController implements RestApiControllerI
      */
     public function store(Request $request)
     {
-        $this->authorize('create', [Transaction::class, $request['user_id']]);
+        // Fill fields
+        $transaction = new Transaction();
+        $transaction->fill($request->all());
+
+        // Check permissions
+        $this->authorize('create', $transaction);
 
         // Validate data
         $this->validate($request, [
-            'name' => 'required|string|max:50',
             'user_id' => 'required|integer|exists:users,id',
             'type_id' => 'required|integer|exists:transaction_type,id',
-            'account_id' => 'required|integer|exists:account_type,id',
+            'account_id' => 'required|integer|exists:account,id',
             'date' => 'required|date|date_format:Y-m-d',
             'sum' => 'required|numeric|between:0,9999999.99',
             'comment' => 'string|max:300',
         ]);
 
-        return Transaction::create([
-            'user_id' => $request['user_id'],
-            'type_id' => $request['type_id'],
-            'account_id' => $request['account_id'],
-            'sum' => $request['sum'],
-            '' => $request[''],
-        ]);
+        $transaction->save();
     }
 
     /**
@@ -97,6 +95,23 @@ class TransactionController extends BaseController implements RestApiControllerI
     {
         // Check permissions
         $transactionModel = Transaction::findOrFail($id);
+
+        $this->authorize('update', $transactionModel);
+
+        // Get form and validate
+        $formData = $request->all();
+
+        $this->validate($request, [
+            'user_id' => 'required|integer|exists:users,id',
+            'type_id' => 'required|integer|exists:transaction_type,id',
+            'account_id' => 'required|integer|exists:account,id',
+            'date' => 'required|date|date_format:Y-m-d',
+            'sum' => 'required|numeric|between:0,9999999.99',
+            'comment' => 'string|max:300',
+        ]);
+
+        $transactionModel->fill($formData);
+        $transactionModel->save();
     }
 
     /**

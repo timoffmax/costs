@@ -2,26 +2,26 @@ export default class TransactionPolicy
 {
     static create(user)
     {
-        return false;
+        return true;
     }
 
     static viewAll(user)
     {
-        return false;
+        return true;
     }
 
     static view(user, model)
     {
-        return user.id === model.id;
+        return user.id === model.user_id;
     }
 
     static delete(user, model)
     {
-        return user.id === model.id;
+        return user.id === model.user_id;
     }
 
     static update(user, model)
     {
-        return user.id === model.id;
+        return user.id === model.user_id;
     }
 }
