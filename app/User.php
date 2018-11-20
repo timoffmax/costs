@@ -23,6 +23,13 @@ class User extends Authenticatable
     use HasApiTokens;
 
     /**
+     * Automatically fill 'created_at' and 'updated_at' fields
+     *
+     * @var bool
+     */
+    public $timestamps = true;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
