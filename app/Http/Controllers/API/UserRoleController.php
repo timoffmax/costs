@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\API\interfaces\RestApiControllerInterface;
+use App\Interfaces\RestApiControllerInterface;
 use App\UserRole;
 use Illuminate\Http\Request;
 
 class UserRoleController extends BaseController implements RestApiControllerInterface
 {
-
     /**
      * Display a listing of the roles
      *

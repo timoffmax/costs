@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\AccountType;
-use App\Http\Controllers\API\interfaces\RestApiControllerInterface;
+use App\Interfaces\RestApiControllerInterface;
 use Illuminate\Http\Request;
 
 class AccountTypeController extends BaseController implements RestApiControllerInterface
