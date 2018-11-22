@@ -19,6 +19,9 @@ namespace App;
  */
 class Transaction extends ParseRequestAbstractModel
 {
+    const TYPE_INCOME = 'income';
+    const TYPE_COST = 'cost';
+
     /**
      * The table associated with the model.
      *
@@ -75,6 +78,43 @@ class Transaction extends ParseRequestAbstractModel
             ->with('type')
             ->where(['user_id' => $user->id])
         ;
+    }
+
+    /**
+     * Save transaction with updating balances
+     *
+     * @return bool
+     */
+    public function saveWithAccount()
+    {
+        // Get account
+        $account = $this->account;
+
+        // Write down balance before transaction
+        $this->balance_before = $account->balance;
+
+        // Update account
+        switch ($this->type->name) {
+            case self::TYPE_COST:
+                $account->balance -= $this->sum;
+                break;
+
+            case self::TYPE_INCOME:
+                $account->balance += $this->sum;
+                break;
+
+            default:
+                // Do nothing
+        }
+
+        // Write down balance after transaction
+        $this->balance_after = $account->balance;
+
+        if ($this->save()) {
+            return $account->save();
+        }
+
+        return false;
     }
 
     /**

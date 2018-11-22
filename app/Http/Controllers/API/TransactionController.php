@@ -61,7 +61,8 @@ class TransactionController extends BaseController implements RestApiControllerI
             'comment' => 'string|max:300',
         ]);
 
-        $transaction->save();
+        // Save and update account amount
+        $transaction->saveWithAccount();
     }
 
     /**
