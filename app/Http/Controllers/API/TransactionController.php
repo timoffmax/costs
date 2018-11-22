@@ -58,7 +58,7 @@ class TransactionController extends BaseController implements RestApiControllerI
             'account_id' => 'required|integer|exists:account,id',
             'date' => 'required|date|date_format:Y-m-d',
             'sum' => 'required|numeric|between:0,9999999.99',
-            'comment' => 'string|max:300',
+            'comment' => 'nullable|string|max:300',
         ]);
 
         // Save and update account amount
