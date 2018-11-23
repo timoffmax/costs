@@ -62,7 +62,7 @@ class TransactionController extends BaseController implements RestApiControllerI
         ]);
 
         // Save and update account amount
-        $transaction->saveWithAccount();
+        $transaction->save();
     }
 
     /**
@@ -94,6 +94,8 @@ class TransactionController extends BaseController implements RestApiControllerI
      */
     public function update(Request $request, int $id)
     {
+        /** @var Transaction $transactionModel */
+
         // Check permissions
         $transactionModel = Transaction::findOrFail($id);
 
@@ -108,9 +110,13 @@ class TransactionController extends BaseController implements RestApiControllerI
             'account_id' => 'required|integer|exists:account,id',
             'date' => 'required|date|date_format:Y-m-d',
             'sum' => 'required|numeric|between:0,9999999.99',
-            'comment' => 'string|max:300',
+            'comment' => 'nullable|string|max:300',
         ]);
 
+        // "Rollback" transaction
+        $transactionModel->cancel();
+
+        // Save with updating account
         $transactionModel->fill($formData);
         $transactionModel->save();
     }
@@ -124,6 +130,8 @@ class TransactionController extends BaseController implements RestApiControllerI
      */
     public function destroy(int $id)
     {
+        /** @var Transaction $transactionModel */
+
         // Check permissions
         $transactionModel = Transaction::findOrFail($id);
 

@@ -3,6 +3,8 @@
 namespace App;
 
 
+use Illuminate\Support\Facades\DB;
+
 /**
  * Class Transaction
  *
@@ -83,38 +85,94 @@ class Transaction extends ParseRequestAbstractModel
     /**
      * Save transaction with updating balances
      *
+     * @param array $options
      * @return bool
      */
-    public function saveWithAccount()
+    public function save(array $options = [])
     {
         // Get account
         $account = $this->account;
 
-        // Write down balance before transaction
-        $this->balance_before = $account->balance;
-
-        // Update account
-        switch ($this->type->name) {
-            case self::TYPE_COST:
-                $account->balance -= $this->sum;
-                break;
-
-            case self::TYPE_INCOME:
-                $account->balance += $this->sum;
-                break;
-
-            default:
-                // Do nothing
+        // Write down balance before transaction (only for new records!)
+        if (!$this->exists) {
+            $this->balance_before = $account->balance;
         }
 
-        // Write down balance after transaction
-        $this->balance_after = $account->balance;
+        // Update the related account
+        $transactionSum = $this->getSumWithSign();
+        $account->balance += $transactionSum;
 
-        if ($this->save()) {
+        // Write down balance after transaction
+        $this->balance_after = $this->balance_before + $transactionSum;
+
+        if (parent::save($options)) {
             return $account->save();
         }
 
         return false;
+    }
+
+    /**
+     * Cancel transaction before delete to update balances
+     *
+     * @return bool|void|null
+     * @throws \Exception
+     */
+    public function delete()
+    {
+        $this->cancel();
+        parent::delete();
+    }
+
+    public function cancel()
+    {
+        // Get account
+        $account = $this->account;
+
+        // Update the related account
+        $this->sum = -$this->getSumWithSign(); // Get opposite value
+        $account->balance += $this->sum;
+
+        // Write down balance after transaction
+        $this->balance_after = $this->balance_before;
+
+
+        parent::save() && $account->save() && $this->updatePreviousTransactions();
+    }
+
+    protected function updatePreviousTransactions()
+    {
+        DB::table($this->getTable())
+            ->where('id', '>', $this->id)
+            ->where('account_id', '>', $this->account->id)
+            ->increment('balance_before', $this->sum)
+        ;
+
+        DB::table($this->getTable())
+            ->where('id', '>', $this->id)
+            ->where('account_id', '>', $this->account->id)
+            ->increment('balance_after', $this->sum)
+        ;
+    }
+
+    /**
+     * Returns negative or positive sum regards to transaction type
+     *
+     * @return float
+     */
+    protected function getSumWithSign()
+    {
+        switch ($this->type->name) {
+            case self::TYPE_COST:
+                $sum = -$this->sum;
+                break;
+
+            case self::TYPE_INCOME:
+            default:
+                $sum = $this->sum;
+        }
+
+        return (float)$sum;
     }
 
     /**

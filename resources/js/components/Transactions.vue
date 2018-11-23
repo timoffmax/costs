@@ -22,7 +22,8 @@
                                     <th>Date</th>
                                     <th>Account</th>
                                     <th class="text-right">Sum</th>
-                                    <th class="text-right">Balance</th>
+                                    <th class="text-right">Balance Before</th>
+                                    <th class="text-right">Balance After</th>
                                     <th>Comment</th>
                                     <th class="text-right">Manage</th>
                                 </tr>
@@ -34,6 +35,7 @@
                                     <td>{{ transaction.date | dateMoment('MMMM Do YYYY') }}</td>
                                     <td>{{ transaction.account.name }}</td>
                                     <td :class="getTextClass(transaction)" class="text-right">{{ transaction | transactionAmount }}</td>
+                                    <td class="text-right">{{ transaction.balance_before }}</td>
                                     <td class="text-right">{{ transaction.balance_after }}</td>
                                     <td>{{ transaction.comment }}</td>
                                     <td class="text-right">
