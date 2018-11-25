@@ -8,7 +8,7 @@
                         <div class="card-tools">
                             <button class="btn btn-success" v-if="$gate.allow('create', 'transactionType')" @click="showTransactionTypeModal()">
                                 Add
-                                <i class="fas fa-user-plus fa-fw"></i>
+                                <i class="fas fa-plus fa-fw"></i>
                             </button>
                         </div>
                     </div>
