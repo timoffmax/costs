@@ -106,6 +106,12 @@ class Transaction extends ParseRequestAbstractModel
         $this->balance_after = $this->balance_before + $transactionSum;
 
         if (parent::save($options)) {
+            // If it's update
+            if ($this->exists) {
+                return $account->save() && $this->updateFollowingTransactions(false);
+            }
+
+            // If it's a new record
             return $account->save();
         }
 
@@ -113,46 +119,68 @@ class Transaction extends ParseRequestAbstractModel
     }
 
     /**
-     * Cancel transaction before delete to update balances
+     * Delete with updating the related account and all following transactions
      *
      * @return bool|void|null
      * @throws \Exception
      */
     public function delete()
     {
-        $this->cancel();
-        parent::delete();
+        // Get account
+        $account = $this->account;
+
+        // Update the related account
+        $sumToRevert = -$this->getSumWithSign();
+        $account->balance += $sumToRevert;
+
+        // Save account and update all transaction after this one
+        parent::delete() && $account->save() && $this->updateFollowingTransactions();
     }
 
+    /**
+     * Revert transaction
+     */
     public function cancel()
     {
         // Get account
         $account = $this->account;
 
         // Update the related account
-        $this->sum = -$this->getSumWithSign(); // Get opposite value
-        $account->balance += $this->sum;
+        $sumToRevert = -$this->getSumWithSign();
+        $account->balance += $sumToRevert;
 
         // Write down balance after transaction
         $this->balance_after = $this->balance_before;
 
-
-        parent::save() && $account->save() && $this->updatePreviousTransactions();
+        // Save account and update all transaction after this one
+        $account->save() && $this->updateFollowingTransactions();
     }
 
-    protected function updatePreviousTransactions()
+    /**
+     * Update balances in every transaction for the same account after this one
+     *
+     * @return int
+     */
+    protected function updateFollowingTransactions(bool $revertMode = true)
     {
-        DB::table($this->getTable())
+        if ($revertMode) {
+            // Get opposite value of transaction amount to revert it
+            $transactionSum = -$this->getSumWithSign();
+        } else {
+            // Get normal value with sign
+            $transactionSum = $this->getSumWithSign();
+        }
+
+        $result = DB::table($this->getTable())
             ->where('id', '>', $this->id)
-            ->where('account_id', '>', $this->account->id)
-            ->increment('balance_before', $this->sum)
+            ->where('account_id', '=', $this->account->id)
+            ->update([
+                'balance_before' => DB::raw("balance_before + {$transactionSum}"),
+                'balance_after' => DB::raw("balance_after + {$transactionSum}"),
+            ])
         ;
 
-        DB::table($this->getTable())
-            ->where('id', '>', $this->id)
-            ->where('account_id', '>', $this->account->id)
-            ->increment('balance_after', $this->sum)
-        ;
+        return $result;
     }
 
     /**
