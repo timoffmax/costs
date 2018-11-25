@@ -77,7 +77,7 @@ class UserController extends BaseController implements RestApiControllerInterfac
     public function show(int $id)
     {
         $userModel = User::with('role')
-            ->with('accounts')
+            ->with('transactions')
             ->findOrFail($id)
         ;
 

@@ -32,7 +32,7 @@
                             <!-- /.col -->
                             <div class="col-sm-4">
                                 <div class="description-block">
-                                    <h5 class="description-header">xxx</h5>
+                                    <h5 v-if="user.accounts" class="description-header">{{ Object.keys(user.transactions).length }}</h5>
                                     <span class="description-text">TRANSACTIONS</span>
                                 </div>
                                 <!-- /.description-block -->

@@ -22,7 +22,7 @@
                                 <b>Money</b> <a v-if="profile.accounts" class="float-right">{{ allAccountsAmount }}</a>
                             </li>
                             <li class="list-group-item">
-                                <b>Transactions</b> <a class="float-right">xxx</a>
+                                <b>Transactions</b> <a v-if="profile.accounts" class="float-right">{{ Object.keys(profile.transactions).length }}</a>
                             </li>
                         </ul>
 
