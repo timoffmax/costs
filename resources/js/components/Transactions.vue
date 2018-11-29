@@ -14,6 +14,43 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
+                        <div>
+                            <vue-good-table v-if="transactions"
+                                            @on-page-change="onPageChange"
+                                            @on-sort-change="onSortChange"
+                                            @on-column-filter="onColumnFilter"
+                                            @on-per-page-change="onPerPageChange"
+                                            mode="remote"
+                                            :totalRows="transactions.total"
+                                            :pagination-options="{
+                                                enabled: true,
+                                                perPage: serverParams.perPage,
+                                                perPageDropdown: [1, 50, 100, 200],
+                                            }"
+                                            :columns="columns"
+                                            :rows="transactions.data"
+                                            styleClass="vgt-table table table-hover"
+                            >
+                                <template slot="table-row" slot-scope="props">
+                                    <span v-if="props.column.field == 'actions'">
+                                      <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'transaction', props.row)" @click="showTransactionModal(props.row)">
+                                            <i class="fas fa-edit text-green"></i>
+                                        </button>
+                                        /
+                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'transaction', props.row)" @click="deleteTransaction(props.row)">
+                                            <i class="fas fa-trash text-red"></i>
+                                        </button>
+                                    </span>
+                                    <span v-else>
+                                      {{props.formattedRow[props.column.field]}}
+                                    </span>
+                                </template>
+                                <div slot="emptystate">
+                                    No transactions to display
+                                </div>
+                            </vue-good-table>
+                        </div>
+
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -52,9 +89,6 @@
                         </table>
                     </div>
                     <!-- /.card-body -->
-                    <div class="card-footer">
-                        <pagination  :data="transactions" @pagination-change-page="loadTransactions"/>
-                    </div>
                 </div>
                 <!-- /.card -->
             </div>
@@ -144,7 +178,15 @@
 </template>
 
 <script>
+    import { VueGoodTable } from 'vue-good-table';
+
+    const FLAG_MODE_ADMIN = 'admin';
+    const FLAG_MODE_USER = 'user';
+
     export default {
+        components: {
+            VueGoodTable,
+        },
         data() {
             return {
                 transactions: {},
@@ -152,8 +194,8 @@
                 userAccounts: [],
                 currentUser: user,
                 users: [],
-                pageSize: 50,
-                viewMode: 'user',
+                pageSize: 1,
+                viewMode: FLAG_MODE_USER,
                 modal: {
                     target: this.$refs.transactionModal,
                     mode: 'create',
@@ -169,15 +211,81 @@
                     date: '',
                     comment: '',
                 }),
+
+                columns: [
+                    {
+                        label: 'ID',
+                        field: 'id',
+                        thClass: 'text-center',
+                        tdClass: 'text-center',
+                        filterOptions: {
+                            enabled: true,
+                            filterDropdownItems: [],
+                            trigger: 'enter',
+                        },
+                    },
+                    {
+                        label: 'User',
+                        field: 'user.name',
+                        hidden: !this.viewMode === FLAG_MODE_ADMIN,
+                        filterOptions: {
+                            enabled: this.viewMode === FLAG_MODE_ADMIN,
+                            filterDropdownItems: this.users,
+                        },
+                    },
+                    {
+                        label: 'Date',
+                        field: 'date',
+                        type: 'date',
+                        dateInputFormat: 'YYYY-MM-DD',
+                        dateOutputFormat: 'MMMM Do YYYY',
+                        thClass: 'text-left',
+                        tdClass: 'text-left',
+                    },
+                    {
+                        label: 'Account',
+                        field: 'account.name',
+                    },
+                    {
+                        label: 'Sum',
+                        field: 'sum',
+                    },
+                    {
+                        label: 'Balance Before',
+                        field: 'balance_before',
+                        type: 'decimal',
+                    },
+                    {
+                        label: 'Balance After',
+                        field: 'balance_after',
+                        type: 'decimal',
+                    },
+                    {
+                        label: 'Comment',
+                        field: 'comment',
+                    },
+                    {
+                        label: 'Actions',
+                        field: 'actions',
+                        thClass: 'text-right',
+                        tdClass: 'text-right',
+                    },
+                ],
+                totalRecords: 0,
+                serverParams: {
+                    columnFilters: {
+                    },
+                    sortType: '',
+                    sortField: '',
+                    page: 1,
+                    perPage: 1,
+                }
             };
         },
         methods: {
             loadTransactions(page = 1) {
                 // Prepare query params
-                let queryParams = {
-                    page: page,
-                    pageSize: this.pageSize,
-                };
+                let queryParams = Object.assign({}, this.serverParams);
 
                 if (!this.isAdminMode) {
                     queryParams.userId = this.currentUser.id;
@@ -192,6 +300,7 @@
                 axios.get(`api/transaction?${queryParams}`).then(
                     (response) => {
                         this.transactions = response.data;
+                        this.totalRecords = response.data.total;
                     },
                 );
             },
@@ -323,7 +432,7 @@
                                 this.$Progress.finish();
 
                                 // Update the table
-                                this.loadTransactions()
+                                this.loadTransactions();
 
                                 // Show the success message
                                 toast({
@@ -360,6 +469,31 @@
                 }
 
                 return textClass;
+            },
+
+            // good-table functions
+            updateParams(newProps) {
+                this.serverParams = Object.assign({}, this.serverParams, newProps);
+            },
+            onPageChange(params) {
+                this.updateParams({page: params.currentPage});
+                this.loadTransactions();
+            },
+            onPerPageChange(params) {
+                this.updateParams({perPage: params.currentPerPage});
+                this.loadTransactions();
+            },
+            onSortChange(params) {
+                this.updateParams({
+                    sortType: params[0].type,
+                    sortField: params[0].field,
+                });
+                console.log(this.serverParams);
+                this.loadTransactions();
+            },
+            onColumnFilter(params) {
+                this.updateParams(params);
+                this.loadTransactions();
             }
         },
         computed: {

@@ -44,7 +44,12 @@ abstract class ParseRequestAbstractModel extends Model
      */
     protected static function applySort(Request $request, Builder $query)
     {
-        if (!empty($request['sort'])) {
+        $field = $request['sortField'] ?? null;
+        $type = $request['sortType'] ?? 'ASC';
+
+        if (!empty($field)) {
+            $query = $query->orderBy($field, $type);
+        } elseif (!empty($request['sort'])) {
             switch ($request['sort']) {
                 case 'latest':
                     $query = $query->latest();
@@ -53,7 +58,6 @@ abstract class ParseRequestAbstractModel extends Model
                 default:
                     // No default sort
             }
-
         }
 
         return $query;
@@ -72,7 +76,7 @@ abstract class ParseRequestAbstractModel extends Model
     protected static function applyPagination(Request $request, Builder $query)
     {
         if (!empty($request['page'])) {
-            $pageSize = $request['pageSize'] ?? self::DEFAULT_PAGE_SIZE;
+            $pageSize = $request['perPage'] ?? self::DEFAULT_PAGE_SIZE;
             $result = $query->paginate($pageSize);
         } else {
             $result = $query->get();
