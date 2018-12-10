@@ -27,12 +27,12 @@
                                                 perPage: serverParams.perPage,
                                                 perPageDropdown: [1, 50, 100, 200],
                                             }"
-                                            :columns="columns"
+                                            :columns="dynamicColumns"
                                             :rows="transactions.data"
-                                            styleClass="vgt-table table table-hover"
+                                            styleClass="table table-hover"
                             >
                                 <template slot="table-row" slot-scope="props">
-                                    <span v-if="props.column.field == 'actions'">
+                                    <span v-if="props.column.field === 'actions'">
                                       <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'transaction', props.row)" @click="showTransactionModal(props.row)">
                                             <i class="fas fa-edit text-green"></i>
                                         </button>
@@ -41,10 +41,23 @@
                                             <i class="fas fa-trash text-red"></i>
                                         </button>
                                     </span>
+                                    <router-link v-if="props.column.field === 'user.name'" :to="`/user/${props.row.user.id}`">
+                                        {{ props.row.user.name }}
+                                    </router-link>
                                     <span v-else>
-                                      {{props.formattedRow[props.column.field]}}
+                                        {{ props.formattedRow[props.column.field] }}
                                     </span>
                                 </template>
+                                <!--<template slot="table-row" scope="props">-->
+                                    <!--<td>{{props.row.id}}</td>-->
+                                    <!--<td><editable :item="props.row.stringnaam" @updated="updateRow(props.row,'stringnaam',$event)"></editable></td>-->
+                                    <!--<td><editable :item="props.row.nl" @updated="updateRow(props.row,'nl',$event)"></editable></td>-->
+                                    <!--<td><editable :item="props.row.en" @updated="updateRow(props.row,'en',$event)"></editable></td>-->
+                                    <!--<td><editable :item="props.row.de" @updated="updateRow(props.row,'de',$event)"></editable></td>-->
+                                    <!--<td><editable :item="props.row.es" @updated="updateRow(props.row,'es',$event)"></editable></td>-->
+                                    <!--<td><editable :item="props.row.fr" @updated="updateRow(props.row,'fr',$event)"></editable></td>-->
+                                    <!--<td> <i class="fa fa-trash-o" @click="confirmDelete(props.row)"></i> </td>-->
+                                <!--</template>-->
                                 <div slot="emptystate">
                                     No transactions to display
                                 </div>
@@ -81,6 +94,9 @@
                                         </button>
                                         /
                                         <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'transaction', transaction)" @click="deleteTransaction(transaction)">
+                                            <i class="fas fa-trash text-red"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'transaction', transaction)" @click="toggleMode">
                                             <i class="fas fa-trash text-red"></i>
                                         </button>
                                     </td>
@@ -136,7 +152,7 @@
                                         :class="{'is-invalid': transactionForm.errors.has('account_id')}"
                                 >
                                     <option value="">Select Account</option>
-                                    <option v-for="account in currentUser.accounts" :value="account.id">{{ account.name }}</option>
+                                    <option v-for="account in settings.currentUser.accounts" :value="account.id">{{ account.name }}</option>
                                 </select>
                                 <has-error :form="transactionForm" field="account_id"></has-error>
                             </div>
@@ -189,13 +205,16 @@
         },
         data() {
             return {
+                settings: {
+                    currentUser: user,
+                    viewMode: FLAG_MODE_ADMIN,
+                },
+
                 transactions: {},
                 transactionTypes: [],
                 userAccounts: [],
-                currentUser: user,
                 users: [],
-                pageSize: 1,
-                viewMode: FLAG_MODE_USER,
+
                 modal: {
                     target: this.$refs.transactionModal,
                     mode: 'create',
@@ -223,15 +242,11 @@
                             filterDropdownItems: [],
                             trigger: 'enter',
                         },
+                        width: '100px',
                     },
                     {
                         label: 'User',
                         field: 'user.name',
-                        hidden: !this.viewMode === FLAG_MODE_ADMIN,
-                        filterOptions: {
-                            enabled: this.viewMode === FLAG_MODE_ADMIN,
-                            filterDropdownItems: this.users,
-                        },
                     },
                     {
                         label: 'Date',
@@ -283,12 +298,15 @@
             };
         },
         methods: {
+            toggleMode() {
+                this.settings.viewMode = (this.viewMode === FLAG_MODE_ADMIN) ? FLAG_MODE_USER : FLAG_MODE_ADMIN;
+            },
             loadTransactions(page = 1) {
                 // Prepare query params
                 let queryParams = Object.assign({}, this.serverParams);
 
                 if (!this.isAdminMode) {
-                    queryParams.userId = this.currentUser.id;
+                    queryParams.userId = this.settings.currentUser.id;
                 }
 
                 queryParams = Object.keys(queryParams)
@@ -338,7 +356,7 @@
                     this.modal.mode = 'create';
                     this.modal.title = 'Add a new transaction';
                     this.modal.buttonTitle = 'Create';
-                    this.transactionForm.user_id = this.currentUser.id;
+                    this.transactionForm.user_id = this.settings.currentUser.id;
                     this.transactionForm.sum = '0.00';
                     this.transactionForm.date = this.currentDate;
                 }
@@ -501,11 +519,34 @@
                 return this.modal.mode === 'create' ? this.createTransaction : this.updateTransaction;
             },
             isAdminMode() {
-                return this.viewMode === 'admin';
+                return this.settings.viewMode === FLAG_MODE_ADMIN;
             },
             currentDate() {
                 return (new Date()).toISOString().substring(0, 10);
-            }
+            },
+            // Return simple list of users (object to array)
+            getUsersList() {
+                return Object.values(this.users);
+            },
+            /**
+             * Duct tape to make Vue Good Table columns dynamic. By default it doesn't see changes in column properties
+             */
+            dynamicColumns() {
+                return this.columns.map(column => {
+                    if (column.field === 'user.name') {
+                        return Object.assign(column, {
+                            hidden: !this.isAdminMode,
+                            filterOptions: {
+                                enabled: this.isAdminMode,
+                                filterDropdownItems: this.getUsersList,
+                            },
+                            html: true,
+                        });
+                    }
+
+                    return column;
+                })
+            },
         },
         created() {
             // Events
