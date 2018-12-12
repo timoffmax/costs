@@ -44,65 +44,18 @@
                                     <router-link v-if="props.column.field === 'user.name'" :to="`/user/${props.row.user.id}`">
                                         {{ props.row.user.name }}
                                     </router-link>
+                                    <span v-else-if="props.column.field === 'sum'" :class="getAmountColorClass(props.row)" >
+                                        {{ props.row | transactionAmount }}
+                                    </span>
                                     <span v-else>
                                         {{ props.formattedRow[props.column.field] }}
                                     </span>
                                 </template>
-                                <!--<template slot="table-row" scope="props">-->
-                                    <!--<td>{{props.row.id}}</td>-->
-                                    <!--<td><editable :item="props.row.stringnaam" @updated="updateRow(props.row,'stringnaam',$event)"></editable></td>-->
-                                    <!--<td><editable :item="props.row.nl" @updated="updateRow(props.row,'nl',$event)"></editable></td>-->
-                                    <!--<td><editable :item="props.row.en" @updated="updateRow(props.row,'en',$event)"></editable></td>-->
-                                    <!--<td><editable :item="props.row.de" @updated="updateRow(props.row,'de',$event)"></editable></td>-->
-                                    <!--<td><editable :item="props.row.es" @updated="updateRow(props.row,'es',$event)"></editable></td>-->
-                                    <!--<td><editable :item="props.row.fr" @updated="updateRow(props.row,'fr',$event)"></editable></td>-->
-                                    <!--<td> <i class="fa fa-trash-o" @click="confirmDelete(props.row)"></i> </td>-->
-                                <!--</template>-->
                                 <div slot="emptystate">
                                     No transactions to display
                                 </div>
                             </vue-good-table>
                         </div>
-
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th v-if="isAdminMode">User</th>
-                                    <th>Date</th>
-                                    <th>Account</th>
-                                    <th class="text-right">Sum</th>
-                                    <th class="text-right">Balance Before</th>
-                                    <th class="text-right">Balance After</th>
-                                    <th>Comment</th>
-                                    <th class="text-right">Manage</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="transaction in transactions.data">
-                                    <td>{{ transaction.id }}</td>
-                                    <td v-if="isAdminMode"><router-link :to="`/user/${transaction.user.id}`">{{ transaction.user.name }}</router-link></td>
-                                    <td>{{ transaction.date | dateMoment('MMMM Do YYYY') }}</td>
-                                    <td>{{ transaction.account.name }}</td>
-                                    <td :class="getTextClass(transaction)" class="text-right">{{ transaction | transactionAmount }}</td>
-                                    <td class="text-right">{{ transaction.balance_before }}</td>
-                                    <td class="text-right">{{ transaction.balance_after }}</td>
-                                    <td>{{ transaction.comment }}</td>
-                                    <td class="text-right">
-                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'transaction', transaction)" @click="showTransactionModal(transaction)">
-                                            <i class="fas fa-edit text-green"></i>
-                                        </button>
-                                        /
-                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'transaction', transaction)" @click="deleteTransaction(transaction)">
-                                            <i class="fas fa-trash text-red"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'transaction', transaction)" @click="toggleMode">
-                                            <i class="fas fa-trash text-red"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -207,7 +160,7 @@
             return {
                 settings: {
                     currentUser: user,
-                    viewMode: FLAG_MODE_ADMIN,
+                    viewMode: FLAG_MODE_USER,
                 },
 
                 transactions: {},
@@ -242,10 +195,11 @@
                             filterDropdownItems: [],
                             trigger: 'enter',
                         },
-                        width: '100px',
+                        width: '10%',
                     },
                     {
                         label: 'User',
+                        thClass: 'text-center',
                         field: 'user.name',
                     },
                     {
@@ -254,35 +208,65 @@
                         type: 'date',
                         dateInputFormat: 'YYYY-MM-DD',
                         dateOutputFormat: 'MMMM Do YYYY',
-                        thClass: 'text-left',
-                        tdClass: 'text-left',
+                        thClass: 'text-center',
+                        tdClass: 'text-left text-nowrap',
+                        filterOptions: {
+                            enabled: true,
+                            trigger: 'enter',
+                        },
                     },
                     {
                         label: 'Account',
                         field: 'account.name',
+                        filterOptions: {
+                            enabled: true,
+                            trigger: 'enter',
+                            filterDropdownItems: [],
+                        },
                     },
                     {
                         label: 'Sum',
                         field: 'sum',
+                        thClass: 'text-center',
+                        type: 'decimal',
+                        filterOptions: {
+                            enabled: true,
+                            trigger: 'enter',
+                        },
                     },
                     {
                         label: 'Balance Before',
                         field: 'balance_before',
                         type: 'decimal',
+                        thClass: 'text-center text-nowrap',
+                        filterOptions: {
+                            enabled: true,
+                            trigger: 'enter',
+                        },
                     },
                     {
                         label: 'Balance After',
                         field: 'balance_after',
                         type: 'decimal',
+                        thClass: 'text-center text-nowrap',
+                        filterOptions: {
+                            enabled: true,
+                            trigger: 'enter',
+                        },
                     },
                     {
                         label: 'Comment',
                         field: 'comment',
+                        thClass: 'text-center',
+                        filterOptions: {
+                            enabled: true,
+                            trigger: 'enter',
+                        },
                     },
                     {
                         label: 'Actions',
                         field: 'actions',
-                        thClass: 'text-right',
+                        thClass: 'text-center',
                         tdClass: 'text-right',
                     },
                 ],
@@ -298,9 +282,6 @@
             };
         },
         methods: {
-            toggleMode() {
-                this.settings.viewMode = (this.viewMode === FLAG_MODE_ADMIN) ? FLAG_MODE_USER : FLAG_MODE_ADMIN;
-            },
             loadTransactions(page = 1) {
                 // Prepare query params
                 let queryParams = Object.assign({}, this.serverParams);
@@ -470,7 +451,7 @@
                     }
                 })
             },
-            getTextClass(transaction) {
+            getAmountColorClass(transaction) {
                 let textClass = 'text-';
 
                 switch (transaction.type.name) {
@@ -524,27 +505,51 @@
             currentDate() {
                 return (new Date()).toISOString().substring(0, 10);
             },
-            // Return simple list of users (object to array)
+            // Returns simple list of users (object to array)
             getUsersList() {
                 return Object.values(this.users);
+            },
+            // Returns simple list of current user accounts (object to array)
+            getAccountsList() {
+                let accounts = this.settings.currentUser.accounts;
+
+                return accounts.map((account, index, array) => {
+                    return account.name;
+                });
             },
             /**
              * Duct tape to make Vue Good Table columns dynamic. By default it doesn't see changes in column properties
              */
             dynamicColumns() {
                 return this.columns.map(column => {
-                    if (column.field === 'user.name') {
-                        return Object.assign(column, {
-                            hidden: !this.isAdminMode,
-                            filterOptions: {
-                                enabled: this.isAdminMode,
-                                filterDropdownItems: this.getUsersList,
-                            },
-                            html: true,
-                        });
+                    let result;
+
+                    switch (column.field) {
+                        case 'user.name':
+                            result = Object.assign(column, {
+                                hidden: !this.isAdminMode,
+                                filterOptions: {
+                                    enabled: this.isAdminMode,
+                                    filterDropdownItems: this.getUsersList,
+                                },
+                                html: true,
+                            });
+                            break;
+
+                        case 'account.name':
+                            result = Object.assign(column, {
+                                filterOptions: {
+                                    enabled: true,
+                                    filterDropdownItems: this.isAdminMode ? null : this.getAccountsList,
+                                },
+                            });
+                            break;
+
+                        default:
+                            result = column;
                     }
 
-                    return column;
+                    return result;
                 })
             },
         },
