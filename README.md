@@ -1,4 +1,4 @@
-# Service for manging your costs
+# Service for managing your costs
 
 This service written with using Laravel and VueJS technologies allows you to track your costs and incomes. You'll be able to watch statistics of all the operations, find the needed one, separate operations by different accounts and plan your future costs.
 
