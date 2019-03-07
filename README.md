@@ -7,9 +7,12 @@ This service written with using Laravel and VueJS technologies allows you to tra
 ## Installation of the project
 - `composer install`
 - `npm i`
+- `cp .env.example .env`
+- Create a database and specify its name inside `.env` config file
 - `./artisan key:generate`
 - `./artisan migrate`
 - `./artisan passport:keys`
+- `npm run dev`
 
 ## Default admin account
 - *email*: admin@costs.local
