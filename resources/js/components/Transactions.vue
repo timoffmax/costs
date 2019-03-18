@@ -277,7 +277,7 @@
                     sortType: '',
                     sortField: '',
                     page: 1,
-                    perPage: 1,
+                    perPage: 100,
                 }
             };
         },
