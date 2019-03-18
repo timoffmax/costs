@@ -220,6 +220,7 @@
                         field: 'account.name',
                         filterOptions: {
                             enabled: true,
+                            placeholder: 'Select Account',
                             trigger: 'enter',
                             filterDropdownItems: [],
                         },
@@ -272,8 +273,7 @@
                 ],
                 totalRecords: 0,
                 serverParams: {
-                    columnFilters: {
-                    },
+                    columnFilters: {},
                     sortType: '',
                     sortField: '',
                     page: 1,
@@ -285,6 +285,31 @@
             loadTransactions(page = 1) {
                 // Prepare query params
                 let queryParams = Object.assign({}, this.serverParams);
+
+                for (let paramName in queryParams) {
+                    if (typeof queryParams[paramName] === 'object' && Object.keys(queryParams[paramName]).length > 0) {
+                        let parameter = queryParams[paramName];
+
+                        // Remove empty properties rebuild some ones
+                        for (var propName in parameter) {
+                            let property = parameter[propName];
+
+                            if (property === null || property === undefined || property === '') {
+                                delete parameter[propName];
+                            }
+
+                            if ('comment' === propName && '' !== property) {
+                                parameter[propName] = {
+                                    operatorType: 'like',
+                                    value: `%${property}%`,
+                                };
+                            }
+                        }
+
+                        // Convert to JSON
+                        queryParams[paramName] = JSON.stringify(parameter);
+                    }
+                }
 
                 if (!this.isAdminMode) {
                     queryParams.userId = this.settings.currentUser.id;
@@ -487,11 +512,23 @@
                     sortType: params[0].type,
                     sortField: params[0].field,
                 });
-                console.log(this.serverParams);
                 this.loadTransactions();
             },
             onColumnFilter(params) {
-                this.updateParams(params);
+                if (Object.keys(params.columnFilters).length === 0) {
+                    return;
+                }
+
+                for (var columnName in params.columnFilters) {
+                    let key = columnName;
+
+                    if (columnName === 'account.name') {
+                        key = 'account_id';
+                    }
+
+                    this.serverParams.columnFilters[key] = params.columnFilters[columnName];
+                }
+
                 this.loadTransactions();
             }
         },
@@ -514,7 +551,10 @@
                 let accounts = this.settings.currentUser.accounts;
 
                 return accounts.map((account, index, array) => {
-                    return account.name;
+                    return {
+                        value: account.id,
+                        text: account.name,
+                    };
                 });
             },
             /**
