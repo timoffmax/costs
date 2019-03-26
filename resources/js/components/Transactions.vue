@@ -14,47 +14,50 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th v-if="isAdminMode">User</th>
-                                    <th>Date</th>
-                                    <th>Account</th>
-                                    <th class="text-right">Sum</th>
-                                    <th class="text-right">Balance Before</th>
-                                    <th class="text-right">Balance After</th>
-                                    <th>Comment</th>
-                                    <th class="text-right">Manage</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="transaction in transactions.data">
-                                    <td>{{ transaction.id }}</td>
-                                    <td v-if="isAdminMode"><router-link :to="`/user/${transaction.user.id}`">{{ transaction.user.name }}</router-link></td>
-                                    <td>{{ transaction.date | dateMoment('MMMM Do YYYY') }}</td>
-                                    <td>{{ transaction.account.name }}</td>
-                                    <td :class="getTextClass(transaction)" class="text-right">{{ transaction | transactionAmount }}</td>
-                                    <td class="text-right">{{ transaction.balance_before }}</td>
-                                    <td class="text-right">{{ transaction.balance_after }}</td>
-                                    <td>{{ transaction.comment }}</td>
-                                    <td class="text-right">
-                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'transaction', transaction)" @click="showTransactionModal(transaction)">
+                        <div>
+                            <vue-good-table v-if="transactions"
+                                            @on-page-change="onPageChange"
+                                            @on-sort-change="onSortChange"
+                                            @on-column-filter="onColumnFilter"
+                                            @on-per-page-change="onPerPageChange"
+                                            mode="remote"
+                                            :totalRows="transactions.total"
+                                            :pagination-options="{
+                                                enabled: true,
+                                                perPage: serverParams.perPage,
+                                                perPageDropdown: [1, 50, 100, 200],
+                                            }"
+                                            :columns="dynamicColumns"
+                                            :rows="transactions.data"
+                                            styleClass="table table-hover"
+                            >
+                                <template slot="table-row" slot-scope="props">
+                                    <span v-if="props.column.field === 'actions'">
+                                      <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'transaction', props.row)" @click="showTransactionModal(props.row)">
                                             <i class="fas fa-edit text-green"></i>
                                         </button>
                                         /
-                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'transaction', transaction)" @click="deleteTransaction(transaction)">
+                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'transaction', props.row)" @click="deleteTransaction(props.row)">
                                             <i class="fas fa-trash text-red"></i>
                                         </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    </span>
+                                    <router-link v-if="props.column.field === 'user.name'" :to="`/user/${props.row.user.id}`">
+                                        {{ props.row.user.name }}
+                                    </router-link>
+                                    <span v-else-if="props.column.field === 'sum'" :class="getAmountColorClass(props.row)" >
+                                        {{ props.row | transactionAmount }}
+                                    </span>
+                                    <span v-else>
+                                        {{ props.formattedRow[props.column.field] }}
+                                    </span>
+                                </template>
+                                <div slot="emptystate">
+                                    No transactions to display
+                                </div>
+                            </vue-good-table>
+                        </div>
                     </div>
                     <!-- /.card-body -->
-                    <div class="card-footer">
-                        <pagination  :data="transactions" @pagination-change-page="loadTransactions"/>
-                    </div>
                 </div>
                 <!-- /.card -->
             </div>
@@ -102,7 +105,7 @@
                                         :class="{'is-invalid': transactionForm.errors.has('account_id')}"
                                 >
                                     <option value="">Select Account</option>
-                                    <option v-for="account in currentUser.accounts" :value="account.id">{{ account.name }}</option>
+                                    <option v-for="account in settings.currentUser.accounts" :value="account.id">{{ account.name }}</option>
                                 </select>
                                 <has-error :form="transactionForm" field="account_id"></has-error>
                             </div>
@@ -144,16 +147,27 @@
 </template>
 
 <script>
+    import { VueGoodTable } from 'vue-good-table';
+
+    const FLAG_MODE_ADMIN = 'admin';
+    const FLAG_MODE_USER = 'user';
+
     export default {
+        components: {
+            VueGoodTable,
+        },
         data() {
             return {
+                settings: {
+                    currentUser: user,
+                    viewMode: FLAG_MODE_USER,
+                },
+
                 transactions: {},
                 transactionTypes: [],
                 userAccounts: [],
-                currentUser: user,
                 users: [],
-                pageSize: 50,
-                viewMode: 'user',
+
                 modal: {
                     target: this.$refs.transactionModal,
                     mode: 'create',
@@ -169,18 +183,136 @@
                     date: '',
                     comment: '',
                 }),
+
+                columns: [
+                    {
+                        label: 'ID',
+                        field: 'id',
+                        thClass: 'text-center',
+                        tdClass: 'text-center',
+                        filterOptions: {
+                            enabled: true,
+                            filterDropdownItems: [],
+                            trigger: 'enter',
+                        },
+                        width: '10%',
+                    },
+                    {
+                        label: 'User',
+                        thClass: 'text-center',
+                        field: 'user.name',
+                    },
+                    {
+                        label: 'Date',
+                        field: 'date',
+                        type: 'date',
+                        dateInputFormat: 'YYYY-MM-DD',
+                        dateOutputFormat: 'MMMM Do YYYY',
+                        thClass: 'text-center',
+                        tdClass: 'text-left text-nowrap',
+                        filterOptions: {
+                            enabled: true,
+                            trigger: 'enter',
+                        },
+                    },
+                    {
+                        label: 'Account',
+                        field: 'account.name',
+                        filterOptions: {
+                            enabled: true,
+                            placeholder: 'Select Account',
+                            trigger: 'enter',
+                            filterDropdownItems: [],
+                        },
+                    },
+                    {
+                        label: 'Sum',
+                        field: 'sum',
+                        thClass: 'text-center',
+                        type: 'decimal',
+                        filterOptions: {
+                            enabled: true,
+                            trigger: 'enter',
+                        },
+                    },
+                    {
+                        label: 'Balance Before',
+                        field: 'balance_before',
+                        type: 'decimal',
+                        thClass: 'text-center text-nowrap',
+                        filterOptions: {
+                            enabled: true,
+                            trigger: 'enter',
+                        },
+                    },
+                    {
+                        label: 'Balance After',
+                        field: 'balance_after',
+                        type: 'decimal',
+                        thClass: 'text-center text-nowrap',
+                        filterOptions: {
+                            enabled: true,
+                            trigger: 'enter',
+                        },
+                    },
+                    {
+                        label: 'Comment',
+                        field: 'comment',
+                        thClass: 'text-center',
+                        filterOptions: {
+                            enabled: true,
+                            trigger: 'enter',
+                        },
+                    },
+                    {
+                        label: 'Actions',
+                        field: 'actions',
+                        thClass: 'text-center',
+                        tdClass: 'text-right',
+                    },
+                ],
+                totalRecords: 0,
+                serverParams: {
+                    columnFilters: {},
+                    sortType: '',
+                    sortField: '',
+                    page: 1,
+                    perPage: 100,
+                }
             };
         },
         methods: {
             loadTransactions(page = 1) {
                 // Prepare query params
-                let queryParams = {
-                    page: page,
-                    pageSize: this.pageSize,
-                };
+                let queryParams = Object.assign({}, this.serverParams);
+
+                for (let paramName in queryParams) {
+                    if (typeof queryParams[paramName] === 'object' && Object.keys(queryParams[paramName]).length > 0) {
+                        let parameter = queryParams[paramName];
+
+                        // Remove empty properties rebuild some ones
+                        for (var propName in parameter) {
+                            let property = parameter[propName];
+
+                            if (property === null || property === undefined || property === '') {
+                                delete parameter[propName];
+                            }
+
+                            if ('comment' === propName && '' !== property) {
+                                parameter[propName] = {
+                                    operatorType: 'like',
+                                    value: `%${property}%`,
+                                };
+                            }
+                        }
+
+                        // Convert to JSON
+                        queryParams[paramName] = JSON.stringify(parameter);
+                    }
+                }
 
                 if (!this.isAdminMode) {
-                    queryParams.userId = this.currentUser.id;
+                    queryParams.userId = this.settings.currentUser.id;
                 }
 
                 queryParams = Object.keys(queryParams)
@@ -192,6 +324,7 @@
                 axios.get(`api/transaction?${queryParams}`).then(
                     (response) => {
                         this.transactions = response.data;
+                        this.totalRecords = response.data.total;
                     },
                 );
             },
@@ -229,7 +362,7 @@
                     this.modal.mode = 'create';
                     this.modal.title = 'Add a new transaction';
                     this.modal.buttonTitle = 'Create';
-                    this.transactionForm.user_id = this.currentUser.id;
+                    this.transactionForm.user_id = this.settings.currentUser.id;
                     this.transactionForm.sum = '0.00';
                     this.transactionForm.date = this.currentDate;
                 }
@@ -323,7 +456,7 @@
                                 this.$Progress.finish();
 
                                 // Update the table
-                                this.loadTransactions()
+                                this.loadTransactions();
 
                                 // Show the success message
                                 toast({
@@ -343,7 +476,7 @@
                     }
                 })
             },
-            getTextClass(transaction) {
+            getAmountColorClass(transaction) {
                 let textClass = 'text-';
 
                 switch (transaction.type.name) {
@@ -360,6 +493,43 @@
                 }
 
                 return textClass;
+            },
+
+            // good-table functions
+            updateParams(newProps) {
+                this.serverParams = Object.assign({}, this.serverParams, newProps);
+            },
+            onPageChange(params) {
+                this.updateParams({page: params.currentPage});
+                this.loadTransactions();
+            },
+            onPerPageChange(params) {
+                this.updateParams({perPage: params.currentPerPage});
+                this.loadTransactions();
+            },
+            onSortChange(params) {
+                this.updateParams({
+                    sortType: params[0].type,
+                    sortField: params[0].field,
+                });
+                this.loadTransactions();
+            },
+            onColumnFilter(params) {
+                if (Object.keys(params.columnFilters).length === 0) {
+                    return;
+                }
+
+                for (var columnName in params.columnFilters) {
+                    let key = columnName;
+
+                    if (columnName === 'account.name') {
+                        key = 'account_id';
+                    }
+
+                    this.serverParams.columnFilters[key] = params.columnFilters[columnName];
+                }
+
+                this.loadTransactions();
             }
         },
         computed: {
@@ -367,11 +537,61 @@
                 return this.modal.mode === 'create' ? this.createTransaction : this.updateTransaction;
             },
             isAdminMode() {
-                return this.viewMode === 'admin';
+                return this.settings.viewMode === FLAG_MODE_ADMIN;
             },
             currentDate() {
                 return (new Date()).toISOString().substring(0, 10);
-            }
+            },
+            // Returns simple list of users (object to array)
+            getUsersList() {
+                return Object.values(this.users);
+            },
+            // Returns simple list of current user accounts (object to array)
+            getAccountsList() {
+                let accounts = this.settings.currentUser.accounts;
+
+                return accounts.map((account, index, array) => {
+                    return {
+                        value: account.id,
+                        text: account.name,
+                    };
+                });
+            },
+            /**
+             * Duct tape to make Vue Good Table columns dynamic. By default it doesn't see changes in column properties
+             */
+            dynamicColumns() {
+                return this.columns.map(column => {
+                    let result;
+
+                    switch (column.field) {
+                        case 'user.name':
+                            result = Object.assign(column, {
+                                hidden: !this.isAdminMode,
+                                filterOptions: {
+                                    enabled: this.isAdminMode,
+                                    filterDropdownItems: this.getUsersList,
+                                },
+                                html: true,
+                            });
+                            break;
+
+                        case 'account.name':
+                            result = Object.assign(column, {
+                                filterOptions: {
+                                    enabled: true,
+                                    filterDropdownItems: this.isAdminMode ? null : this.getAccountsList,
+                                },
+                            });
+                            break;
+
+                        default:
+                            result = column;
+                    }
+
+                    return result;
+                })
+            },
         },
         created() {
             // Events

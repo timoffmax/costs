@@ -26,6 +26,9 @@ abstract class ParseRequestAbstractModel extends Model
             $query = static::getAllModels();
         }
 
+        // Filter values
+        $query = static::applyFilters($request, $query);
+
         // Sort
         $query = static::applySort($request, $query);
 
@@ -42,9 +45,14 @@ abstract class ParseRequestAbstractModel extends Model
      * @param Builder $query
      * @return Builder
      */
-    protected static function applySort(Request $request, Builder $query)
+    protected static function applySort(Request $request, Builder $query): Builder
     {
-        if (!empty($request['sort'])) {
+        $field = $request['sortField'] ?? null;
+        $type = $request['sortType'] ?? 'ASC';
+
+        if (!empty($field)) {
+            $query = $query->orderBy($field, $type);
+        } elseif (!empty($request['sort'])) {
             switch ($request['sort']) {
                 case 'latest':
                     $query = $query->latest();
@@ -53,14 +61,10 @@ abstract class ParseRequestAbstractModel extends Model
                 default:
                     // No default sort
             }
-
         }
 
         return $query;
     }
-
-    abstract protected static function getAllModels();
-    abstract protected static function getUserModels(User $user);
 
     /**
      * Apply pagination related to request params
@@ -72,7 +76,7 @@ abstract class ParseRequestAbstractModel extends Model
     protected static function applyPagination(Request $request, Builder $query)
     {
         if (!empty($request['page'])) {
-            $pageSize = $request['pageSize'] ?? self::DEFAULT_PAGE_SIZE;
+            $pageSize = $request['perPage'] ?? self::DEFAULT_PAGE_SIZE;
             $result = $query->paginate($pageSize);
         } else {
             $result = $query->get();
@@ -80,4 +84,50 @@ abstract class ParseRequestAbstractModel extends Model
 
         return $result;
     }
+
+    /**
+     * Processes filters from the request
+     *
+     * @param Request $request
+     * @param Builder $query
+     * @return Builder
+     */
+    protected static function applyFilters(Request $request, Builder $query): Builder
+    {
+        $filters = $request->get('columnFilters');
+
+        if (!empty($filters)) {
+            $filters = json_decode($filters, true);
+        }
+
+        if (is_array($filters)) {
+            foreach ($filters as $column => $value) {
+                if (is_array($value)) {
+                    // Support of nested object with extended settings
+                    $operatorType = $value['operatorType'] ?? '=';
+                    $valueToSearch = $value['value'] ?? null;
+                } else {
+                    $operatorType = '=';
+                    $valueToSearch = $value;
+                }
+
+                if (!empty($valueToSearch)) {
+                    $query->where($column, $operatorType, $valueToSearch);
+                }
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * @return mixed
+     */
+    abstract protected static function getAllModels();
+
+    /**
+     * @param User $user
+     * @return mixed
+     */
+    abstract protected static function getUserModels(User $user);
 }

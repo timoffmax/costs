@@ -94,6 +94,10 @@ Vue.component(
     require('laravel-vue-pagination')
 );
 
+// Good table plugin
+import VueGoodTablePlugin from 'vue-good-table';
+import 'vue-good-table/dist/vue-good-table.css'
+Vue.use(VueGoodTablePlugin);
 
 /**
  * Add Laravel Passport components
