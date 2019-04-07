@@ -23,7 +23,10 @@ class TransactionCategoryController extends BaseController implements RestApiCon
     {
         $this->authorize('viewAll', TransactionCategory::class);
 
-        $types = TransactionCategory::all();
+        $types = TransactionCategory::with('type')
+            ->with('transactionType')
+            ->get()
+        ;
 
         // Prepare a simple list (id => name)
         if (isset($request['mode']) && $request['mode'] === 'simple') {
@@ -51,10 +54,14 @@ class TransactionCategoryController extends BaseController implements RestApiCon
         // Validate data
         $this->validate($request, [
             'name' => 'required|string|max:50',
+            'type_id' => 'required|integer|exists:transaction_category_type,id',
+            'transaction_type_id' => 'required|integer|exists:transaction_type,id',
         ]);
 
         return TransactionCategory::create([
             'name' => $request['name'],
+            'type_id' => $request['type_id'],
+            'transaction_type_id' => $request['transaction_type_id'],
         ]);
     }
 
@@ -91,6 +98,8 @@ class TransactionCategoryController extends BaseController implements RestApiCon
         // Validate data
         $this->validate($request, [
             'name' => 'required|string|max:50',
+            'type_id' => 'required|integer|exists:transaction_category_type,id',
+            'transaction_type_id' => 'required|integer|exists:transaction_type,id',
         ]);
 
         // Save
