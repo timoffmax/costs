@@ -121,6 +121,8 @@
                 },
                 transactionCategoryForm: new Form({
                     id : null,
+                    type_id : null,
+                    transaction_type_id : null,
                     name: '',
                 }),
             };

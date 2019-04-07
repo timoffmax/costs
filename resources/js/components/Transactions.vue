@@ -110,6 +110,16 @@
                                 <has-error :form="transactionForm" field="account_id"></has-error>
                             </div>
                             <div class="form-group">
+                                <select v-model="transactionForm.category_id"
+                                        class="form-control"
+                                        :class="{'is-invalid': transactionForm.errors.has('category_id')}"
+                                >
+                                    <option value="">Select Category</option>
+                                    <option v-for="category in transactionCategories" :value="category.id">{{ category.name | capitalize }}</option>
+                                </select>
+                                <has-error :form="transactionForm" field="category_id"></has-error>
+                            </div>
+                            <div class="form-group">
                                 <input type="date"
                                        v-model="transactionForm.date"
                                        class="form-control"
@@ -161,10 +171,15 @@
                 settings: {
                     currentUser: user,
                     viewMode: FLAG_MODE_USER,
+                    columnNameAliases: {
+                        account_id: 'account.name',
+                        category_id: 'category.name',
+                    },
                 },
 
                 transactions: {},
                 transactionTypes: [],
+                transactionCategories: [],
                 userAccounts: [],
                 users: [],
 
@@ -178,6 +193,7 @@
                     id : null,
                     user_id: null,
                     type_id: null,
+                    category_id: null,
                     account_id: null,
                     sum: 0.00,
                     date: '',
@@ -213,6 +229,17 @@
                         filterOptions: {
                             enabled: true,
                             trigger: 'enter',
+                        },
+                    },
+                    {
+                        label: 'Category',
+                        field: 'category.name',
+                        tdClass: 'text-capitalize',
+                        filterOptions: {
+                            enabled: true,
+                            placeholder: 'Select Category',
+                            trigger: 'enter',
+                            filterDropdownItems: [],
                         },
                     },
                     {
@@ -332,6 +359,13 @@
                 axios.get(`api/transactionType?mode=simple`).then(
                     (response) => {
                         this.transactionTypes = response.data;
+                    },
+                );
+            },
+            loadCategories() {
+                axios.get(`api/transactionCategory`).then(
+                    (response) => {
+                        this.transactionCategories = response.data;
                     },
                 );
             },
@@ -519,11 +553,14 @@
                     return;
                 }
 
-                for (var columnName in params.columnFilters) {
+                for (let columnName in params.columnFilters) {
                     let key = columnName;
 
-                    if (columnName === 'account.name') {
-                        key = 'account_id';
+                    // Use real column name IDs instead of aliases (such as 'account.name' etc.)
+                    for (let realColumnName in this.settings.columnNameAliases) {
+                        if (this.settings.columnNameAliases[realColumnName] === key) {
+                            key = realColumnName;
+                        }
                     }
 
                     this.serverParams.columnFilters[key] = params.columnFilters[columnName];
@@ -553,7 +590,16 @@
                 return accounts.map((account, index, array) => {
                     return {
                         value: account.id,
-                        text: account.name,
+                        text: this.$options.filters.capitalize(account.name),
+                    };
+                });
+            },
+            // Returns simple list of transaction categories
+            getCategoriesList() {
+                return this.transactionCategories.map((category, index, array) => {
+                    return {
+                        value: category.id,
+                        text: this.$options.filters.capitalize(category.name),
                     };
                 });
             },
@@ -585,6 +631,15 @@
                             });
                             break;
 
+                        case 'category.name':
+                            result = Object.assign(column, {
+                                filterOptions: {
+                                    enabled: true,
+                                    filterDropdownItems: this.getCategoriesList,
+                                },
+                            });
+                            break;
+
                         default:
                             result = column;
                     }
@@ -600,6 +655,7 @@
             // Load transactions to the table
             this.loadTransactions();
             this.loadTransactionTypes();
+            this.loadCategories();
 
             if (this.isAdminMode) {
                 this.loadUsers();
