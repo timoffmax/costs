@@ -142,6 +142,18 @@
                                                 <p>{{ __('Transaction Types') }}</p>
                                             </router-link>
                                         </li>
+                                        <li class="nav-item">
+                                            <router-link to="/transactionCategories" class="nav-link">
+                                                <i class="fas fa-exchange-alt nav-icon text-yellow"></i>
+                                                <p>{{ __('Transaction Categories') }}</p>
+                                            </router-link>
+                                        </li>
+                                        <li class="nav-item">
+                                            <router-link to="/transactionCategoryTypes" class="nav-link">
+                                                <i class="fas fa-exchange-alt nav-icon text-yellow"></i>
+                                                <p>{{ __('Transaction Category Types') }}</p>
+                                            </router-link>
+                                        </li>
                                     </ul>
                                 </li>
                             @endcan
