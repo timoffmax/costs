@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $typeId
  * @property int $transactionTypeId
  * @property string $name
+ * @property TransactionCategoryType $type
+ * @property TransactionType $transactionType
  * @property Transaction[] $transactions
  */
 class TransactionCategory extends Model
@@ -36,8 +38,28 @@ class TransactionCategory extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function categories()
+    public function transactions()
     {
         return $this->hasMany('App\Transaction', 'category_id');
+    }
+
+    /**
+     * Get type of the category
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type()
+    {
+        return $this->belongsTo(TransactionCategoryType::class);
+    }
+
+    /**
+     * Get transaction type of the category
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function transactionType()
+    {
+        return $this->belongsTo(TransactionType::class);
     }
 }
