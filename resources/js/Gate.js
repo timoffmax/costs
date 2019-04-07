@@ -5,6 +5,8 @@ import AccountTypePolicy from "./policies/AccountTypePolicy";
 import AccountPolicy from "./policies/AccountPolicy";
 import TransactionPolicy from "./policies/TransactionPolicy";
 import TransactionTypePolicy from "./policies/TransactionTypePolicy";
+import TransactionCategoryPolicy from "./policies/TransactionCategoryPolicy";
+import TransactionCategoryTypePolicy from "./policies/TransactionCategoryTypePolicy";
 
 export default class Gate
 {
@@ -20,6 +22,8 @@ export default class Gate
             accountType: AccountTypePolicy,
             transaction: TransactionPolicy,
             transactionType: TransactionTypePolicy,
+            transactionCategory: TransactionCategoryPolicy,
+            transactionCategoryType: TransactionCategoryTypePolicy,
         };
     }
 
