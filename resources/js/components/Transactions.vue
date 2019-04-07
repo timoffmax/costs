@@ -85,7 +85,7 @@
                                        :class="{'is-invalid': transactionForm.errors.has('user_id')}"
                                 >
                                     <option value="">Select User</option>
-                                    <option v-for="(id, user) in users" :value="user">{{ id }}</option>
+                                    <option v-for="(user, id) in users" :value="id">{{ user | capitalize }}</option>
                                 </select>
                                 <has-error :form="transactionForm" field="user_id"></has-error>
                             </div>
@@ -95,7 +95,7 @@
                                        :class="{'is-invalid': transactionForm.errors.has('type_id')}"
                                 >
                                     <option value="">Select Transaction Type</option>
-                                    <option v-for="(id, type) in transactionTypes" :value="type">{{ id }}</option>
+                                    <option v-for="(type, id) in transactionTypes" :value="id">{{ type | capitalize  }}</option>
                                 </select>
                                 <has-error :form="transactionForm" field="type_id"></has-error>
                             </div>
@@ -105,7 +105,7 @@
                                         :class="{'is-invalid': transactionForm.errors.has('account_id')}"
                                 >
                                     <option value="">Select Account</option>
-                                    <option v-for="account in settings.currentUser.accounts" :value="account.id">{{ account.name }}</option>
+                                    <option v-for="account in settings.currentUser.accounts" :value="account.id">{{ account.name | capitalize }}</option>
                                 </select>
                                 <has-error :form="transactionForm" field="account_id"></has-error>
                             </div>
