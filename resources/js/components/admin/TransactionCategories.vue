@@ -29,7 +29,9 @@
                                     <td class="w-15">{{ transactionCategory.id }}</td>
                                     <td class="w-20">{{ transactionCategory.name | capitalize }}</td>
                                     <td class="w-20">{{ transactionCategory.type.name | capitalize }}</td>
-                                    <td class="w-20">{{ transactionCategory.transaction_type.name | capitalize }}</td>
+                                    <td class="w-20" :class="getTransactionTypeClasses(transactionCategory.transaction_type)">
+                                        {{ transactionCategory.transaction_type.name | capitalize }}
+                                    </td>
                                     <td class="w-25 text-right">
                                         <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'transactionCategory', transactionCategory)" @click="showTransactionCategoryModal(transactionCategory); return false;">
                                             <i class="fas fa-edit text-green"></i>
@@ -176,6 +178,25 @@
                 $(this.$refs.transactionCategoryModal).modal('show');
 
                 return false;
+            },
+            getTransactionTypeClasses(transactionType) {
+                let colorClass = 'text-';
+                let additionalClasses = 'text-bold';
+
+                switch (transactionType.name) {
+                    case 'income':
+                        colorClass += 'success';
+                        break;
+
+                    case 'cost':
+                        colorClass += 'danger';
+                        break;
+
+                    default:
+                        colorClass += 'info';
+                }
+
+                return [colorClass, additionalClasses].join(' ');
             },
             createTransactionCategory() {
                 this.$Progress.start();

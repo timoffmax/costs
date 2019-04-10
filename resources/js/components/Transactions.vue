@@ -44,7 +44,7 @@
                                     <router-link v-if="props.column.field === 'user.name'" :to="`/user/${props.row.user.id}`">
                                         {{ props.row.user.name }}
                                     </router-link>
-                                    <span v-else-if="props.column.field === 'sum'" :class="getAmountColorClass(props.row)" >
+                                    <span v-else-if="props.column.field === 'sum'" :class="getAmountClasses(props.row)" >
                                         {{ props.row | transactionAmount }}
                                     </span>
                                     <span v-else>
@@ -515,23 +515,24 @@
                     }
                 })
             },
-            getAmountColorClass(transaction) {
-                let textClass = 'text-';
+            getAmountClasses(transaction) {
+                let colorClass = 'text-';
+                let additionalClasses = 'text-bold';
 
                 switch (transaction.type.name) {
                     case 'income':
-                        textClass += 'success';
+                        colorClass += 'success';
                         break;
 
                     case 'cost':
-                        textClass += 'danger';
+                        colorClass += 'danger';
                         break;
 
                     default:
-                        textClass += 'info';
+                        colorClass += 'info';
                 }
 
-                return textClass;
+                return [colorClass, additionalClasses].join(' ');
             },
 
             // good-table functions
