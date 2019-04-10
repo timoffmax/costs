@@ -115,7 +115,11 @@
                                         :class="{'is-invalid': transactionForm.errors.has('category_id')}"
                                 >
                                     <option value="">Select Category</option>
-                                    <option v-for="category in transactionCategories" :value="category.id">{{ category.name | capitalize }}</option>
+                                    <template v-for="category in transactionCategories">
+                                        <option v-if="numbersAreEqual(category.transaction_type_id, transactionForm.type_id)" :value="category.id">
+                                            {{ category.name | capitalize }}
+                                        </option>
+                                    </template>
                                 </select>
                                 <has-error :form="transactionForm" field="category_id"></has-error>
                             </div>
@@ -234,7 +238,8 @@
                     {
                         label: 'Category',
                         field: 'category.name',
-                        tdClass: 'text-capitalize',
+                        thClass: 'text-center',
+                        tdClass: 'text-left text-nowrap text-capitalize',
                         filterOptions: {
                             enabled: true,
                             placeholder: 'Select Category',
@@ -567,7 +572,11 @@
                 }
 
                 this.loadTransactions();
-            }
+            },
+            // Helpers
+            numbersAreEqual(value1, value2) {
+                return Number(value1) === Number (value2);
+            },
         },
         computed: {
             formAction() {
