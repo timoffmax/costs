@@ -9,6 +9,8 @@ export const routes = [
     { path: '/accountTypes', component: require('./components/admin/AccountTypes') },
     { path: '/transactions', component: require('./components/Transactions') },
     { path: '/transactionTypes', component: require('./components/admin/TransactionTypes') },
+    { path: '/transactionCategoryTypes', component: require('./components/admin/TransactionCategoryTypes') },
+    { path: '/transactionCategories', component: require('./components/admin/TransactionCategories') },
 
     { path: '/forbidden', component: require('./components/errors/Forbidden') },
     { path: '*', component: require('./components/errors/NotFound') },

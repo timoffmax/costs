@@ -90,7 +90,7 @@
                 modal: {
                     target: this.$refs.transactionTypeModal,
                     mode: 'create',
-                    title: 'Add a new account type',
+                    title: 'Add a new transaction type',
                     buttonTitle: 'Create',
                 },
                 transactionTypeForm: new Form({
@@ -231,7 +231,7 @@
 
                                 toast({
                                     type: 'error',
-                                    title: 'Server error! Can`t delete the account type.'
+                                    title: 'Server error! Can`t delete the transaction type.'
                                 });
                             })
                         ;
@@ -248,7 +248,7 @@
             // Events
             $(document).on("hidden.bs.modal", this.clearModal);
 
-            // Load account types to the table
+            // Load transaction types to the table
             this.loadTransactionTypes();
         },
         mounted() {},

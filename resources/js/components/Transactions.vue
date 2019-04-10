@@ -44,7 +44,7 @@
                                     <router-link v-if="props.column.field === 'user.name'" :to="`/user/${props.row.user.id}`">
                                         {{ props.row.user.name }}
                                     </router-link>
-                                    <span v-else-if="props.column.field === 'sum'" :class="getAmountColorClass(props.row)" >
+                                    <span v-else-if="props.column.field === 'sum'" :class="getAmountClasses(props.row)" >
                                         {{ props.row | transactionAmount }}
                                     </span>
                                     <span v-else>
@@ -85,7 +85,7 @@
                                        :class="{'is-invalid': transactionForm.errors.has('user_id')}"
                                 >
                                     <option value="">Select User</option>
-                                    <option v-for="(id, user) in users" :value="user">{{ id }}</option>
+                                    <option v-for="(user, id) in users" :value="id">{{ user | capitalize }}</option>
                                 </select>
                                 <has-error :form="transactionForm" field="user_id"></has-error>
                             </div>
@@ -95,7 +95,7 @@
                                        :class="{'is-invalid': transactionForm.errors.has('type_id')}"
                                 >
                                     <option value="">Select Transaction Type</option>
-                                    <option v-for="(id, type) in transactionTypes" :value="type">{{ id }}</option>
+                                    <option v-for="(type, id) in transactionTypes" :value="id">{{ type | capitalize  }}</option>
                                 </select>
                                 <has-error :form="transactionForm" field="type_id"></has-error>
                             </div>
@@ -105,9 +105,23 @@
                                         :class="{'is-invalid': transactionForm.errors.has('account_id')}"
                                 >
                                     <option value="">Select Account</option>
-                                    <option v-for="account in settings.currentUser.accounts" :value="account.id">{{ account.name }}</option>
+                                    <option v-for="account in settings.currentUser.accounts" :value="account.id">{{ account.name | capitalize }}</option>
                                 </select>
                                 <has-error :form="transactionForm" field="account_id"></has-error>
+                            </div>
+                            <div class="form-group">
+                                <select v-model="transactionForm.category_id"
+                                        class="form-control"
+                                        :class="{'is-invalid': transactionForm.errors.has('category_id')}"
+                                >
+                                    <option value="">Select Category</option>
+                                    <template v-for="category in transactionCategories">
+                                        <option v-if="numbersAreEqual(category.transaction_type_id, transactionForm.type_id)" :value="category.id">
+                                            {{ category.name | capitalize }}
+                                        </option>
+                                    </template>
+                                </select>
+                                <has-error :form="transactionForm" field="category_id"></has-error>
                             </div>
                             <div class="form-group">
                                 <input type="date"
@@ -161,10 +175,15 @@
                 settings: {
                     currentUser: user,
                     viewMode: FLAG_MODE_USER,
+                    columnNameAliases: {
+                        account_id: 'account.name',
+                        category_id: 'category.name',
+                    },
                 },
 
                 transactions: {},
                 transactionTypes: [],
+                transactionCategories: [],
                 userAccounts: [],
                 users: [],
 
@@ -178,6 +197,7 @@
                     id : null,
                     user_id: null,
                     type_id: null,
+                    category_id: null,
                     account_id: null,
                     sum: 0.00,
                     date: '',
@@ -213,6 +233,18 @@
                         filterOptions: {
                             enabled: true,
                             trigger: 'enter',
+                        },
+                    },
+                    {
+                        label: 'Category',
+                        field: 'category.name',
+                        thClass: 'text-center',
+                        tdClass: 'text-left text-nowrap text-capitalize',
+                        filterOptions: {
+                            enabled: true,
+                            placeholder: 'Select Category',
+                            trigger: 'enter',
+                            filterDropdownItems: [],
                         },
                     },
                     {
@@ -332,6 +364,13 @@
                 axios.get(`api/transactionType?mode=simple`).then(
                     (response) => {
                         this.transactionTypes = response.data;
+                    },
+                );
+            },
+            loadCategories() {
+                axios.get(`api/transactionCategory`).then(
+                    (response) => {
+                        this.transactionCategories = response.data;
                     },
                 );
             },
@@ -476,23 +515,24 @@
                     }
                 })
             },
-            getAmountColorClass(transaction) {
-                let textClass = 'text-';
+            getAmountClasses(transaction) {
+                let colorClass = 'text-';
+                let additionalClasses = 'text-bold';
 
                 switch (transaction.type.name) {
                     case 'income':
-                        textClass += 'success';
+                        colorClass += 'success';
                         break;
 
                     case 'cost':
-                        textClass += 'danger';
+                        colorClass += 'danger';
                         break;
 
                     default:
-                        textClass += 'info';
+                        colorClass += 'info';
                 }
 
-                return textClass;
+                return [colorClass, additionalClasses].join(' ');
             },
 
             // good-table functions
@@ -519,18 +559,25 @@
                     return;
                 }
 
-                for (var columnName in params.columnFilters) {
+                for (let columnName in params.columnFilters) {
                     let key = columnName;
 
-                    if (columnName === 'account.name') {
-                        key = 'account_id';
+                    // Use real column name IDs instead of aliases (such as 'account.name' etc.)
+                    for (let realColumnName in this.settings.columnNameAliases) {
+                        if (this.settings.columnNameAliases[realColumnName] === key) {
+                            key = realColumnName;
+                        }
                     }
 
                     this.serverParams.columnFilters[key] = params.columnFilters[columnName];
                 }
 
                 this.loadTransactions();
-            }
+            },
+            // Helpers
+            numbersAreEqual(value1, value2) {
+                return Number(value1) === Number (value2);
+            },
         },
         computed: {
             formAction() {
@@ -553,7 +600,16 @@
                 return accounts.map((account, index, array) => {
                     return {
                         value: account.id,
-                        text: account.name,
+                        text: this.$options.filters.capitalize(account.name),
+                    };
+                });
+            },
+            // Returns simple list of transaction categories
+            getCategoriesList() {
+                return this.transactionCategories.map((category, index, array) => {
+                    return {
+                        value: category.id,
+                        text: this.$options.filters.capitalize(category.name),
                     };
                 });
             },
@@ -585,6 +641,15 @@
                             });
                             break;
 
+                        case 'category.name':
+                            result = Object.assign(column, {
+                                filterOptions: {
+                                    enabled: true,
+                                    filterDropdownItems: this.getCategoriesList,
+                                },
+                            });
+                            break;
+
                         default:
                             result = column;
                     }
@@ -600,6 +665,7 @@
             // Load transactions to the table
             this.loadTransactions();
             this.loadTransactionTypes();
+            this.loadCategories();
 
             if (this.isAdminMode) {
                 this.loadUsers();

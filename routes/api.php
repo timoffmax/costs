@@ -25,4 +25,6 @@ Route::apiResources([
     'accountType' => 'API\AccountTypeController',
     'transaction' => 'API\TransactionController',
     'transactionType' => 'API\TransactionTypeController',
+    'transactionCategory' => 'API\TransactionCategoryController',
+    'transactionCategoryType' => 'API\TransactionCategoryTypeController',
 ]);

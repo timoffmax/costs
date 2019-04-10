@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
  * @property string $date
  * @property string $comment
  * @property TransactionType $type
+ * @property TransactionCategory $category
  * @property Account $account
  */
 class Transaction extends ParseRequestAbstractModel
@@ -44,7 +45,7 @@ class Transaction extends ParseRequestAbstractModel
      * @var array
      */
     protected $fillable = [
-        'type_id', 'account_id', 'user_id', 'sum', 'date', 'comment',
+        'type_id', 'account_id', 'category_id', 'user_id', 'sum', 'date', 'comment',
     ];
 
     /**
@@ -64,6 +65,7 @@ class Transaction extends ParseRequestAbstractModel
         return self::with('user')
             ->with('type')
             ->with('account')
+            ->with('category')
         ;
     }
 
@@ -78,6 +80,7 @@ class Transaction extends ParseRequestAbstractModel
         return self::with('user')
             ->with('account')
             ->with('type')
+            ->with('category')
             ->where(['user_id' => $user->id])
         ;
     }
@@ -231,5 +234,15 @@ class Transaction extends ParseRequestAbstractModel
     public function type()
     {
         return $this->belongsTo(TransactionType::class);
+    }
+
+    /**
+     * Get category of the transaction
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function category()
+    {
+        return $this->belongsTo(TransactionCategory::class);
     }
 }

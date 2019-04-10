@@ -6,14 +6,19 @@ use App\Account;
 use App\AccountType;
 use App\Policies\AccountPolicy;
 use App\Policies\AccountTypePolicy;
+use App\Policies\TransactionCategoryPolicy;
+use App\Policies\TransactionCategoryTypePolicy;
 use App\Policies\TransactionPolicy;
 use App\Policies\TransactionTypePolicy;
 use App\Policies\UserPolicy;
 use App\Policies\UserRolePolicy;
 use App\Transaction;
+use App\TransactionCategory;
+use App\TransactionCategoryType;
 use App\TransactionType;
 use App\User;
 use App\UserRole;
+
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
@@ -33,6 +38,8 @@ class AuthServiceProvider extends ServiceProvider
         AccountType::class => AccountTypePolicy::class,
         Transaction::class => TransactionPolicy::class,
         TransactionType::class => TransactionTypePolicy::class,
+        TransactionCategory::class => TransactionCategoryPolicy::class,
+        TransactionCategoryType::class => TransactionCategoryTypePolicy::class,
     ];
 
 
