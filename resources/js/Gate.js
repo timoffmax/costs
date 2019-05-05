@@ -7,6 +7,7 @@ import TransactionPolicy from "./policies/TransactionPolicy";
 import TransactionTypePolicy from "./policies/TransactionTypePolicy";
 import TransactionCategoryPolicy from "./policies/TransactionCategoryPolicy";
 import TransactionCategoryTypePolicy from "./policies/TransactionCategoryTypePolicy";
+import PlacePolicy from "./policies/PlacePolicy";
 
 export default class Gate
 {
@@ -24,6 +25,7 @@ export default class Gate
             transactionType: TransactionTypePolicy,
             transactionCategory: TransactionCategoryPolicy,
             transactionCategoryType: TransactionCategoryTypePolicy,
+            place: PlacePolicy,
         };
     }
 

@@ -2,12 +2,12 @@
 
 namespace App\Policies;
 
-use App\Account;
+use App\Place;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Auth;
 
-class AccountPolicy
+class PlacePolicy
 {
     use HandlesAuthorization;
 
@@ -37,7 +37,7 @@ class AccountPolicy
     }
 
     /**
-     * Determine whether the user can view the list of own accounts
+     * Determine whether the user can view the list of own places
      *
      * @param  \App\User  $user
      * @param  \App\user  $model
@@ -55,7 +55,7 @@ class AccountPolicy
      * @param  \App\Account  $model
      * @return mixed
      */
-    public function view(User $user, Account $model)
+    public function view(User $user, Place $model)
     {
         return $user->id === (int)$model->user_id;
     }
@@ -67,7 +67,7 @@ class AccountPolicy
      * @param  \App\Account  $model
      * @return mixed
      */
-    public function create(User $user, Account $model)
+    public function create(User $user, Place $model)
     {
         return $user->id === (int)$model->user_id;
     }
@@ -79,7 +79,7 @@ class AccountPolicy
      * @param  \App\Account  $model
      * @return mixed
      */
-    public function update(User $user, Account $model)
+    public function update(User $user, Place $model)
     {
         return $user->id === (int)$model->user_id;
     }
@@ -91,7 +91,7 @@ class AccountPolicy
      * @param  \App\Account  $model
      * @return mixed
      */
-    public function delete(User $user, Account $model)
+    public function delete(User $user, Place $model)
     {
         return $user->id === (int)$model->user_id;
     }
