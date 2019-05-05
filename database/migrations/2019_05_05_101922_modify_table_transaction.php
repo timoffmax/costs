@@ -14,7 +14,12 @@ class ModifyTableTransaction extends Migration
     public function up()
     {
         Schema::table('transaction', function (Blueprint $table) {
-            $table->integer('place_id')->unsigned()->default(null)->after('category_id');
+            $table->integer('place_id')
+                ->unsigned()
+                ->nullable(true)
+                ->default(null)
+                ->after('category_id')
+            ;
 
             $table->foreign('place_id', 'fk_transaction_place_id')
                 ->references('id')
