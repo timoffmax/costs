@@ -11,12 +11,21 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-    .sourceMaps()
-    .sass('resources/sass/app.scss', 'public/css')
-;
+
+mix.js('resources/js/app.js', 'public/js');
+mix.sass('resources/scss/app.scss', 'public/css');
+
+if (mix.inProduction()) {
+    mix.version();
+}
+
+if (!mix.inProduction()) {
+    mix.sourceMaps();
+}
+
 
 mix.svg({
     assets: ['./resources/svg/'], // a list of directories to search svg images
     output: './resources/js/svg.js', // Where the craeted js file needs to go.
 });
+
