@@ -56,6 +56,8 @@ class Transaction extends ParseRequestAbstractModel
         'comment',
     ];
 
+    protected $with = ['user', 'account', 'type', 'category', 'place'];
+
     /**
      * The attributes that should be hidden for arrays.
      *

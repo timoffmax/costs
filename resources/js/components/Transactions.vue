@@ -33,7 +33,13 @@
                             >
                                 <template slot="table-row" slot-scope="props">
                                     <span v-if="props.column.field === 'actions'">
-                                      <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'transaction', props.row)" @click="showTransactionModal(props.row)">
+                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('view', 'transaction', props.row)">
+                                            <router-link :to="`/transaction/${props.row.id}`">
+                                                <i class="fas fa-eye text-blue"></i>
+                                            </router-link>
+                                        </button>
+                                        /
+                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'transaction', props.row)" @click="showTransactionModal(props.row)">
                                             <i class="fas fa-edit text-green"></i>
                                         </button>
                                         /
@@ -324,7 +330,7 @@
                         label: 'Actions',
                         field: 'actions',
                         thClass: 'text-center',
-                        tdClass: 'text-right',
+                        tdClass: 'text-right text-nowrap',
                     },
                 ],
                 totalRecords: 0,
