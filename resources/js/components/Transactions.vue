@@ -110,6 +110,16 @@
                                 <has-error :form="transactionForm" field="account_id"></has-error>
                             </div>
                             <div class="form-group">
+                                <select v-model="transactionForm.place_id"
+                                        class="form-control"
+                                        :class="{'is-invalid': transactionForm.errors.has('place_id')}"
+                                >
+                                    <option value="">No Place</option>
+                                    <option v-for="place in settings.currentUser.places" :value="place.id">{{ place.name | capitalize }}</option>
+                                </select>
+                                <has-error :form="transactionForm" field="place_id"></has-error>
+                            </div>
+                            <div class="form-group">
                                 <select v-model="transactionForm.category_id"
                                         class="form-control"
                                         :class="{'is-invalid': transactionForm.errors.has('category_id')}"
@@ -178,6 +188,7 @@
                     columnNameAliases: {
                         account_id: 'account.name',
                         category_id: 'category.name',
+                        place_id: 'place.name',
                     },
                 },
 
@@ -199,6 +210,7 @@
                     type_id: null,
                     category_id: null,
                     account_id: null,
+                    place_id: null,
                     sum: 0.00,
                     date: '',
                     comment: '',
@@ -253,6 +265,18 @@
                         filterOptions: {
                             enabled: true,
                             placeholder: 'Select Account',
+                            trigger: 'enter',
+                            filterDropdownItems: [],
+                        },
+                    },
+                    {
+                        label: 'Place',
+                        field: 'place.name',
+                        thClass: 'text-center',
+                        tdClass: 'text-left text-nowrap',
+                        filterOptions: {
+                            enabled: true,
+                            placeholder: 'Select Place',
                             trigger: 'enter',
                             filterDropdownItems: [],
                         },
@@ -604,6 +628,17 @@
                     };
                 });
             },
+            // Returns simple list of current user places
+            getPlacesList() {
+                let places = this.settings.currentUser.places;
+
+                return places.map((place, index, array) => {
+                    return {
+                        value: place.id,
+                        text: this.$options.filters.capitalize(place.name),
+                    };
+                });
+            },
             // Returns simple list of transaction categories
             getCategoriesList() {
                 return this.transactionCategories.map((category, index, array) => {
@@ -637,6 +672,15 @@
                                 filterOptions: {
                                     enabled: true,
                                     filterDropdownItems: this.isAdminMode ? null : this.getAccountsList,
+                                },
+                            });
+                            break;
+
+                        case 'place.name':
+                            result = Object.assign(column, {
+                                filterOptions: {
+                                    enabled: true,
+                                    filterDropdownItems: this.isAdminMode ? null : this.getPlacesList,
                                 },
                             });
                             break;

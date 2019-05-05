@@ -107,6 +107,12 @@
                                         <p>{{ __('Accounts') }}</p>
                                     </router-link>
                                 </li>
+                                <li class="nav-item">
+                                    <router-link to="/places" class="nav-link">
+                                        <i class="fas fa-map-marker-alt nav-icon text-green"></i>
+                                        <p>{{ __('Places') }}</p>
+                                    </router-link>
+                                </li>
                             </li>
                             @can('viewAll', \App\User::class)
                                 <li class="nav-item has-treeview">

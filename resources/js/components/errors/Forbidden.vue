@@ -36,14 +36,12 @@
             }
         }
     }
-</style>
 
-<style lang="scss">
     // Hide all bars
-    .main-header.navbar,
-    footer.main-footer {
-        display: none !important;
-    }
+      .main-header.navbar,
+      footer.main-footer {
+          display: none !important;
+      }
 
     // Child block maximize
     .svg-error {

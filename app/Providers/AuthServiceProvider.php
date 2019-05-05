@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Account;
 use App\AccountType;
+use App\Place;
 use App\Policies\AccountPolicy;
 use App\Policies\AccountTypePolicy;
+use App\Policies\PlacePolicy;
 use App\Policies\TransactionCategoryPolicy;
 use App\Policies\TransactionCategoryTypePolicy;
 use App\Policies\TransactionPolicy;
@@ -35,6 +37,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         UserRole::class => UserRolePolicy::class,
         Account::class => AccountPolicy::class,
+        Place::class => PlacePolicy::class,
         AccountType::class => AccountTypePolicy::class,
         Transaction::class => TransactionPolicy::class,
         TransactionType::class => TransactionTypePolicy::class,

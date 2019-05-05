@@ -7,7 +7,8 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+import Vue from 'vue';
+window.Vue = Vue;
 
 /**
  * Add libs
@@ -89,9 +90,10 @@ window.toast = toast;
 Vue.prototype.svg = require('./svg');
 
 // Pagination
+import Pagination from 'laravel-vue-pagination';
 Vue.component(
     'pagination',
-    require('laravel-vue-pagination')
+    Pagination
 );
 
 // Good table plugin
@@ -102,31 +104,37 @@ Vue.use(VueGoodTablePlugin);
 /**
  * Add Laravel Passport components
  */
+import Clients from './components/passport/Clients.vue';
+import AuthorizedClients from './components/passport/AuthorizedClients.vue';
+import PersonalAccessTokens from './components/passport/PersonalAccessTokens.vue';
+
 Vue.component(
     'passport-clients',
-    require('./components/passport/Clients.vue')
+    Clients
 );
 
 Vue.component(
     'passport-authorized-clients',
-    require('./components/passport/AuthorizedClients.vue')
+    AuthorizedClients
 );
 
 Vue.component(
     'passport-personal-access-tokens',
-    require('./components/passport/PersonalAccessTokens.vue')
+    PersonalAccessTokens
 );
 
 /**
  * Add custom components
  */
+import ForbiddenPage from './components/errors/Forbidden';
+
 Vue.component(
     'forbidden-page',
-    require('./components/errors/Forbidden')
+    ForbiddenPage
 );
 Vue.component(
     'not-found-page',
-    require('./components/errors/Forbidden')
+    ForbiddenPage
 );
 
 /**

@@ -1,17 +1,34 @@
-export const routes = [
-    { path: '/', component: require('./components/Dashboard') },
-    { path: '/dashboard', component: require('./components/Dashboard') },
-    { path: '/profile', component: require('./components/Profile') },
-    { path: '/users', component: require('./components/admin/Users') },
-    { path: '/user/:id', component: require('./components/admin/User') },
-    { path: '/apiUsers', component: require('./components/admin/ApiUsers') },
-    { path: '/accounts', component: require('./components/Accounts') },
-    { path: '/accountTypes', component: require('./components/admin/AccountTypes') },
-    { path: '/transactions', component: require('./components/Transactions') },
-    { path: '/transactionTypes', component: require('./components/admin/TransactionTypes') },
-    { path: '/transactionCategoryTypes', component: require('./components/admin/TransactionCategoryTypes') },
-    { path: '/transactionCategories', component: require('./components/admin/TransactionCategories') },
+import Dashboard from "./components/Dashboard";
+import Profile from "./components/Profile";
+import Users from "./components/admin/Users";
+import User from "./components/admin/User";
+import ApiUsers from "./components/admin/ApiUsers";
+import Accounts from "./components/Accounts";
+import Places from "./components/Places";
+import AccountTypes from "./components/admin/AccountTypes";
+import Transactions from "./components/Transactions";
+import TransactionTypes from "./components/admin/TransactionTypes";
+import TransactionCategoryTypes from "./components/admin/TransactionCategoryTypes";
+import TransactionCategories from "./components/admin/TransactionCategories";
 
-    { path: '/forbidden', component: require('./components/errors/Forbidden') },
-    { path: '*', component: require('./components/errors/NotFound') },
+import Forbidden from "./components/errors/Forbidden";
+import NotFound from "./components/errors/NotFound";
+
+export const routes = [
+    { path: '/', component: Dashboard },
+    { path: '/dashboard', component: Dashboard },
+    { path: '/profile', component: Profile },
+    { path: '/users', component: Users },
+    { path: '/user/:id', component: User },
+    { path: '/apiUsers', component: ApiUsers },
+    { path: '/accounts', component: Accounts },
+    { path: '/places', component: Places },
+    { path: '/accountTypes', component: AccountTypes },
+    { path: '/transactions', component: Transactions },
+    { path: '/transactionTypes', component: TransactionTypes },
+    { path: '/transactionCategoryTypes', component: TransactionCategoryTypes },
+    { path: '/transactionCategories', component: TransactionCategories },
+
+    { path: '/forbidden', component: Forbidden },
+    { path: '*', component: NotFound },
 ];

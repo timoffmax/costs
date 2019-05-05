@@ -59,7 +59,7 @@
 
     module.exports = (name, classes = '') => {
       if (!icons[name]) {
-        console.err('Failed to load SVG ' + name);
+        console.error('Failed to load SVG ' + name);
         return '';
       }
 
