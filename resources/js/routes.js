@@ -7,6 +7,7 @@ import Accounts from "./components/Accounts";
 import Places from "./components/Places";
 import AccountTypes from "./components/admin/AccountTypes";
 import Transactions from "./components/Transactions";
+import Transaction from "./components/Transaction";
 import TransactionTypes from "./components/admin/TransactionTypes";
 import TransactionCategoryTypes from "./components/admin/TransactionCategoryTypes";
 import TransactionCategories from "./components/admin/TransactionCategories";
@@ -25,6 +26,7 @@ export const routes = [
     { path: '/places', component: Places },
     { path: '/accountTypes', component: AccountTypes },
     { path: '/transactions', component: Transactions },
+    { path: '/transaction/:id', component: Transaction },
     { path: '/transactionTypes', component: TransactionTypes },
     { path: '/transactionCategoryTypes', component: TransactionCategoryTypes },
     { path: '/transactionCategories', component: TransactionCategories },
