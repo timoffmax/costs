@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
  * @property TransactionType $type
  * @property TransactionCategory $category
  * @property Account $account
+ * @property Place $place
  */
 class Transaction extends ParseRequestAbstractModel
 {
@@ -45,7 +46,14 @@ class Transaction extends ParseRequestAbstractModel
      * @var array
      */
     protected $fillable = [
-        'type_id', 'account_id', 'category_id', 'user_id', 'sum', 'date', 'comment',
+        'type_id',
+        'account_id',
+        'category_id',
+        'place_id',
+        'user_id',
+        'sum',
+        'date',
+        'comment',
     ];
 
     /**
@@ -62,11 +70,7 @@ class Transaction extends ParseRequestAbstractModel
      */
     protected static function getAllModels()
     {
-        return self::with('user')
-            ->with('type')
-            ->with('account')
-            ->with('category')
-        ;
+        return self::with(['user', 'type', 'account', 'place', 'category']);
     }
 
     /**
@@ -77,10 +81,7 @@ class Transaction extends ParseRequestAbstractModel
      */
     protected static function getUserModels(User $user)
     {
-        return self::with('user')
-            ->with('account')
-            ->with('type')
-            ->with('category')
+        return self::getAllModels()
             ->where(['user_id' => $user->id])
         ;
     }
@@ -141,72 +142,6 @@ class Transaction extends ParseRequestAbstractModel
     }
 
     /**
-     * Revert transaction
-     */
-    public function cancel()
-    {
-        // Get account
-        $account = $this->account;
-
-        // Update the related account
-        $sumToRevert = -$this->getSumWithSign();
-        $account->balance += $sumToRevert;
-
-        // Write down balance after transaction
-        $this->balance_after = $this->balance_before;
-
-        // Save account and update all transaction after this one
-        $account->save() && $this->updateFollowingTransactions();
-    }
-
-    /**
-     * Update balances in every transaction for the same account after this one
-     *
-     * @return int
-     */
-    protected function updateFollowingTransactions(bool $revertMode = true)
-    {
-        if ($revertMode) {
-            // Get opposite value of transaction amount to revert it
-            $transactionSum = -$this->getSumWithSign();
-        } else {
-            // Get normal value with sign
-            $transactionSum = $this->getSumWithSign();
-        }
-
-        $result = DB::table($this->getTable())
-            ->where('id', '>', $this->id)
-            ->where('account_id', '=', $this->account->id)
-            ->update([
-                'balance_before' => DB::raw("balance_before + {$transactionSum}"),
-                'balance_after' => DB::raw("balance_after + {$transactionSum}"),
-            ])
-        ;
-
-        return $result;
-    }
-
-    /**
-     * Returns negative or positive sum regards to transaction type
-     *
-     * @return float
-     */
-    protected function getSumWithSign()
-    {
-        switch ($this->type->name) {
-            case self::TYPE_COST:
-                $sum = -$this->sum;
-                break;
-
-            case self::TYPE_INCOME:
-            default:
-                $sum = $this->sum;
-        }
-
-        return (float)$sum;
-    }
-
-    /**
      * Get the transaction owner
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -244,5 +179,81 @@ class Transaction extends ParseRequestAbstractModel
     public function category()
     {
         return $this->belongsTo(TransactionCategory::class);
+    }
+
+    /**
+     * Get place of the transaction
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function place()
+    {
+        return $this->belongsTo(Place::class);
+    }
+
+    /**
+     * Revert transaction
+     */
+    public function cancel()
+    {
+        // Get account
+        $account = $this->account;
+
+        // Update the related account
+        $sumToRevert = -$this->getSumWithSign();
+        $account->balance += $sumToRevert;
+
+        // Write down balance after transaction
+        $this->balance_after = $this->balance_before;
+
+        // Save account and update all transaction after this one
+        $account->save() && $this->updateFollowingTransactions();
+    }
+
+    /**
+     * Returns negative or positive sum regards to transaction type
+     *
+     * @return float
+     */
+    protected function getSumWithSign()
+    {
+        switch ($this->type->name) {
+            case self::TYPE_COST:
+                $sum = -$this->sum;
+                break;
+
+            case self::TYPE_INCOME:
+            default:
+                $sum = $this->sum;
+        }
+
+        return (float)$sum;
+    }
+
+    /**
+     * Update balances in every transaction for the same account after this one
+     *
+     * @return int
+     */
+    protected function updateFollowingTransactions(bool $revertMode = true)
+    {
+        if ($revertMode) {
+            // Get opposite value of transaction amount to revert it
+            $transactionSum = -$this->getSumWithSign();
+        } else {
+            // Get normal value with sign
+            $transactionSum = $this->getSumWithSign();
+        }
+
+        $result = DB::table($this->getTable())
+            ->where('id', '>', $this->id)
+            ->where('account_id', '=', $this->account->id)
+            ->update([
+                'balance_before' => DB::raw("balance_before + {$transactionSum}"),
+                'balance_after' => DB::raw("balance_after + {$transactionSum}"),
+            ])
+        ;
+
+        return $result;
     }
 }

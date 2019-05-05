@@ -16,6 +16,7 @@ use Laravel\Passport\HasApiTokens;
  * @property int $role_id
  * @property UserRole $role
  * @property Account[] $accounts
+ * @property Place[] $places
  */
 class User extends Authenticatable
 {
@@ -52,7 +53,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $with = ['role', 'accounts'];
+    protected $with = ['role', 'accounts', 'places'];
 
     /**
      * Get role
@@ -72,6 +73,16 @@ class User extends Authenticatable
     public function accounts()
     {
         return $this->hasMany(Account::class, 'user_id');
+    }
+
+    /**
+     * Get list of places
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function places()
+    {
+        return $this->hasMany(Place::class, 'user_id');
     }
 
     /**
