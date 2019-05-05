@@ -36,9 +36,7 @@
             }
         }
     }
-</style>
 
-<style lang="scss">
     // Hide all bars
     .main-header.navbar,
     footer.main-footer {
