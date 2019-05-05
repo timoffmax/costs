@@ -4,6 +4,7 @@ import Users from "./components/admin/Users";
 import User from "./components/admin/User";
 import ApiUsers from "./components/admin/ApiUsers";
 import Accounts from "./components/Accounts";
+import Places from "./components/Places";
 import AccountTypes from "./components/admin/AccountTypes";
 import Transactions from "./components/Transactions";
 import TransactionTypes from "./components/admin/TransactionTypes";
@@ -21,6 +22,7 @@ export const routes = [
     { path: '/user/:id', component: User },
     { path: '/apiUsers', component: ApiUsers },
     { path: '/accounts', component: Accounts },
+    { path: '/places', component: Places },
     { path: '/accountTypes', component: AccountTypes },
     { path: '/transactions', component: Transactions },
     { path: '/transactionTypes', component: TransactionTypes },

@@ -23,6 +23,7 @@ Route::apiResources([
     'userRole' => 'API\UserRoleController',
     'account' => 'API\AccountController',
     'accountType' => 'API\AccountTypeController',
+    'place' => 'API\PlaceController',
     'transaction' => 'API\TransactionController',
     'transactionType' => 'API\TransactionTypeController',
     'transactionCategory' => 'API\TransactionCategoryController',
