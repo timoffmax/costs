@@ -3,6 +3,7 @@
 namespace App;
 
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -23,9 +24,6 @@ use Illuminate\Support\Facades\DB;
  */
 class Transaction extends ParseRequestAbstractModel
 {
-    const TYPE_INCOME = 'income';
-    const TYPE_COST = 'cost';
-
     /**
      * The table associated with the model.
      *
@@ -213,6 +211,69 @@ class Transaction extends ParseRequestAbstractModel
     }
 
     /**
+     * Place several transactions in a row to process transfer between two account
+     *
+     * @param Request $request
+     * @throws \Exception
+     */
+    public static function processTransfer(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $transferFromCategory = TransactionCategory::where(['name' => 'transfer from account'])->firstOrFail();
+            $transferToCategory = TransactionCategory::where(['name' => 'transfer to account'])->firstOrFail();
+            $transferFeeCategory = TransactionCategory::where(['name' => 'transfer fee'])->firstOrFail();
+
+            $transactionFrom = new Transaction();
+            $transactionFromData = [
+                'category_id' => $transferFromCategory->id,
+                'user_id' => $request['user_id'],
+                'type_id' => $request['type_id'],
+                'account_id' => $request['account_from_id'],
+                'date' => $request['date'],
+                'sum' => -$request['sum'],
+                'comment' => "Transfer money to own account",
+            ];
+            $transactionFrom->fill($transactionFromData);
+            $transactionFrom->save();
+
+            $transactionTo = new Transaction();
+            $transactionToData = [
+                'category_id' => $transferToCategory->id,
+                'user_id' => $request['user_id'],
+                'type_id' => $request['type_id'],
+                'account_id' => $request['account_to_id'],
+                'date' => $request['date'],
+                'sum' => $request['sum'],
+                'comment' => "Receive money from own account",
+            ];
+            $transactionTo->fill($transactionToData);
+            $transactionTo->save();
+
+            if (!empty($request['fee'])) {
+                $transactionFee = new Transaction();
+                $transactionFeeData = [
+                    'category_id' => $transferFeeCategory->id,
+                    'user_id' => $request['user_id'],
+                    'type_id' => $request['type_id'],
+                    'account_id' => $request['account_from_id'],
+                    'date' => $request['date'],
+                    'sum' => -$request['fee'],
+                    'comment' => "Transaction fee",
+                ];
+                $transactionFee->fill($transactionFeeData)->someMethod();
+                $transactionFee->save();
+            }
+        } catch (\Throwable $t) {
+            DB::rollBack();
+            throw new \Exception('Error during creating transfer transactions');
+        }
+
+        DB::commit();
+    }
+
+    /**
      * Returns negative or positive sum regards to transaction type
      *
      * @return float
@@ -220,11 +281,12 @@ class Transaction extends ParseRequestAbstractModel
     protected function getSumWithSign()
     {
         switch ($this->type->name) {
-            case self::TYPE_COST:
+            case TransactionType::TYPE_COST:
                 $sum = -$this->sum;
                 break;
 
-            case self::TYPE_INCOME:
+            case TransactionType::TYPE_INCOME:
+            case TransactionType::TYPE_TRANSFER:
             default:
                 $sum = $this->sum;
         }

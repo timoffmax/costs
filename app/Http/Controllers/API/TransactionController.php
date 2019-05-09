@@ -4,10 +4,14 @@ namespace App\Http\Controllers\API;
 
 use App\Interfaces\RestApiControllerInterface;
 use App\Transaction;
+use App\TransactionType;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Class TransactionController
+ */
 class TransactionController extends BaseController implements RestApiControllerInterface
 {
     /**
@@ -51,20 +55,35 @@ class TransactionController extends BaseController implements RestApiControllerI
         // Check permissions
         $this->authorize('create', $transaction);
 
-        // Validate data
-        $this->validate($request, [
-            'user_id' => 'required|integer|exists:users,id',
-            'type_id' => 'required|integer|exists:transaction_type,id',
-            'account_id' => 'required|integer|exists:account,id',
-            'category_id' => 'required|integer|exists:transaction_category,id',
-            'place_id' => 'nullable|integer|exists:place,id',
-            'date' => 'required|date|date_format:Y-m-d',
-            'sum' => 'required|numeric|between:0,9999999.99',
-            'comment' => 'nullable|string|max:300',
-        ]);
+        if (TransactionType::TYPE_TRANSFER === $transaction->type->name) {
+            // Validate data
+            $this->validate($request, [
+                'user_id' => 'required|integer|exists:users,id',
+                'type_id' => 'required|integer|exists:transaction_type,id',
+                'account_from_id' => 'required|integer|exists:account,id',
+                'account_to_id' => 'required|integer|exists:account,id',
+                'date' => 'required|date|date_format:Y-m-d',
+                'sum' => 'required|numeric|between:0,9999999.99',
+                'fee' => 'nullable|numeric|between:0,9999999.99',
+            ]);
 
-        // Save and update account amount
-        $transaction->save();
+            Transaction::processTransfer($request);
+        } else {
+            // Validate data
+            $this->validate($request, [
+                'user_id' => 'required|integer|exists:users,id',
+                'type_id' => 'required|integer|exists:transaction_type,id',
+                'account_id' => 'required|integer|exists:account,id',
+                'category_id' => 'required|integer|exists:transaction_category,id',
+                'place_id' => 'nullable|integer|exists:place,id',
+                'date' => 'required|date|date_format:Y-m-d',
+                'sum' => 'required|numeric|between:0,9999999.99',
+                'comment' => 'nullable|string|max:300',
+            ]);
+
+            // Save and update account amount
+            $transaction->save();
+        }
     }
 
     /**

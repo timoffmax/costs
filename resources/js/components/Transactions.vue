@@ -101,21 +101,57 @@
                                        :class="{'is-invalid': transactionForm.errors.has('type_id')}"
                                 >
                                     <option value="">Select Transaction Type</option>
-                                    <option v-for="(type, id) in transactionTypes" :value="id">{{ type | capitalize  }}</option>
+                                    <option v-for="type in transactionTypes" :value="type.id">
+                                        {{ type.name | capitalize }}
+                                    </option>
                                 </select>
                                 <has-error :form="transactionForm" field="type_id"></has-error>
                             </div>
-                            <div class="form-group">
-                                <select v-model="transactionForm.account_id"
-                                        class="form-control"
-                                        :class="{'is-invalid': transactionForm.errors.has('account_id')}"
-                                >
-                                    <option value="">Select Account</option>
-                                    <option v-for="account in settings.currentUser.accounts" :value="account.id">{{ account.name | capitalize }}</option>
-                                </select>
-                                <has-error :form="transactionForm" field="account_id"></has-error>
-                            </div>
-                            <div class="form-group">
+                            <template v-if="transactionTypeIsTransfer">
+                                <div class="form-group">
+                                    <select v-model="transactionForm.account_from_id"
+                                            class="form-control"
+                                            :class="{'is-invalid': transactionForm.errors.has('account_from_id')}"
+                                    >
+                                        <option value="">From Account</option>
+                                        <option v-for="account in settings.currentUser.accounts"
+                                                :value="account.id"
+                                                v-if="account.id !== transactionForm.account_to_id"
+                                        >
+                                            {{ account.name | capitalize }}
+                                        </option>
+                                    </select>
+                                    <has-error :form="transactionForm" field="account_from_id"></has-error>
+                                </div>
+                                <div class="form-group">
+                                    <select v-model="transactionForm.account_to_id"
+                                            class="form-control"
+                                            :class="{'is-invalid': transactionForm.errors.has('account_to_id')}"
+                                    >
+                                        <option value="">To Account</option>
+                                        <option v-for="account in settings.currentUser.accounts"
+                                                :value="account.id"
+                                                v-if="account.id !== transactionForm.account_from_id"
+                                        >
+                                            {{ account.name | capitalize }}
+                                        </option>
+                                    </select>
+                                    <has-error :form="transactionForm" field="account_to_id"></has-error>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="form-group">
+                                    <select v-model="transactionForm.account_id"
+                                            class="form-control"
+                                            :class="{'is-invalid': transactionForm.errors.has('account_id')}"
+                                    >
+                                        <option value="">Select Account</option>
+                                        <option v-for="account in settings.currentUser.accounts" :value="account.id">{{ account.name | capitalize }}</option>
+                                    </select>
+                                    <has-error :form="transactionForm" field="account_id"></has-error>
+                                </div>
+                            </template>
+                            <div v-if="!transactionTypeIsTransfer" class="form-group">
                                 <select v-model="transactionForm.place_id"
                                         class="form-control"
                                         :class="{'is-invalid': transactionForm.errors.has('place_id')}"
@@ -125,7 +161,7 @@
                                 </select>
                                 <has-error :form="transactionForm" field="place_id"></has-error>
                             </div>
-                            <div class="form-group">
+                            <div v-if="!transactionTypeIsTransfer" class="form-group">
                                 <select v-model="transactionForm.category_id"
                                         class="form-control"
                                         :class="{'is-invalid': transactionForm.errors.has('category_id')}"
@@ -156,7 +192,17 @@
                                 >
                                 <has-error :form="transactionForm" field="sum"></has-error>
                             </div>
-                            <div class="form-group">
+                            <div v-if="transactionTypeIsTransfer" class="form-group">
+                                <input type="text"
+                                       v-model="transactionForm.fee"
+                                       class="form-control"
+                                       :class="{'is-invalid': transactionForm.errors.has('fee')}"
+                                       placeholder="Fee"
+                                       pattern="\d+\.\d{2}"
+                                >
+                                <has-error :form="transactionForm" field="fee"></has-error>
+                            </div>
+                            <div v-if="!transactionTypeIsTransfer" class="form-group">
                                 <textarea v-model="transactionForm.comment"
                                        class="form-control"
                                        :class="{'is-invalid': transactionForm.errors.has('comment')}"
@@ -216,8 +262,11 @@
                     type_id: null,
                     category_id: null,
                     account_id: null,
+                    account_from: null,
+                    account_to: null,
                     place_id: null,
                     sum: 0.00,
+                    fee: null,
                     date: '',
                     comment: '',
                 }),
@@ -338,6 +387,7 @@
                     columnFilters: {},
                     sortType: '',
                     sortField: '',
+                    sort: 'latest',
                     page: 1,
                     perPage: 100,
                 }
@@ -391,7 +441,7 @@
                 );
             },
             loadTransactionTypes() {
-                axios.get(`api/transactionType?mode=simple`).then(
+                axios.get(`api/transactionType`).then(
                     (response) => {
                         this.transactionTypes = response.data;
                     },
@@ -706,6 +756,15 @@
 
                     return result;
                 })
+            },
+            transactionTypeIsTransfer() {
+                for (let type in this.transactionTypes) {
+                    if (this.transactionTypes[type].id === this.transactionForm.type_id) {
+                        return this.transactionTypes[type].name === 'transfer';
+                    }
+                }
+
+                return false;
             },
         },
         created() {
