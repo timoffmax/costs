@@ -11,6 +11,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TransactionType extends Model
 {
+    public const TYPE_INCOME = 'income';
+    public const TYPE_COST = 'cost';
+    public const TYPE_TRANSFER = 'transfer';
+
     /**
      * Don't use 'created_at' and 'updated_at' fields
      *

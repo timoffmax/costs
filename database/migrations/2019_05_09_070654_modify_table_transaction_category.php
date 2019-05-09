@@ -1,5 +1,6 @@
 <?php
 
+use App\TransactionType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Migrations\Migration;
 
@@ -17,7 +18,7 @@ class ModifyTableTransactionCategory extends Migration
     {
         $transferType = DB::table('transaction_type')
             ->select('id')
-            ->where(['name' => 'transfer'])
+            ->where(['name' => TransactionType::TYPE_TRANSFER])
             ->first()
         ;
 
