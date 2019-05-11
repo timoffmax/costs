@@ -10,6 +10,9 @@
                                 Add
                                 <i class="fas fa-plus fa-fw"></i>
                             </button>
+                            <button class="btn btn-primary font-size-4" @click="showColumnsSettingsModal()">
+                                <i class="fas fa-cog"></i>
+                            </button>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -74,6 +77,28 @@
         </div>
 
         <!--modal-->
+        <div class="modal fade" id="columnsSettingsModal" ref="columnsSettingsModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Select Displayed Columns</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div v-for="(column, key) in columns" class="col-12">
+                            <label class="toggle">
+                                <input @change="switchColumnVisibility(key)" class="toggle__input" type="checkbox" :checked="columnIsVisible(key)">
+                                <span class="toggle__label">
+                              <span class="toggle__text">{{ column.label }}</span>
+                            </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="transactionModal" ref="transactionModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -296,7 +321,7 @@
                         dateInputFormat: 'YYYY-MM-DD',
                         dateOutputFormat: 'MMMM Do YYYY',
                         thClass: 'text-center',
-                        tdClass: 'text-left text-nowrap',
+                        tdClass: 'text-center text-nowrap',
                         filterOptions: {
                             enabled: true,
                             trigger: 'enter',
@@ -317,6 +342,8 @@
                     {
                         label: 'Account',
                         field: 'account.name',
+                        thClass: 'text-center',
+                        tdClass: 'text-center text-nowrap',
                         filterOptions: {
                             enabled: true,
                             placeholder: 'Select Account',
@@ -355,6 +382,7 @@
                             enabled: true,
                             trigger: 'enter',
                         },
+                        hidden: true,
                     },
                     {
                         label: 'Balance After',
@@ -365,6 +393,7 @@
                             enabled: true,
                             trigger: 'enter',
                         },
+                        hidden: true,
                     },
                     {
                         label: 'Comment',
@@ -488,6 +517,10 @@
 
                 // Show modal
                 $(this.$refs.transactionModal).modal('show');
+            },
+            showColumnsSettingsModal() {
+                // Show modal
+                $(this.$refs.columnsSettingsModal).modal('show');
             },
             createTransaction() {
                 this.$Progress.start();
@@ -654,6 +687,14 @@
 
                 this.loadTransactions();
             },
+            switchColumnVisibility(columnKey) {
+                let column = this.columns[columnKey];
+                this.$set(column, 'hidden', !column.hidden);
+            },
+            columnIsVisible(columnKey) {
+                let column = this.columns[columnKey];
+                return !column.hidden;
+            },
             // Helpers
             numbersAreEqual(value1, value2) {
                 return Number(value1) === Number (value2);
@@ -783,3 +824,181 @@
         mounted() {},
     }
 </script>
+
+<style scoped>
+    /*
+    =====
+    LEVEL 1. CORE STYLES
+    =====
+    */
+
+    .toggle{
+        --uiToggleSize: var(--toggleSize, 20px);
+        --uiToggleIndent: var(--toggleIndent, .4em);
+        --uiToggleBorderWidth: var(--toggleBorderWidth, 2px);
+        --uiToggleColor: var(--toggleColor, #000);
+        --uiToggleDisabledColor: var(--toggleDisabledColor, #868e96);
+        --uiToggleBgColor: var(--toggleBgColor, #fff);
+        --uiToggleArrowWidth: var(--toggleArrowWidth, 2px);
+        --uiToggleArrowColor: var(--toggleArrowColor, #fff);
+
+        display: inline-block;
+        position: relative;
+    }
+
+    .toggle__input{
+        position: absolute;
+        left: -99999px;
+    }
+
+    .toggle__label{
+        display: inline-flex;
+        cursor: pointer;
+        min-height: var(--uiToggleSize);
+        padding-left: calc(var(--uiToggleSize) + var(--uiToggleIndent));
+    }
+
+    .toggle__label:before, .toggle__label:after{
+        content: "";
+        box-sizing: border-box;
+        width: 1em;
+        height: 1em;
+        font-size: var(--uiToggleSize);
+
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .toggle__label:before{
+        border: var(--uiToggleBorderWidth) solid var(--uiToggleColor);
+        z-index: 2;
+    }
+
+    .toggle__input:disabled ~ .toggle__label:before{
+        border-color: var(--uiToggleDisabledColor);
+    }
+
+    .toggle__input:focus ~ .toggle__label:before{
+        box-shadow: 0 0 0 2px var(--uiToggleBgColor), 0 0 0px 4px var(--uiToggleColor);
+    }
+
+    .toggle__input:not(:disabled):checked:focus ~ .toggle__label:after{
+        box-shadow: 0 0 0 2px var(--uiToggleBgColor), 0 0 0px 4px var(--uiToggleColor);
+    }
+
+    .toggle__input:not(:disabled) ~ .toggle__label:after{
+        background-color: var(--uiToggleColor);
+        opacity: 0;
+    }
+
+    .toggle__input:not(:disabled):checked ~ .toggle__label:after{
+        opacity: 1;
+    }
+
+    .toggle__text{
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    /*
+    The arrow size and position depends from sizes of square because I needed an arrow correct positioning from the top left corner of the element toggle
+    */
+
+    .toggle__text:before{
+        content: "";
+        box-sizing: border-box;
+        width: 0;
+        height: 0;
+        font-size: var(--uiToggleSize);
+
+        border-left-width: 0;
+        border-bottom-width: 0;
+        border-left-style: solid;
+        border-bottom-style: solid;
+        border-color: var(--uiToggleArrowColor);
+
+        position: absolute;
+        top: .5428em;
+        left: .2em;
+        z-index: 3;
+
+        transform-origin: left top;
+        transform: rotate(-40deg) skew(10deg);
+    }
+
+    .toggle__input:not(:disabled):checked ~ .toggle__label .toggle__text:before{
+        width: .5em;
+        height: .25em;
+        border-left-width: var(--uiToggleArrowWidth);
+        border-bottom-width: var(--uiToggleArrowWidth);
+        will-change: width, height;
+        transition: width .1s ease-out .2s, height .2s ease-out;
+    }
+
+    /*
+    =====
+    LEVEL 2. PRESENTATION STYLES
+    =====
+    */
+
+    /*
+    The demo skin
+    */
+
+    .toggle__label:before, .toggle__label:after{
+        border-radius: 2px;
+    }
+
+    /*
+    The animation of switching states
+    */
+
+    .toggle__input:not(:disabled) ~ .toggle__label:before,
+    .toggle__input:not(:disabled) ~ .toggle__label:after{
+        opacity: 1;
+        transform-origin: center center;
+        will-change: transform;
+        transition: transform .2s ease-out;
+    }
+
+    .toggle__input:not(:disabled) ~ .toggle__label:before{
+        transform: rotateY(0deg);
+        transition-delay: .2s;
+    }
+
+    .toggle__input:not(:disabled) ~ .toggle__label:after{
+        transform: rotateY(90deg);
+    }
+
+    .toggle__input:not(:disabled):checked ~ .toggle__label:before{
+        transform: rotateY(-90deg);
+        transition-delay: 0s;
+    }
+
+    .toggle__input:not(:disabled):checked ~ .toggle__label:after{
+        transform: rotateY(0deg);
+        transition-delay: .2s;
+    }
+
+    .toggle__text:before{
+        opacity: 0;
+    }
+
+    .toggle__input:not(:disabled):checked ~ .toggle__label .toggle__text:before{
+        opacity: 1;
+        transition: opacity .1s ease-out .3s, width .1s ease-out .5s, height .2s ease-out .3s;
+    }
+
+    /*
+    =====
+    LEVEL 3. SETTINGS
+    =====
+    */
+
+    .toggle{
+        --toggleColor: #164690;
+        --toggleBgColor: #5866b6;
+        /*--toggleSize: 50px;*/
+    }
+</style>
