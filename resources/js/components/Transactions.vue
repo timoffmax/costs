@@ -81,7 +81,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Select Displayed Columns</h5>
+                        <h5 class="modal-title">Displayed Columns</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -253,6 +253,8 @@
     const FLAG_MODE_ADMIN = 'admin';
     const FLAG_MODE_USER = 'user';
 
+    const LS_KEY_COLUMNS = 'transactionsTable.columns';
+
     export default {
         components: {
             VueGoodTable,
@@ -267,6 +269,7 @@
                         category_id: 'category.name',
                         place_id: 'place.name',
                     },
+                    activeColumns: {},
                 },
 
                 transactions: {},
@@ -687,9 +690,17 @@
 
                 this.loadTransactions();
             },
-            switchColumnVisibility(columnKey) {
+            switchColumnVisibility(columnKey, value = null) {
                 let column = this.columns[columnKey];
-                this.$set(column, 'hidden', !column.hidden);
+                let newValue = null !== value ? !value : !column.hidden;
+
+                this.$set(this.columns[columnKey], 'hidden', newValue);
+                this.setColumnVisibilitySetting(column.field, !newValue);
+            },
+            setColumnVisibilitySetting(columnName, value) {
+                let activeColumns = this.settings.activeColumns;
+                activeColumns[columnName] = value;
+                localStorage.setItem(LS_KEY_COLUMNS, JSON.stringify(activeColumns));
             },
             columnIsVisible(columnKey) {
                 let column = this.columns[columnKey];
@@ -698,6 +709,37 @@
             // Helpers
             numbersAreEqual(value1, value2) {
                 return Number(value1) === Number (value2);
+            },
+            applyLocalStorageSettings() {
+                // Get columns settings or fill them
+                let activeColumns = this.settings.activeColumns;
+                let storageSettings = localStorage.getItem(LS_KEY_COLUMNS);
+
+                try {
+                    storageSettings = JSON.parse(storageSettings);
+                } catch (e) {
+                    storageSettings = null;
+                }
+
+                if (typeof storageSettings !== 'object') {
+                    localStorage.removeItem(LS_KEY_COLUMNS);
+                }
+
+                if (storageSettings) {
+                    activeColumns = Object.assign(storageSettings);
+                    this.settings.activeColumns = activeColumns;
+                } else {
+                    for (let columnId in this.columns) {
+                        let column = this.columns[columnId];
+                        this.setColumnVisibilitySetting(column.field, !column.hidden)
+                    }
+                }
+
+                // Apply settings
+                for (let columnId in this.columns) {
+                    let column = this.columns[columnId];
+                    this.$set(column, 'hidden', !activeColumns[column.field]);
+                }
             },
         },
         computed: {
@@ -821,7 +863,9 @@
                 this.loadUsers();
             }
         },
-        mounted() {},
+        mounted() {
+            this.applyLocalStorageSettings();
+        },
     }
 </script>
 
