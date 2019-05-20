@@ -19,6 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResources([
+    'dashboard' => 'API\DashboardController',
     'user' => 'API\UserController',
     'userRole' => 'API\UserRoleController',
     'account' => 'API\AccountController',
