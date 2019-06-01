@@ -59,6 +59,13 @@ Vue.filter('transactionAmount', function (transaction) {
 
     return formattedValue;
 });
+Vue.filter('price', function (price) {
+    if (typeof price !== "number") {
+        return price;
+    }
+
+    return price.toFixed(2);
+});
 
 // Vue progress bar
 import VueProgressBar from 'vue-progressbar';
