@@ -56,6 +56,8 @@ class DashboardInfo extends Model
         $monthTotalIncomes = $this->getTotalIncomes($this->getThisMonthTransactions());
         $lastMonthTotalIncomes = $this->getTotalIncomes($this->getLastMonthTransactions());
 
+        $latestTransactions = $this->getLatestTransactionsDetails(15);
+
         $transactionsInfo = [
             'currentMonth' => [
                 'count' => $monthTransactions,
@@ -67,6 +69,7 @@ class DashboardInfo extends Model
                 'costs' => $lastMonthTotalCosts,
                 'incomes' => $lastMonthTotalIncomes,
             ],
+            'latest' => $latestTransactions,
         ];
 
         return $transactionsInfo;
@@ -126,6 +129,25 @@ class DashboardInfo extends Model
     public function getTotalIncomes(Collection $transactions): float
     {
         return $this->getTotalByType($transactions, TransactionType::TYPE_INCOME);
+    }
+
+    /**
+     * Returns latest transactions
+     *
+     * @param int $count
+     * @return array
+     */
+    public function getLatestTransactionsDetails(int $count): array
+    {
+        $transactions = Transaction::with(['account', 'type', 'category', 'place'])
+            ->where('user_id', $this->user->id)
+            ->latest('date')
+            ->orderBy('id', 'DESC')
+            ->paginate($count)
+            ->items()
+        ;
+
+        return $transactions;
     }
 
     /**

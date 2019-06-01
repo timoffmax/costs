@@ -1,5 +1,5 @@
 <template>
-    <div class="container container-fluid mt-5">
+    <div class="container container-fluid mt-5" v-if="$gate.allow('viewAll', 'dashboard')">
         <div v-if="info.transactions" class="row">
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-danger">
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </div>
-        <div class="row" v-if="info.transactions">
+        <div class="row" v-if="info.transactions && $gate.allow('viewAll', 'transaction')">
             <div class="col-md-4">
                 <div class="info-box mb-3 bg-success">
                     <span class="info-box-icon"><i class="fas fa-donate"></i></span>
@@ -77,99 +77,54 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div v-if="info.transactions.latest && $gate.allow('viewAll', 'transaction')" class="col-md-8">
                 <div class="card">
                     <div class="card-header border-transparent">
-                        <h3 class="card-title">Latest Orders</h3>
-
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-widget="collapse">
-                                <i class="fa fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn btn-tool" data-widget="remove">
-                                <i class="fa fa-times"></i>
-                            </button>
-                        </div>
+                        <h3 class="card-title">Latest Transactions</h3>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table m-0">
                                 <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Item</th>
-                                    <th>Status</th>
-                                    <th>Popularity</th>
-                                </tr>
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th class="text-center">Date</th>
+                                        <th class="text-center">Account</th>
+                                        <th class="text-right">Sum</th>
+                                        <th class="text-center">Category</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                                    <td>Call of Duty IV</td>
-                                    <td><span class="badge badge-success">Shipped</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#00a65a" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                                    <td>Samsung Smart TV</td>
-                                    <td><span class="badge badge-warning">Pending</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#f39c12" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                    <td>iPhone 6 Plus</td>
-                                    <td><span class="badge badge-danger">Delivered</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#f56954" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                    <td>Samsung Smart TV</td>
-                                    <td><span class="badge badge-info">Processing</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#00c0ef" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                                    <td>Samsung Smart TV</td>
-                                    <td><span class="badge badge-warning">Pending</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#f39c12" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                    <td>iPhone 6 Plus</td>
-                                    <td><span class="badge badge-danger">Delivered</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#f56954" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                                    <td>Call of Duty IV</td>
-                                    <td><span class="badge badge-success">Shipped</span></td>
-                                    <td>
-                                        <div class="sparkbar" data-color="#00a65a" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div>
-                                    </td>
-                                </tr>
+                                    <tr v-for="transaction in info.transactions.latest">
+                                        <td class="text-center">
+                                            <router-link :to="`/transaction/${transaction.id}`">
+                                                {{ transaction.id }}
+                                            </router-link>
+                                        </td>
+                                        <td class="text-center">
+                                            {{ transaction.date | dateMoment('MMMM Do YYYY') }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ transaction.account.name | capitalize }}
+                                        </td>
+                                        <td class="text-right text-bold" :class="getAmountClass(transaction, 'text')">
+                                            {{ transaction | transactionAmount }}
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge badge-dark text-white">
+                                                {{ transaction.category.name | capitalize }}
+                                            </span>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <!-- /.table-responsive -->
                     </div>
-                    <!-- /.card-body -->
                     <div class="card-footer clearfix">
-                        <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>
+                        <router-link :to="`/transactions`" class="btn btn-sm btn-outline-dark float-left">
+                            All transactions
+                        </router-link>
                     </div>
-                    <!-- /.card-footer -->
                 </div>
             </div>
         </div>
@@ -203,6 +158,39 @@
                         this.userInfo = response.data;
                     },
                 );
+            },
+            getAmountClass(transaction, prefix = null, amount = null) {
+                let colorClass = prefix ? `${prefix}-` : '';
+
+                if (null === amount) {
+                    switch (transaction.type.name) {
+                        case 'income':
+                            colorClass += 'success';
+                            break;
+
+                        case 'cost':
+                            colorClass += 'danger';
+                            break;
+
+                        default:
+                            colorClass += 'info';
+                    }
+                } else {
+                    switch (true) {
+                        case amount > 0:
+                            colorClass += 'success';
+                            break;
+
+                        case amount < 0:
+                            colorClass += 'danger';
+                            break;
+
+                        default:
+                            colorClass += 'info';
+                    }
+                }
+
+                return colorClass;
             },
         },
         computed: {
