@@ -102,7 +102,7 @@
             return {
                 places: {},
                 users: [],
-                pageSize: 10,
+                pageSize: 50,
                 viewMode: 'user',
                 currentUser: user,
                 modal: {

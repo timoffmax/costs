@@ -72,7 +72,7 @@ class User extends Authenticatable
      */
     public function accounts()
     {
-        return $this->hasMany(Account::class, 'user_id');
+        return $this->hasMany(Account::class, 'user_id')->orderBy('name');
     }
 
     /**
@@ -82,7 +82,7 @@ class User extends Authenticatable
      */
     public function places()
     {
-        return $this->hasMany(Place::class, 'user_id');
+        return $this->hasMany(Place::class, 'user_id')->orderBy('name');
     }
 
     /**
@@ -92,6 +92,9 @@ class User extends Authenticatable
      */
     public function transactions()
     {
-        return $this->hasMany(Transaction::class, 'user_id');
+        return $this->hasMany(Transaction::class, 'user_id')
+            ->latest()
+            ->orderBy('id', "DESC")
+        ;
     }
 }
