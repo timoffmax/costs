@@ -213,8 +213,11 @@
                                        class="form-control"
                                        :class="{'is-invalid': transactionForm.errors.has('sum')}"
                                        placeholder="Sum"
-                                       pattern="\d+\.\d{2}"
+                                       pattern="\d+(\.\d{2})?"
                                 >
+                                <small class="form-text text-muted">
+                                    Use format 123 or 123.45
+                                </small>
                                 <has-error :form="transactionForm" field="sum"></has-error>
                             </div>
                             <div v-if="transactionTypeIsTransfer" class="form-group">
@@ -223,8 +226,11 @@
                                        class="form-control"
                                        :class="{'is-invalid': transactionForm.errors.has('fee')}"
                                        placeholder="Fee"
-                                       pattern="\d+\.\d{2}"
+                                       pattern="\d+(\.\d{2})?"
                                 >
+                                <small class="form-text text-muted">
+                                    Use format 123 or 123.45
+                                </small>
                                 <has-error :form="transactionForm" field="fee"></has-error>
                             </div>
                             <div v-if="!transactionTypeIsTransfer" class="form-group">
@@ -293,7 +299,7 @@
                     account_from: null,
                     account_to: null,
                     place_id: null,
-                    sum: 0.00,
+                    sum: null,
                     fee: null,
                     date: '',
                     comment: '',
@@ -522,7 +528,7 @@
                     this.modal.title = 'Add a new transaction';
                     this.modal.buttonTitle = 'Create';
                     this.transactionForm.user_id = this.settings.currentUser.id;
-                    this.transactionForm.sum = '0.00';
+                    this.transactionForm.sum = null;
                     this.transactionForm.date = this.currentDate;
                 }
 

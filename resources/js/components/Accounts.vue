@@ -84,7 +84,7 @@
                                        :class="{'is-invalid': accountForm.errors.has('user_id')}"
                                 >
                                     <option value="">Select User</option>
-                                    <option v-for="(id, user) in users" :value="user">{{ id }}</option>
+                                    <option v-for="(user, id) in users" :value="id">{{ user | capitalize }}</option>
                                 </select>
                                 <has-error :form="accountForm" field="user_id"></has-error>
                             </div>
@@ -94,7 +94,7 @@
                                        :class="{'is-invalid': accountForm.errors.has('type_id')}"
                                 >
                                     <option value="">Select Account Type</option>
-                                    <option v-for="(id, type) in accountTypes" :value="type">{{ id }}</option>
+                                    <option v-for="(type, id) in accountTypes" :value="id">{{ type | capitalize }}</option>
                                 </select>
                                 <has-error :form="accountForm" field="type_id"></has-error>
                             </div>
@@ -104,7 +104,7 @@
                                        class="form-control"
                                        :class="{'is-invalid': accountForm.errors.has('balance')}"
                                        placeholder="Balance"
-                                       pattern="\d+\.\d{2}"
+                                       pattern="\d+(\.\d{2})?"
                                 >
                                 <has-error :form="accountForm" field="balance"></has-error>
                             </div>
