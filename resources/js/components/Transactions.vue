@@ -426,6 +426,14 @@
             };
         },
         methods: {
+            loadUserData() {
+                // Update current user data
+                axios.get(`api/user/${window.user.id}`).then(
+                    (response) => {
+                        this.settings.currentUser = response.data;
+                    },
+                );
+            },
             loadTransactions(page = 1) {
                 // Prepare query params
                 let queryParams = Object.assign({}, this.serverParams);
@@ -760,23 +768,26 @@
             getAccountsList() {
                 let accounts = this.settings.currentUser.accounts;
 
-                return accounts.map((account, index, array) => {
-                    return {
-                        value: account.id,
-                        text: this.$options.filters.capitalize(account.name),
-                    };
-                });
+                if (accounts) {
+                    return accounts.map((account, index, array) => {
+                        return {
+                            value: account.id,
+                            text: this.$options.filters.capitalize(account.name),
+                        };
+                    });
+                }
             },
             // Returns simple list of current user places
             getPlacesList() {
                 let places = this.settings.currentUser.places;
-
-                return places.map((place, index, array) => {
-                    return {
-                        value: place.id,
-                        text: this.$options.filters.capitalize(place.name),
-                    };
-                });
+                if (places) {
+                    return places.map((place, index, array) => {
+                        return {
+                            value: place.id,
+                            text: this.$options.filters.capitalize(place.name),
+                        };
+                    });
+                }
             },
             // Returns simple list of transaction categories
             getCategoriesList() {
@@ -855,6 +866,7 @@
             $(document).on("hidden.bs.modal", this.clearModal);
 
             // Load transactions to the table
+            this.loadUserData();
             this.loadTransactions();
             this.loadTransactionTypes();
             this.loadCategories();
