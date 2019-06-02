@@ -25,6 +25,8 @@ class TransactionCategoryController extends BaseController implements RestApiCon
 
         $types = TransactionCategory::with('type')
             ->with('transactionType')
+            ->orderBy('type_id')
+            ->orderBy('name')
             ->get()
         ;
 
