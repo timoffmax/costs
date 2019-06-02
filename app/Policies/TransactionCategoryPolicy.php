@@ -37,7 +37,7 @@ class TransactionCategoryPolicy
      */
     public function viewAll(User $user)
     {
-        return false;
+        return true;
     }
 
     /**
