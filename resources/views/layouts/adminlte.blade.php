@@ -65,6 +65,10 @@
 
             <!-- Main Sidebar Container -->
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
+                <button type="button" class="close d-sm-none" data-widget="pushmenu">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
                 <!-- Brand Logo -->
                 <a href="{{ url('/') }}" class="brand-link">
                     @svg('svg/logo.svg', 'brand-image elevation-3')

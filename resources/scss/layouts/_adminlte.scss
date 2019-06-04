@@ -9,6 +9,21 @@
 }
 
 // Sidebar
+@media (max-width: 576px) {
+  body.sidebar-open {
+    .main-sidebar {
+      width: 100%;
+
+      button.close {
+        color: white;
+        padding: 0.8125rem 1.5rem;
+        font-size: 1.25rem;
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
 .sidebar {
   .nav-sidebar {
     .nav-link {
