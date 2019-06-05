@@ -46,6 +46,8 @@ class Account extends ParseRequestAbstractModel
      */
     protected $hidden = [];
 
+    protected $with = ['currency'];
+
     /**
      * Get accounts of all users
      *

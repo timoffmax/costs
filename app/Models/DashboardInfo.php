@@ -162,8 +162,11 @@ class DashboardInfo extends Model
         $total = 0;
 
         foreach ($transactions as $transaction) {
-            if ($type === $transaction->type->name) {
-                $total += $transaction->sum;
+            // TODO: Add support of sum by currency. Temporary just ignore transactions with it.
+            if (!$transaction->account->currency) {
+                if ($type === $transaction->type->name) {
+                    $total += $transaction->sum;
+                }
             }
         }
 

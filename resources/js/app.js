@@ -47,24 +47,32 @@ Vue.filter('dateMoment', function (date, format) {
 Vue.filter('transactionAmount', function (transaction) {
     let formattedValue;
 
+    formattedValue = `${transaction.sum}`;
+
+    if (transaction.account.currency) {
+        formattedValue = `${transaction.account.currency.sign}${formattedValue}`
+    }
+
     switch (transaction.type.name) {
         case 'cost':
-            formattedValue = `-${transaction.sum}`;
+            formattedValue = `-${formattedValue}`;
             break;
 
         case 'income':
         default:
-            formattedValue = transaction.sum;
     }
 
     return formattedValue;
 });
-Vue.filter('price', function (price) {
-    if (typeof price !== "number") {
-        return price;
+Vue.filter('price', function (price, currency = null) {
+    let priceValue = Number(price);
+    priceValue = priceValue.toFixed(2);
+
+    if (currency) {
+        priceValue = `${currency.sign}${priceValue}`
     }
 
-    return price.toFixed(2);
+    return priceValue;
 });
 
 // Vue progress bar
@@ -170,7 +178,7 @@ const app = new Vue({
     router,
     mounted () {
         //  [App.vue specific] When App.vue is finish loading finish the progress bar
-        this.$Progress.finish()
+        this.$Progress.finish();
     },
     created () {
         //  [App.vue specific] When App.vue is first loaded start the progress bar
@@ -180,20 +188,20 @@ const app = new Vue({
         this.$router.beforeEach((to, from, next) => {
             //  does the page we want to go to have a meta.progress object
             if (to.meta.progress !== undefined) {
-                let meta = to.meta.progress
+                let meta = to.meta.progress;
                 // parse meta tags
-                this.$Progress.parseMeta(meta)
+                this.$Progress.parseMeta(meta);
             }
             //  start the progress bar
-            this.$Progress.start()
+            this.$Progress.start();
             //  continue to next page
-            next()
+            next();
         });
 
         //  hook the progress bar to finish after we've finished moving router-view
         this.$router.afterEach((to, from) => {
             //  finish the progress bar
-            this.$Progress.finish()
+            this.$Progress.finish();
         });
     }
 });

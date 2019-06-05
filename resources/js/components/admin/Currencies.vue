@@ -24,7 +24,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="currency in currencys">
+                                <tr v-for="currency in currencies">
                                     <td class="w-25">{{ currency.id }}</td>
                                     <td class="w-25">{{ currency.name | capitalize }}</td>
                                     <td class="w-25">{{ currency.sign }}</td>
@@ -76,8 +76,10 @@
                                 <input type="text"
                                        v-model="currencyForm.sign"
                                        class="form-control"
-                                       :class="{'is-invalid': currencyForm.errors.has('name')}"
-                                       placeholder="Sign (up to 3 chars)">
+                                       :class="{'is-invalid': currencyForm.errors.has('sign')}"
+                                       placeholder="Sign (up to 3 chars)"
+                                       pattern=".{1,3}"
+                                >
                                 <has-error :form="currencyForm" field="sign"></has-error>
                             </div>
                         </div>
@@ -96,7 +98,7 @@
     export default {
         data() {
             return {
-                currencys: {},
+                currencies: {},
                 modal: {
                     target: this.$refs.currencyModal,
                     mode: 'create',
@@ -111,10 +113,10 @@
             };
         },
         methods: {
-            loadCurrencys() {
+            loadCurrencies() {
                 axios.get(`api/currency`).then(
                     (response) => {
-                        this.currencys = response.data;
+                        this.currencies = response.data;
                     },
                 );
             },
@@ -129,6 +131,7 @@
                     this.modal.title = 'Edit the currency';
                     this.modal.buttonTitle = 'Save';
 
+                    console.log(currency);
                     // Fill form
                     this.currencyForm.fill(currency);
                 } else {
@@ -152,7 +155,7 @@
                         this.$Progress.finish();
 
                         // Refresh the table content
-                        this.loadCurrencys();
+                        this.loadCurrencies();
 
                         // Close the modal and clean the form
                         $(this.$refs.currencyModal).modal('hide');
@@ -185,7 +188,7 @@
                         this.$Progress.finish();
 
                         // Refresh the table content
-                        this.loadCurrencys();
+                        this.loadCurrencies();
 
                         // Close the modal and clean the form
                         $(this.$refs.currencyModal).modal('hide');
@@ -229,7 +232,7 @@
                                 this.$Progress.finish();
 
                                 // Update the table
-                                this.loadCurrencys();
+                                this.loadCurrencies();
 
                                 // Show the success message
                                 toast({
@@ -259,8 +262,8 @@
             // Events
             $(document).on("hidden.bs.modal", this.clearModal);
 
-            // Load currencys to the table
-            this.loadCurrencys();
+            // Load currencies to the table
+            this.loadCurrencies();
         },
         mounted() {},
     }
