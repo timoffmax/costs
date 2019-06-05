@@ -40,6 +40,7 @@
     "vform": "^1.0.0",
     "vue-good-table": "^2.16.4",
     "vue-loader": "^15.7.0",
+    "vue-mq": "^1.0.1",
     "vue-progressbar": "^0.7.5",
     "vue-router": "^3.0.6",
     "vue-template-compiler": "^2.6.10",

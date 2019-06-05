@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="row" v-if="info.transactions && $gate.allow('viewAll', 'transaction')">
-            <div class="col-md-4">
+            <div class="d-none d-md-block col-md-4">
                 <div class="info-box mb-3 bg-success">
                     <span class="info-box-icon"><i class="fas fa-donate"></i></span>
 
@@ -87,16 +87,16 @@
                             <table class="table m-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">ID</th>
+                                        <th class="d-none d-sm-block text-center">ID</th>
                                         <th class="text-center">Date</th>
-                                        <th class="text-center">Account</th>
+                                        <th class="d-none d-sm-block text-center">Account</th>
                                         <th class="text-right">Sum</th>
-                                        <th class="text-center">Category</th>
+                                        <th class="d-none d-sm-block text-center">Category</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="transaction in info.transactions.latest">
-                                        <td class="text-center">
+                                        <td class="d-none d-sm-block text-center">
                                             <router-link :to="`/transaction/${transaction.id}`">
                                                 {{ transaction.id }}
                                             </router-link>
@@ -104,13 +104,13 @@
                                         <td class="text-center">
                                             {{ transaction.date | dateMoment('MMMM Do YYYY') }}
                                         </td>
-                                        <td class="text-center">
+                                        <td class="d-none d-sm-block text-center">
                                             {{ transaction.account.name | capitalize }}
                                         </td>
                                         <td class="text-right text-bold" :class="getAmountClass(transaction, 'text')">
                                             {{ transaction | transactionAmount }}
                                         </td>
-                                        <td class="text-center">
+                                        <td class="d-none d-sm-block text-center">
                                             <span class="badge badge-dark text-white">
                                                 {{ transaction.category.name | capitalize }}
                                             </span>
@@ -221,3 +221,13 @@
         }
     }
 </script>
+
+<style scoped lang="scss">
+    .small-box {
+        .inner {
+            h3 {
+                font-size: 22px;
+            }
+        }
+    }
+</style>
