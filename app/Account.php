@@ -12,6 +12,7 @@ namespace App;
  * @property float $balance
  * @property AccountType $type
  * @property User $user
+ * @property Currency $currency
  */
 class Account extends ParseRequestAbstractModel
 {
@@ -35,7 +36,7 @@ class Account extends ParseRequestAbstractModel
      * @var array
      */
     protected $fillable = [
-        'name', 'type_id', 'user_id', 'balance',
+        'name', 'type_id', 'user_id', 'currency_id', 'balance',
     ];
 
     /**
@@ -54,6 +55,7 @@ class Account extends ParseRequestAbstractModel
     {
         return self::with('user')
             ->with('type')
+            ->with('currency')
         ;
     }
 
@@ -65,7 +67,7 @@ class Account extends ParseRequestAbstractModel
      */
     protected static function getUserModels(User $user)
     {
-        return self::with('type')
+        return self::getAllModels()
             ->where(['user_id' => $user->id])
         ;
     }
@@ -88,5 +90,15 @@ class Account extends ParseRequestAbstractModel
     public function type()
     {
         return $this->belongsTo(AccountType::class);
+    }
+
+    /**
+     * Get currency of the account
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
     }
 }

@@ -11,6 +11,7 @@ import Transaction from "./components/Transaction";
 import TransactionTypes from "./components/admin/TransactionTypes";
 import TransactionCategoryTypes from "./components/admin/TransactionCategoryTypes";
 import TransactionCategories from "./components/admin/TransactionCategories";
+import Currencies from "./components/admin/Currencies";
 
 import Forbidden from "./components/errors/Forbidden";
 import NotFound from "./components/errors/NotFound";
@@ -30,6 +31,7 @@ export const routes = [
     { path: '/transactionTypes', component: TransactionTypes },
     { path: '/transactionCategoryTypes', component: TransactionCategoryTypes },
     { path: '/transactionCategories', component: TransactionCategories },
+    { path: '/currencies', component: Currencies },
 
     { path: '/forbidden', component: Forbidden },
     { path: '*', component: NotFound },

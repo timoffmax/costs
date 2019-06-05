@@ -155,13 +155,19 @@
                                         <li class="nav-item">
                                             <router-link to="/transactionCategories" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
                                                 <i class="fas fa-pizza-slice nav-icon text-yellow"></i>
-                                                <p>{{ __('Transaction Categories') }}</p>
+                                                <p>{{ __('Categories') }}</p>
                                             </router-link>
                                         </li>
                                         <li class="nav-item">
                                             <router-link to="/transactionCategoryTypes" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
                                                 <i class="fas fa-search-dollar nav-icon text-blue"></i>
-                                                <p>{{ __('Transaction Category Types') }}</p>
+                                                <p>{{ __('Category Types') }}</p>
+                                            </router-link>
+                                        </li>
+                                        <li class="nav-item">
+                                            <router-link to="/currencies" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
+                                                <i class="fas fa-euro-sign nav-icon text-yellow"></i>
+                                                <p>{{ __('Currencies') }}</p>
                                             </router-link>
                                         </li>
                                     </ul>

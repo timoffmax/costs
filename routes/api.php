@@ -29,4 +29,5 @@ Route::apiResources([
     'transactionType' => 'API\TransactionTypeController',
     'transactionCategory' => 'API\TransactionCategoryController',
     'transactionCategoryType' => 'API\TransactionCategoryTypeController',
+    'currency' => 'API\CurrencyController',
 ]);

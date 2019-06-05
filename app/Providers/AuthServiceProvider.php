@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use App\Account;
 use App\AccountType;
+use App\Currency;
 use App\Place;
 use App\Policies\AccountPolicy;
 use App\Policies\AccountTypePolicy;
+use App\Policies\CurrencyPolicy;
 use App\Policies\PlacePolicy;
 use App\Policies\TransactionCategoryPolicy;
 use App\Policies\TransactionCategoryTypePolicy;
@@ -25,6 +27,9 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
 
+/**
+ * Class AuthServiceProvider
+ */
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -43,6 +48,7 @@ class AuthServiceProvider extends ServiceProvider
         TransactionType::class => TransactionTypePolicy::class,
         TransactionCategory::class => TransactionCategoryPolicy::class,
         TransactionCategoryType::class => TransactionCategoryTypePolicy::class,
+        Currency::class => CurrencyPolicy::class,
     ];
 
 

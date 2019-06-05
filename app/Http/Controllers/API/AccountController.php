@@ -56,6 +56,7 @@ class AccountController extends BaseController implements RestApiControllerInter
             'name' => 'required|string|max:50',
             'user_id' => 'required|integer|exists:users,id',
             'type_id' => 'required|integer|exists:account_type,id',
+            'currency_id' => 'nullable|integer|exists:currency,id',
             'balance' => 'required|numeric|between:0,9999999.99',
         ]);
 
