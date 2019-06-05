@@ -95,32 +95,32 @@
                     <nav class="mt-2">
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                             <li class="nav-item">
-                                <router-link to="/dashboard" class="nav-link">
+                                <router-link to="/dashboard" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
                                     <i class="fas fa-tachometer-alt nav-icon text-blue"></i>
-                                    <p>Dashboard</p>
+                                    <p>{{ __('Dashboard') }}</p>
                                 </router-link>
-                                <li class="nav-item">
-                                    <router-link to="/transactions" class="nav-link">
-                                        <i class="fas fa-exchange-alt nav-icon text-yellow"></i>
-                                        <p>{{ __('Transactions') }}</p>
-                                    </router-link>
-                                </li>
-                                <li class="nav-item">
-                                    <router-link to="/accounts" class="nav-link">
-                                        <i class="fas fa-coins nav-icon text-yellow"></i>
-                                        <p>{{ __('Accounts') }}</p>
-                                    </router-link>
-                                </li>
-                                <li class="nav-item">
-                                    <router-link to="/places" class="nav-link">
-                                        <i class="fas fa-map-marker-alt nav-icon text-green"></i>
-                                        <p>{{ __('Places') }}</p>
-                                    </router-link>
-                                </li>
+                            </li>
+                            <li class="nav-item">
+                                <router-link to="/transactions" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
+                                    <i class="fas fa-exchange-alt nav-icon text-yellow"></i>
+                                    <p>{{ __('Transactions') }}</p>
+                                </router-link>
+                            </li>
+                            <li class="nav-item">
+                                <router-link to="/accounts" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
+                                    <i class="fas fa-coins nav-icon text-yellow"></i>
+                                    <p>{{ __('Accounts') }}</p>
+                                </router-link>
+                            </li>
+                            <li class="nav-item">
+                                <router-link to="/places" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
+                                    <i class="fas fa-map-marker-alt nav-icon text-green"></i>
+                                    <p>{{ __('Places') }}</p>
+                                </router-link>
                             </li>
                             @can('viewAll', \App\User::class)
                                 <li class="nav-item has-treeview">
-                                    <a href="#" class="nav-link">
+                                    <a href="#" class="nav-link" >
                                         <i class="nav-icon fas fa-cogs text-purple"></i>
                                         <p>
                                             {{ __('Management') }}
@@ -129,37 +129,37 @@
                                     </a>
                                     <ul class="nav nav-treeview ml-3">
                                         <li class="nav-item">
-                                            <router-link to="/users" class="nav-link">
+                                            <router-link to="/users" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
                                                 <i class="fas fa-users nav-icon text-orange"></i>
                                                 <p>{{ __('Users') }}</p>
                                             </router-link>
                                         </li>
                                         <li class="nav-item">
-                                            <router-link to="/apiUsers" class="nav-link">
+                                            <router-link to="/apiUsers" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
                                                 <i class="fas fa-unlock nav-icon text-orange"></i>
                                                 <p>{{ __('API Users') }}</p>
                                             </router-link>
                                         </li>
                                         <li class="nav-item">
-                                            <router-link to="/accountTypes" class="nav-link">
+                                            <router-link to="/accountTypes" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
                                                 <i class="fas fa-money-check-alt nav-icon text-yellow"></i>
                                                 <p>{{ __('Account Types') }}</p>
                                             </router-link>
                                         </li>
                                         <li class="nav-item">
-                                            <router-link to="/transactionTypes" class="nav-link">
+                                            <router-link to="/transactionTypes" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
                                                 <i class="fas fa-exchange-alt nav-icon text-green"></i>
                                                 <p>{{ __('Transaction Types') }}</p>
                                             </router-link>
                                         </li>
                                         <li class="nav-item">
-                                            <router-link to="/transactionCategories" class="nav-link">
+                                            <router-link to="/transactionCategories" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
                                                 <i class="fas fa-pizza-slice nav-icon text-yellow"></i>
                                                 <p>{{ __('Transaction Categories') }}</p>
                                             </router-link>
                                         </li>
                                         <li class="nav-item">
-                                            <router-link to="/transactionCategoryTypes" class="nav-link">
+                                            <router-link to="/transactionCategoryTypes" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
                                                 <i class="fas fa-search-dollar nav-icon text-blue"></i>
                                                 <p>{{ __('Transaction Category Types') }}</p>
                                             </router-link>
@@ -168,13 +168,14 @@
                                 </li>
                             @endcan
                             <li class="nav-item">
-                                <router-link to="/profile" class="nav-link">
+                                <router-link to="/profile" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
                                     <i class="fas fa-user nav-icon text-green"></i>
                                     <p>{{ __('Profile') }}</p>
                                 </router-link>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('logout') }}" class="nav-link"
+                                   :data-widget="$mq === 'sm' ? 'pushmenu' : ''"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="fas fa-power-off nav-icon text-red"></i>
                                     <p>{{ __('Logout') }}</p>

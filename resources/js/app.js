@@ -108,6 +108,17 @@ import VueGoodTablePlugin from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 Vue.use(VueGoodTablePlugin);
 
+// Vue MQ to detect media queries
+import VueMq from 'vue-mq'
+Vue.use(VueMq, {
+    breakpoints: {
+        sm: 576,
+        md: 768,
+        lg: 960,
+        xl: Infinity,
+    }
+});
+
 /**
  * Add Laravel Passport components
  */

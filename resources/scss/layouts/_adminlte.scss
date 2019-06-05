@@ -9,7 +9,7 @@
 }
 
 // Sidebar
-@media (max-width: 576px) {
+@include media-breakpoint-down(sm) {
   body.sidebar-open {
     .main-sidebar {
       width: 100%;
