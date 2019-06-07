@@ -1,9 +1,13 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+/**
+ * Class CreateTableTransactionCategoryType
+ */
 class CreateTableTransactionCategoryType extends Migration
 {
     /**
@@ -26,6 +30,9 @@ class CreateTableTransactionCategoryType extends Migration
                 ['name' => 'entertainments'],
                 ['name' => 'money savings'],
                 ['name' => 'incomes'],
+                ['name' => 'service charges'],
+                ['name' => 'education'],
+                ['name' => 'gifts'],
             ]
         );
     }

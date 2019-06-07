@@ -53,6 +53,11 @@ class ModifyTableTransactionCategory extends Migration
                         'type_id' => $costType->id,
                         'name' => 'transfer fee'
                     ],
+                    [
+                        'transaction_type_id' => $transferType->id,
+                        'type_id' => $costType->id,
+                        'name' => 'transfer to card'
+                    ],
                 ]
             );
         }

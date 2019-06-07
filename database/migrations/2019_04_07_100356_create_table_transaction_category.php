@@ -1,9 +1,14 @@
 <?php
 
+use App\TransactionType;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+/**
+ * Class CreateTableTransactionCategory
+ */
 class CreateTableTransactionCategory extends Migration
 {
     /**
@@ -29,37 +34,94 @@ class CreateTableTransactionCategory extends Migration
             ;
         });
 
+        $typeLiving = DB::table('transaction_category_type')
+            ->select('id')
+            ->where(['name' => 'living'])
+            ->first()
+        ;
+
+        $typeLiveImproving = DB::table('transaction_category_type')
+            ->select('id')
+            ->where(['name' => 'life improving'])
+            ->first()
+        ;
+
+        $typeEntertainments = DB::table('transaction_category_type')
+            ->select('id')
+            ->where(['name' => 'entertainments'])
+            ->first()
+        ;
+
+        $typeMoneySavings = DB::table('transaction_category_type')
+            ->select('id')
+            ->where(['name' => 'money savings'])
+            ->first()
+        ;
+
+        $typeIncomes = DB::table('transaction_category_type')
+            ->select('id')
+            ->where(['name' => 'incomes'])
+            ->first()
+        ;
+
+        $typeServiceChanges = DB::table('transaction_category_type')
+            ->select('id')
+            ->where(['name' => 'service charges'])
+            ->first()
+        ;
+
+        $typeEducation = DB::table('transaction_category_type')
+            ->select('id')
+            ->where(['name' => 'education'])
+            ->first()
+        ;
+
+        $typeGifts = DB::table('transaction_category_type')
+            ->select('id')
+            ->where(['name' => 'gifts'])
+            ->first()
+        ;
+
         // Insert default categories
         DB::table('transaction_category')->insert(
             [
-                ['transaction_type_id' => 1, 'type_id' => 5, 'name' => 'salary'],
-                ['transaction_type_id' => 1, 'type_id' => 5, 'name' => 'deposits'],
-                ['transaction_type_id' => 1, 'type_id' => 5, 'name' => 'gifts'],
-                ['transaction_type_id' => 1, 'type_id' => 5, 'name' => 'cashback services'],
-                ['transaction_type_id' => 1, 'type_id' => 5, 'name' => 'selling'],
-                ['transaction_type_id' => 1, 'type_id' => 5, 'name' => 'other active income'],
-                ['transaction_type_id' => 1, 'type_id' => 5, 'name' => 'other passive income'],
-                ['transaction_type_id' => 2, 'type_id' => 1, 'name' => 'food and supermarkets'],
-                ['transaction_type_id' => 2, 'type_id' => 1, 'name' => 'pets'],
-                ['transaction_type_id' => 2, 'type_id' => 1, 'name' => 'mobile top up'],
-                ['transaction_type_id' => 2, 'type_id' => 1, 'name' => 'flat rent and utility bills'],
-                ['transaction_type_id' => 2, 'type_id' => 1, 'name' => 'beauty and medicine'],
-                ['transaction_type_id' => 2, 'type_id' => 1, 'name' => 'other bills'],
-                ['transaction_type_id' => 2, 'type_id' => 2, 'name' => 'household appliances'],
-                ['transaction_type_id' => 2, 'type_id' => 2, 'name' => 'furniture'],
-                ['transaction_type_id' => 2, 'type_id' => 2, 'name' => 'clothes and shoes'],
-                ['transaction_type_id' => 2, 'type_id' => 2, 'name' => 'education'],
-                ['transaction_type_id' => 2, 'type_id' => 2, 'name' => 'other goods for home'],
-                ['transaction_type_id' => 2, 'type_id' => 3, 'name' => 'cafes and restaurants'],
-                ['transaction_type_id' => 2, 'type_id' => 3, 'name' => 'paid subscriptions'],
-                ['transaction_type_id' => 2, 'type_id' => 3, 'name' => 'travelling'],
-                ['transaction_type_id' => 2, 'type_id' => 3, 'name' => 'movies'],
-                ['transaction_type_id' => 2, 'type_id' => 3, 'name' => 'sport'],
-                ['transaction_type_id' => 2, 'type_id' => 3, 'name' => 'other entertainments'],
-                ['transaction_type_id' => 2, 'type_id' => 4, 'name' => 'deposits'],
-                ['transaction_type_id' => 2, 'type_id' => 4, 'name' => 'investments'],
-                ['transaction_type_id' => 2, 'type_id' => 4, 'name' => 'moneybox'],
-                ['transaction_type_id' => 2, 'type_id' => 4, 'name' => 'other money savings'],
+                ['transaction_type_id' => 1, 'type_id' => $typeIncomes->id, 'name' => 'salary'],
+                ['transaction_type_id' => 1, 'type_id' => $typeIncomes->id, 'name' => 'deposits'],
+                ['transaction_type_id' => 1, 'type_id' => $typeIncomes->id, 'name' => 'gifts'],
+                ['transaction_type_id' => 1, 'type_id' => $typeIncomes->id, 'name' => 'cashback services'],
+                ['transaction_type_id' => 1, 'type_id' => $typeIncomes->id, 'name' => 'selling'],
+                ['transaction_type_id' => 1, 'type_id' => $typeIncomes->id, 'name' => 'other active income'],
+                ['transaction_type_id' => 1, 'type_id' => $typeIncomes->id, 'name' => 'other passive income'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiving->id, 'name' => 'food and supermarkets'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiving->id, 'name' => 'pets'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiving->id, 'name' => 'mobile top up'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiving->id, 'name' => 'flat rent and utility bills'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiving->id, 'name' => 'beauty and medicine'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiving->id, 'name' => 'other bills'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiveImproving->id, 'name' => 'household appliances'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiveImproving->id, 'name' => 'tech devices'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiveImproving->id, 'name' => 'furniture'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiveImproving->id, 'name' => 'clothes and shoes'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiveImproving->id, 'name' => 'education'],
+                ['transaction_type_id' => 2, 'type_id' => $typeLiveImproving->id, 'name' => 'other goods for home'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEntertainments->id, 'name' => 'cafes and restaurants'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEntertainments->id, 'name' => 'paid subscriptions'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEntertainments->id, 'name' => 'travelling'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEntertainments->id, 'name' => 'movies'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEntertainments->id, 'name' => 'sport'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEntertainments->id, 'name' => 'events'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEntertainments->id, 'name' => 'other entertainments'],
+                ['transaction_type_id' => 2, 'type_id' => $typeMoneySavings->id, 'name' => 'deposits'],
+                ['transaction_type_id' => 2, 'type_id' => $typeMoneySavings->id, 'name' => 'investments'],
+                ['transaction_type_id' => 2, 'type_id' => $typeMoneySavings->id, 'name' => 'moneybox'],
+                ['transaction_type_id' => 2, 'type_id' => $typeMoneySavings->id, 'name' => 'other money savings'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEducation, 'name' => 'courses'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEducation, 'name' => 'books'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEducation, 'name' => 'events'],
+                ['transaction_type_id' => 2, 'type_id' => $typeServiceChanges, 'name' => 'service charge'],
+                ['transaction_type_id' => 2, 'type_id' => $typeServiceChanges, 'name' => 'service fee'],
+                ['transaction_type_id' => 1, 'type_id' => $typeGifts, 'name' => 'gifts'],
+                ['transaction_type_id' => 2, 'type_id' => $typeGifts, 'name' => 'gifts'],
             ]
         );
     }
