@@ -22,6 +22,12 @@ class ModifyTableTransactionCategory extends Migration
             ->first()
         ;
 
+        $costType = DB::table('transaction_type')
+            ->select('id')
+            ->where(['name' => TransactionType::TYPE_COST])
+            ->first()
+        ;
+
         $transferCategory = DB::table('transaction_category_type')
             ->select('id')
             ->where(['name' => 'transfer'])
@@ -44,7 +50,7 @@ class ModifyTableTransactionCategory extends Migration
                     ],
                     [
                         'transaction_type_id' => $transferType->id,
-                        'type_id' => $transferCategory->id,
+                        'type_id' => $costType->id,
                         'name' => 'transfer fee'
                     ],
                 ]

@@ -256,13 +256,13 @@ class Transaction extends ParseRequestAbstractModel
                 $transactionFeeData = [
                     'category_id' => $transferFeeCategory->id,
                     'user_id' => $request['user_id'],
-                    'type_id' => $request['type_id'],
+                    'type_id' => $transferFeeCategory->transaction_type_id,
                     'account_id' => $request['account_from_id'],
                     'date' => $request['date'],
                     'sum' => -$request['fee'],
                     'comment' => "Transaction fee",
                 ];
-                $transactionFee->fill($transactionFeeData)->someMethod();
+                $transactionFee->fill($transactionFeeData);
                 $transactionFee->save();
             }
         } catch (\Throwable $t) {
