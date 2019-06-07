@@ -31,7 +31,7 @@
                                     <td v-if="isAdminMode"><router-link :to="`/user/${account.user.id}`">{{ account.user.name }}</router-link></td>
                                     <td>{{ account.name }}</td>
                                     <td>{{ account.type.name | capitalize }}</td>
-                                    <td class="text-right">{{ account.balance }}</td>
+                                    <td class="text-right">{{ account.balance | price(account.currency) }}</td>
                                     <td class="text-right">
                                         <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'account', account)" @click="showAccountModal(account)">
                                             <i class="fas fa-edit text-green"></i>
@@ -99,6 +99,16 @@
                                 <has-error :form="accountForm" field="type_id"></has-error>
                             </div>
                             <div class="form-group">
+                                <select v-model="accountForm.currency_id"
+                                        class="form-control"
+                                        :class="{'is-invalid': accountForm.errors.has('currency_id')}"
+                                >
+                                    <option value="">No currency</option>
+                                    <option v-for="currency in currencies" :value="currency.id">{{ currency.sign }}</option>
+                                </select>
+                                <has-error :form="accountForm" field="currency_id"></has-error>
+                            </div>
+                            <div class="form-group">
                                 <input type="text"
                                        v-model="accountForm.balance"
                                        class="form-control"
@@ -127,6 +137,7 @@
                 accounts: {},
                 accountTypes: [],
                 users: [],
+                currencies: {},
                 pageSize: 10,
                 viewMode: 'user',
                 currentUser: user,
@@ -142,6 +153,7 @@
                     type_id: null,
                     name: '',
                     balance: 0.00,
+                    currency_id: null,
                 }),
             };
         },
@@ -180,6 +192,13 @@
                 axios.get(`api/user?mode=simple`).then(
                     (response) => {
                         this.users = response.data;
+                    },
+                );
+            },
+            loadCurrencies() {
+                axios.get(`api/currency`).then(
+                    (response) => {
+                        this.currencies = response.data;
                     },
                 );
             },
@@ -330,6 +349,7 @@
             // Load accounts to the table
             this.loadAccountTypes();
             this.loadAccounts();
+            this.loadCurrencies();
 
             if (this.isAdminMode) {
                 this.loadUsers();

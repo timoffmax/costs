@@ -9,6 +9,7 @@ import TransactionCategoryPolicy from "./policies/TransactionCategoryPolicy";
 import TransactionCategoryTypePolicy from "./policies/TransactionCategoryTypePolicy";
 import PlacePolicy from "./policies/PlacePolicy";
 import DashboardPolicy from "./policies/DashboardPolicy";
+import CurrencyPolicy from "./policies/CurrencyPolicy";
 
 export default class Gate
 {
@@ -28,6 +29,7 @@ export default class Gate
             transactionCategoryType: TransactionCategoryTypePolicy,
             place: PlacePolicy,
             dashboard: DashboardPolicy,
+            currency: CurrencyPolicy,
         };
     }
 
