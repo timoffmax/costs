@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -21,6 +22,16 @@ class CreateTableCurrency extends Migration
             $table->string('name', 30)->nullable(false);
             $table->string('sign', 3)->nullable(false);
         });
+
+        // Insert default currencies
+        DB::table('currency')->insert(
+            [
+                ['name' => 'Ukraine Hryvnia', 'sign' => '₴'],
+                ['name' => 'United States Dollar', 'sign' => '$'],
+                ['name' => 'Euro', 'sign' => '€'],
+                ['name' => 'Russia Ruble', 'sign' => '₽'],
+            ]
+        );
     }
 
     /**
