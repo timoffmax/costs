@@ -59,6 +59,7 @@ abstract class ParseRequestAbstractModel extends Model
                         ->orderBy('id', 'DESC')
                     ;
                     break;
+
                 case 'dateIdDesc':
                     $query = $query->latest('date')
                         ->orderBy('id', 'DESC')

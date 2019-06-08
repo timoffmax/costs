@@ -116,7 +116,19 @@
                                        placeholder="Balance"
                                        pattern="\d+(\.\d{2})?"
                                 >
+                                <small class="form-text text-muted">
+                                    Use format 123 or 123.45
+                                </small>
                                 <has-error :form="accountForm" field="balance"></has-error>
+                            </div>
+                            <div class="form-group">
+                                <label class="toggle">
+                                    <input @change="toggleCalculateCosts()" class="toggle__input" type="checkbox" :checked="!accountForm.calculate_costs">
+                                    <span class="toggle__label">
+                                        <span class="toggle__text">Don't calculate costs for this account</span>
+                                    </span>
+                                </label>
+                                <has-error :form="accountForm" field="calculate_costs"></has-error>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -152,8 +164,9 @@
                     user_id: null,
                     type_id: null,
                     name: '',
-                    balance: 0.00,
+                    balance: null,
                     currency_id: null,
+                    calculate_costs: 1,
                 }),
             };
         },
@@ -221,7 +234,6 @@
                     this.modal.title = 'Add a new account';
                     this.modal.buttonTitle = 'Create';
                     this.accountForm.user_id = this.currentUser.id;
-                    this.accountForm.balance = '0.00';
                 }
 
                 // Show modal
@@ -333,6 +345,9 @@
                     }
                 })
             },
+            toggleCalculateCosts() {
+                this.accountForm.calculate_costs = !this.accountForm.calculate_costs;
+            }
         },
         computed: {
             formAction() {
