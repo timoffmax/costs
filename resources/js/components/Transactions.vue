@@ -176,7 +176,7 @@
                                     <has-error :form="transactionForm" field="account_id"></has-error>
                                 </div>
                             </template>
-                            <div v-if="!transactionTypeIsTransfer" class="form-group">
+                            <div v-if="!transactionTypeIsTransfer && !transactionTypeIsIncome" class="form-group">
                                 <select v-model="transactionForm.place_id"
                                         class="form-control"
                                         :class="{'is-invalid': transactionForm.errors.has('place_id')}"
@@ -425,7 +425,7 @@
                     columnFilters: {},
                     sortType: '',
                     sortField: '',
-                    sort: 'latest',
+                    sort: 'dateIdDesc',
                     page: 1,
                     perPage: 100,
                 }
@@ -861,6 +861,15 @@
                 for (let type in this.transactionTypes) {
                     if (this.transactionTypes[type].id === this.transactionForm.type_id) {
                         return this.transactionTypes[type].name === 'transfer';
+                    }
+                }
+
+                return false;
+            },
+            transactionTypeIsIncome() {
+                for (let type in this.transactionTypes) {
+                    if (this.transactionTypes[type].id === this.transactionForm.type_id) {
+                        return this.transactionTypes[type].name === 'income';
                     }
                 }
 
