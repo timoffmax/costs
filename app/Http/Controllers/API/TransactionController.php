@@ -62,6 +62,7 @@ class TransactionController extends BaseController implements RestApiControllerI
                 'type_id' => 'required|integer|exists:transaction_type,id',
                 'account_from_id' => 'required|integer|exists:account,id',
                 'account_to_id' => 'required|integer|exists:account,id',
+                'exchange_course' => 'nullable|numeric|between:0,9999999.99',
                 'date' => 'required|date|date_format:Y-m-d',
                 'sum' => 'required|numeric|between:0,9999999.99',
                 'fee' => 'nullable|numeric|between:0,9999999.99',

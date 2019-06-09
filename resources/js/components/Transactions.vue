@@ -220,6 +220,19 @@
                                 </small>
                                 <has-error :form="transactionForm" field="sum"></has-error>
                             </div>
+                            <div v-if="transferWithExchange" class="form-group">
+                                <input type="text"
+                                       v-model="transactionForm.exchange_course"
+                                       class="form-control"
+                                       :class="{'is-invalid': transactionForm.errors.has('exchange_course')}"
+                                       placeholder="Exchange course"
+                                       pattern="\d+(\.\d{2})?"
+                                >
+                                <small class="form-text text-muted">
+                                    Use format 123 or 123.45
+                                </small>
+                                <has-error :form="transactionForm" field="exchange_course"></has-error>
+                            </div>
                             <div v-if="transactionTypeIsTransfer" class="form-group">
                                 <input type="text"
                                        v-model="transactionForm.fee"
@@ -296,8 +309,9 @@
                     type_id: null,
                     category_id: null,
                     account_id: null,
-                    account_from: null,
-                    account_to: null,
+                    account_from_id: null,
+                    exchange_course: null,
+                    account_to_id: null,
                     place_id: null,
                     sum: null,
                     fee: null,
@@ -755,6 +769,19 @@
                     this.$set(column, 'hidden', !activeColumns[column.field]);
                 }
             },
+            getAccountById(accountId) {
+                let accounts = this.settings.currentUser.accounts;
+
+                console.log(accounts);
+
+                for (let account of accounts) {
+                    if (account.id === accountId) {
+                        return account;
+                    }
+                }
+
+                return null;
+            }
         },
         computed: {
             formAction() {
@@ -874,6 +901,22 @@
                 }
 
                 return false;
+            },
+            transferWithExchange() {
+                let isTransfer = this.transactionTypeIsTransfer;
+                let accountFrom = this.getAccountById(this.transactionForm.account_from_id);
+                let accountTo = this.getAccountById(this.transactionForm.account_to_id);
+                let result = false;
+
+                if (!isTransfer || !accountFrom || !accountTo) {
+                    return false;
+                }
+
+                if (accountFrom.currency_id !== accountTo.currency_id) {
+                    result = true;
+                }
+
+                return result;
             },
         },
         created() {

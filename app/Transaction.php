@@ -109,6 +109,10 @@ class Transaction extends ParseRequestAbstractModel
         // Write down balance after transaction
         $this->balance_after = $this->balance_before + $transactionSum;
 
+        if (TransactionType::TYPE_TRANSFER === $this->type->name) {
+            $this->sum = abs($this->sum);
+        }
+
         if (parent::save($options)) {
             // If it's update
             if ($this->exists) {
@@ -225,28 +229,46 @@ class Transaction extends ParseRequestAbstractModel
             $transferToCategory = TransactionCategory::where(['name' => 'transfer to account'])->firstOrFail();
             $transferFeeCategory = TransactionCategory::where(['name' => 'transfer fee'])->firstOrFail();
 
+            $accountFrom = Account::findOrFail($request['account_from_id']);
+            $accountTo = Account::findOrFail($request['account_to_id']);
+
+            $commentFrom = "Transfer money to own account \"{$accountTo->name}\"";
+            $commentTo = "Receive money from own account \"{$accountFrom->name}\"";
+            $commentFee = "Transfer fee (\"{$accountFrom->name}\" -> \"{$accountTo->name}\")";
+
+            $withExchange = isset($request['exchange_course']);
+
+            if ($withExchange) {
+                $sum = $request['sum'];
+                $exchangeCourse = $request['exchange_course'];
+                $convertedSum = $sum * $exchangeCourse;
+                $commentTo .= ". Course is {$exchangeCourse}";
+            }
+
             $transactionFrom = new Transaction();
             $transactionFromData = [
+                'transfer_type' => 'from',
                 'category_id' => $transferFromCategory->id,
                 'user_id' => $request['user_id'],
-                'type_id' => $request['type_id'],
-                'account_id' => $request['account_from_id'],
+                'type_id' => $transferFromCategory->transaction_type_id,
+                'account_id' => $accountFrom->id,
                 'date' => $request['date'],
                 'sum' => -$request['sum'],
-                'comment' => "Transfer money to own account",
+                'comment' => $commentFrom,
             ];
             $transactionFrom->fill($transactionFromData);
             $transactionFrom->save();
 
             $transactionTo = new Transaction();
             $transactionToData = [
+                'transfer_type' => 'to',
                 'category_id' => $transferToCategory->id,
                 'user_id' => $request['user_id'],
-                'type_id' => $request['type_id'],
-                'account_id' => $request['account_to_id'],
+                'type_id' => $transferToCategory->transaction_type_id,
+                'account_id' => $accountTo->id,
                 'date' => $request['date'],
-                'sum' => $request['sum'],
-                'comment' => "Receive money from own account",
+                'sum' => $convertedSum ?? $request['sum'],
+                'comment' => $commentTo,
             ];
             $transactionTo->fill($transactionToData);
             $transactionTo->save();
@@ -257,10 +279,10 @@ class Transaction extends ParseRequestAbstractModel
                     'category_id' => $transferFeeCategory->id,
                     'user_id' => $request['user_id'],
                     'type_id' => $transferFeeCategory->transaction_type_id,
-                    'account_id' => $request['account_from_id'],
+                    'account_id' => $accountFrom->id,
                     'date' => $request['date'],
                     'sum' => -$request['fee'],
-                    'comment' => "Transaction fee",
+                    'comment' => $commentFee,
                 ];
                 $transactionFee->fill($transactionFeeData);
                 $transactionFee->save();
