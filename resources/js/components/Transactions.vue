@@ -176,7 +176,7 @@
                                     <has-error :form="transactionForm" field="account_id"></has-error>
                                 </div>
                             </template>
-                            <div v-if="!transactionTypeIsTransfer" class="form-group">
+                            <div v-if="!transactionTypeIsTransfer && !transactionTypeIsIncome" class="form-group">
                                 <select v-model="transactionForm.place_id"
                                         class="form-control"
                                         :class="{'is-invalid': transactionForm.errors.has('place_id')}"
@@ -219,6 +219,19 @@
                                     Use format 123 or 123.45
                                 </small>
                                 <has-error :form="transactionForm" field="sum"></has-error>
+                            </div>
+                            <div v-if="transferWithExchange" class="form-group">
+                                <input type="text"
+                                       v-model="transactionForm.exchange_course"
+                                       class="form-control"
+                                       :class="{'is-invalid': transactionForm.errors.has('exchange_course')}"
+                                       placeholder="Exchange course"
+                                       pattern="\d+(\.\d{2})?"
+                                >
+                                <small class="form-text text-muted">
+                                    Use format 123 or 123.45
+                                </small>
+                                <has-error :form="transactionForm" field="exchange_course"></has-error>
                             </div>
                             <div v-if="transactionTypeIsTransfer" class="form-group">
                                 <input type="text"
@@ -296,8 +309,9 @@
                     type_id: null,
                     category_id: null,
                     account_id: null,
-                    account_from: null,
-                    account_to: null,
+                    account_from_id: null,
+                    exchange_course: null,
+                    account_to_id: null,
                     place_id: null,
                     sum: null,
                     fee: null,
@@ -425,7 +439,7 @@
                     columnFilters: {},
                     sortType: '',
                     sortField: '',
-                    sort: 'latest',
+                    sort: 'dateIdDesc',
                     page: 1,
                     perPage: 100,
                 }
@@ -755,6 +769,19 @@
                     this.$set(column, 'hidden', !activeColumns[column.field]);
                 }
             },
+            getAccountById(accountId) {
+                let accounts = this.settings.currentUser.accounts;
+
+                console.log(accounts);
+
+                for (let account of accounts) {
+                    if (account.id === accountId) {
+                        return account;
+                    }
+                }
+
+                return null;
+            }
         },
         computed: {
             formAction() {
@@ -865,6 +892,31 @@
                 }
 
                 return false;
+            },
+            transactionTypeIsIncome() {
+                for (let type in this.transactionTypes) {
+                    if (this.transactionTypes[type].id === this.transactionForm.type_id) {
+                        return this.transactionTypes[type].name === 'income';
+                    }
+                }
+
+                return false;
+            },
+            transferWithExchange() {
+                let isTransfer = this.transactionTypeIsTransfer;
+                let accountFrom = this.getAccountById(this.transactionForm.account_from_id);
+                let accountTo = this.getAccountById(this.transactionForm.account_to_id);
+                let result = false;
+
+                if (!isTransfer || !accountFrom || !accountTo) {
+                    return false;
+                }
+
+                if (accountFrom.currency_id !== accountTo.currency_id) {
+                    result = true;
+                }
+
+                return result;
             },
         },
         created() {

@@ -10,6 +10,7 @@ namespace App;
  * @property int $type_id
  * @property int $user_id
  * @property float $balance
+ * @property bool $calculate_costs
  * @property AccountType $type
  * @property User $user
  * @property Currency $currency
@@ -36,7 +37,7 @@ class Account extends ParseRequestAbstractModel
      * @var array
      */
     protected $fillable = [
-        'name', 'type_id', 'user_id', 'currency_id', 'balance',
+        'name', 'type_id', 'user_id', 'currency_id', 'balance', 'calculate_costs'
     ];
 
     /**
@@ -46,6 +47,9 @@ class Account extends ParseRequestAbstractModel
      */
     protected $hidden = [];
 
+    /**
+     * @var array
+     */
     protected $with = ['currency'];
 
     /**

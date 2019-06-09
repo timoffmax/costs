@@ -285,7 +285,9 @@
                 let sum = 0;
 
                 for (let account of this.profile.accounts) {
-                    sum += parseFloat(account.balance);
+                    if (account.calculate_costs) {
+                        sum += parseFloat(account.balance);
+                    }
                 }
 
                 return sum.toFixed(2);

@@ -55,7 +55,15 @@ abstract class ParseRequestAbstractModel extends Model
         } elseif (!empty($request['sort'])) {
             switch ($request['sort']) {
                 case 'latest':
-                    $query = $query->latest()->orderBy('id', 'DESC');
+                    $query = $query->latest()
+                        ->orderBy('id', 'DESC')
+                    ;
+                    break;
+
+                case 'dateIdDesc':
+                    $query = $query->latest('date')
+                        ->orderBy('id', 'DESC')
+                    ;
                     break;
 
                 default:

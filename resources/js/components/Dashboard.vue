@@ -37,7 +37,7 @@
                     <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
-            <div class="col-lg-3 col-6">
+            <div v-if="userInfo.accounts" class="col-lg-3 col-6">
                 <div class="small-box bg-warning">
                     <div class="inner">
                         <h3>{{ allAccountsAmount }}</h3>
@@ -198,7 +198,9 @@
                 let sum = 0;
 
                 for (let account of this.userInfo.accounts) {
-                    sum += parseFloat(account.balance);
+                    if (account.calculate_costs) {
+                        sum += parseFloat(account.balance);
+                    }
                 }
 
                 return sum.toFixed(2);

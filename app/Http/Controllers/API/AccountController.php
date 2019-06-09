@@ -58,6 +58,7 @@ class AccountController extends BaseController implements RestApiControllerInter
             'type_id' => 'required|integer|exists:account_type,id',
             'currency_id' => 'nullable|integer|exists:currency,id',
             'balance' => 'required|numeric|between:0,9999999.99',
+            'calculate_costs' => 'nullable|boolean',
         ]);
 
         $account->save();
@@ -102,9 +103,10 @@ class AccountController extends BaseController implements RestApiControllerInter
 
         $this->validate($request, [
             'name' => 'required|string|max:50',
-            'user_id' => 'required|integer',
-            'type_id' => 'required|integer',
+            'user_id' => 'required|integer|exists:users,id',
+            'type_id' => 'required|integer|exists:account_type,id',
             'balance' => 'required|numeric|between:0,9999999.99',
+            'calculate_costs' => 'nullable|boolean',
         ]);
 
         $accountModel->fill($formData);
