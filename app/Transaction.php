@@ -94,6 +94,9 @@ class Transaction extends ParseRequestAbstractModel
      */
     public function save(array $options = [])
     {
+        // Type is empty if record isn't saved yet
+        $type = $this->type ?? TransactionType::findOrFail($this->type_id);
+
         // Get account
         $account = $this->account;
 
@@ -109,7 +112,7 @@ class Transaction extends ParseRequestAbstractModel
         // Write down balance after transaction
         $this->balance_after = $this->balance_before + $transactionSum;
 
-        if (TransactionType::TYPE_TRANSFER === $this->type->name) {
+        if (TransactionType::TYPE_TRANSFER === $type->name) {
             $this->sum = abs($this->sum);
         }
 
@@ -236,7 +239,7 @@ class Transaction extends ParseRequestAbstractModel
             $commentTo = "Receive money from own account \"{$accountFrom->name}\"";
             $commentFee = "Transfer fee (\"{$accountFrom->name}\" -> \"{$accountTo->name}\")";
 
-            $withExchange = isset($request['exchange_course']);
+            $withExchange = !empty($request['exchange_course']);
 
             if ($withExchange) {
                 $sum = $request['sum'];
@@ -281,7 +284,7 @@ class Transaction extends ParseRequestAbstractModel
                     'type_id' => $transferFeeCategory->transaction_type_id,
                     'account_id' => $accountFrom->id,
                     'date' => $request['date'],
-                    'sum' => -$request['fee'],
+                    'sum' => $request['fee'],
                     'comment' => $commentFee,
                 ];
                 $transactionFee->fill($transactionFeeData);
@@ -302,7 +305,10 @@ class Transaction extends ParseRequestAbstractModel
      */
     protected function getSumWithSign()
     {
-        switch ($this->type->name) {
+        // Type is empty if record isn't saved yet
+        $type = $this->type ?? TransactionType::findOrFail($this->type_id);
+
+        switch ($type->name) {
             case TransactionType::TYPE_COST:
                 $sum = -$this->sum;
                 break;
