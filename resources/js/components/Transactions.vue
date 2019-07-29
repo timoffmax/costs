@@ -110,6 +110,13 @@
                     </div>
                     <form @submit.prevent="formAction">
                         <div class="modal-body">
+                            <div class="form-group">
+                                <input type="date"
+                                       v-model="transactionForm.date"
+                                       class="form-control"
+                                       :class="{'is-invalid': transactionForm.errors.has('date')}">
+                                <has-error :form="transactionForm" field="date"></has-error>
+                            </div>
                             <div v-if="isAdminMode" class="form-group">
                                 <select v-model="transactionForm.user_id"
                                        class="form-control"
@@ -201,19 +208,12 @@
                                 <has-error :form="transactionForm" field="category_id"></has-error>
                             </div>
                             <div class="form-group">
-                                <input type="date"
-                                       v-model="transactionForm.date"
-                                       class="form-control"
-                                       :class="{'is-invalid': transactionForm.errors.has('date')}">
-                                <has-error :form="transactionForm" field="date"></has-error>
-                            </div>
-                            <div class="form-group">
                                 <input type="text"
                                        v-model="transactionForm.sum"
                                        class="form-control"
                                        :class="{'is-invalid': transactionForm.errors.has('sum')}"
                                        placeholder="Sum"
-                                       pattern="\d+(\.\d{2})?"
+                                       pattern="\d+(\.\d{1,2})?"
                                 >
                                 <small class="form-text text-muted">
                                     Use format 123 or 123.45
@@ -226,7 +226,7 @@
                                        class="form-control"
                                        :class="{'is-invalid': transactionForm.errors.has('exchange_course')}"
                                        placeholder="Exchange course"
-                                       pattern="\d+(\.\d{2})?"
+                                       pattern="\d+(\.\d{1,2})?"
                                 >
                                 <small class="form-text text-muted">
                                     Use format 123 or 123.45
@@ -239,7 +239,7 @@
                                        class="form-control"
                                        :class="{'is-invalid': transactionForm.errors.has('fee')}"
                                        placeholder="Fee"
-                                       pattern="\d+(\.\d{2})?"
+                                       pattern="\d+(\.\d{1,2})?"
                                 >
                                 <small class="form-text text-muted">
                                     Use format 123 or 123.45
@@ -355,36 +355,18 @@
                         field: 'category.name',
                         thClass: 'text-center',
                         tdClass: 'text-left text-nowrap text-capitalize',
-                        filterOptions: {
-                            enabled: true,
-                            placeholder: 'Select Category',
-                            trigger: 'enter',
-                            filterDropdownItems: [],
-                        },
                     },
                     {
                         label: 'Account',
                         field: 'account.name',
                         thClass: 'text-center',
                         tdClass: 'text-center text-nowrap',
-                        filterOptions: {
-                            enabled: true,
-                            placeholder: 'Select Account',
-                            trigger: 'enter',
-                            filterDropdownItems: [],
-                        },
                     },
                     {
                         label: 'Place',
                         field: 'place.name',
                         thClass: 'text-center',
                         tdClass: 'text-left text-nowrap',
-                        filterOptions: {
-                            enabled: true,
-                            placeholder: 'Select Place',
-                            trigger: 'enter',
-                            filterDropdownItems: [],
-                        },
                     },
                     {
                         label: 'Sum',
@@ -772,8 +754,6 @@
             getAccountById(accountId) {
                 let accounts = this.settings.currentUser.accounts;
 
-                console.log(accounts);
-
                 for (let account of accounts) {
                     if (account.id === accountId) {
                         return account;
@@ -844,6 +824,7 @@
                                 hidden: !this.isAdminMode,
                                 filterOptions: {
                                     enabled: this.isAdminMode,
+                                    placeholder: 'All',
                                     filterDropdownItems: this.getUsersList,
                                 },
                                 html: true,
@@ -854,6 +835,7 @@
                             result = Object.assign(column, {
                                 filterOptions: {
                                     enabled: true,
+                                    placeholder: 'All',
                                     filterDropdownItems: this.isAdminMode ? null : this.getAccountsList,
                                 },
                             });
@@ -863,6 +845,7 @@
                             result = Object.assign(column, {
                                 filterOptions: {
                                     enabled: true,
+                                    placeholder: 'All',
                                     filterDropdownItems: this.isAdminMode ? null : this.getPlacesList,
                                 },
                             });
@@ -872,6 +855,7 @@
                             result = Object.assign(column, {
                                 filterOptions: {
                                     enabled: true,
+                                    placeholder: 'All',
                                     filterDropdownItems: this.getCategoriesList,
                                 },
                             });
