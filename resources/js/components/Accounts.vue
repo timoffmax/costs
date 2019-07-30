@@ -114,7 +114,7 @@
                                        class="form-control"
                                        :class="{'is-invalid': accountForm.errors.has('balance')}"
                                        placeholder="Balance"
-                                       pattern="\d+(\.\d{2})?"
+                                       pattern="\d+(\.\d{1,2})?"
                                 >
                                 <small class="form-text text-muted">
                                     Use format 123 or 123.45
