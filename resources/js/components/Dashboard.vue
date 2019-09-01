@@ -76,67 +76,73 @@
                         <span class="info-box-number">{{ info.transactions.lastMonth.count }}</span>
                     </div>
                 </div>
-                <div class="info-box mb-3" v-if="notEmpty(info.charts.thisMonth.costs.byCategory)">
-                    <doughnut-chart-custom :raw-data="info.charts.thisMonth.costs.byCategory"
-                                           title="This Month Costs By Category"
-                    >
-                    </doughnut-chart-custom>
-                </div>
-                <div class="info-box mb-3" v-if="notEmpty(info.charts.lastMonth.costs.byCategory)">
-                    <pie-chart-custom :raw-data="info.charts.lastMonth.costs.byCategory"
-                                      title="Last Month Costs By Category"
-                    >
-                    </pie-chart-custom>
-                </div>
             </div>
             <div v-if="info.transactions.latest && $gate.allow('viewAll', 'transaction')" class="col-md-8">
+                <!--<div class="card">-->
+                    <!--<div class="card-header border-transparent">-->
+                        <!--<h3 class="card-title">Latest Transactions</h3>-->
+                    <!--</div>-->
+                    <!--<div class="card-body p-0">-->
+                        <!--<div class="table-responsive">-->
+                            <!--<table class="table m-0">-->
+                                <!--<thead>-->
+                                    <!--<tr>-->
+                                        <!--<th class="d-none d-sm-block text-center">ID</th>-->
+                                        <!--<th class="text-center">Date</th>-->
+                                        <!--<th class="d-none d-sm-block text-center">Account</th>-->
+                                        <!--<th class="text-right">Sum</th>-->
+                                        <!--<th class="d-none d-sm-block text-center">Category</th>-->
+                                    <!--</tr>-->
+                                <!--</thead>-->
+                                <!--<tbody>-->
+                                    <!--<tr v-for="transaction in info.transactions.latest">-->
+                                        <!--<td class="d-none d-sm-block text-center">-->
+                                            <!--<router-link :to="`/transaction/${transaction.id}`">-->
+                                                <!--{{ transaction.id }}-->
+                                            <!--</router-link>-->
+                                        <!--</td>-->
+                                        <!--<td class="text-center">-->
+                                            <!--{{ transaction.date | dateMoment('MMMM Do YYYY') }}-->
+                                        <!--</td>-->
+                                        <!--<td class="d-none d-sm-block text-center">-->
+                                            <!--{{ transaction.account.name | capitalize }}-->
+                                        <!--</td>-->
+                                        <!--<td class="text-right text-bold" :class="getAmountClass(transaction, 'text')">-->
+                                            <!--{{ transaction | transactionAmount }}-->
+                                        <!--</td>-->
+                                        <!--<td class="d-none d-sm-block text-center">-->
+                                            <!--<span class="badge badge-dark text-white">-->
+                                                <!--{{ transaction.category.name | capitalize }}-->
+                                            <!--</span>-->
+                                        <!--</td>-->
+                                    <!--</tr>-->
+                                <!--</tbody>-->
+                            <!--</table>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="card-footer clearfix">-->
+                        <!--<router-link :to="`/transactions`" class="btn btn-sm btn-outline-dark float-left">-->
+                            <!--All transactions-->
+                        <!--</router-link>-->
+                    <!--</div>-->
+                <!--</div>-->
                 <div class="card">
                     <div class="card-header border-transparent">
-                        <h3 class="card-title">Latest Transactions</h3>
+                        <h3 class="card-title">Charts</h3>
                     </div>
                     <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table m-0">
-                                <thead>
-                                    <tr>
-                                        <th class="d-none d-sm-block text-center">ID</th>
-                                        <th class="text-center">Date</th>
-                                        <th class="d-none d-sm-block text-center">Account</th>
-                                        <th class="text-right">Sum</th>
-                                        <th class="d-none d-sm-block text-center">Category</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="transaction in info.transactions.latest">
-                                        <td class="d-none d-sm-block text-center">
-                                            <router-link :to="`/transaction/${transaction.id}`">
-                                                {{ transaction.id }}
-                                            </router-link>
-                                        </td>
-                                        <td class="text-center">
-                                            {{ transaction.date | dateMoment('MMMM Do YYYY') }}
-                                        </td>
-                                        <td class="d-none d-sm-block text-center">
-                                            {{ transaction.account.name | capitalize }}
-                                        </td>
-                                        <td class="text-right text-bold" :class="getAmountClass(transaction, 'text')">
-                                            {{ transaction | transactionAmount }}
-                                        </td>
-                                        <td class="d-none d-sm-block text-center">
-                                            <span class="badge badge-dark text-white">
-                                                {{ transaction.category.name | capitalize }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <doughnut-chart-custom v-if="notEmpty(info.charts.thisMonth.costs.byCategory)"
+                                               :raw-data="info.charts.thisMonth.costs.byCategory"
+                                               title="This Month Costs By Category"
+                        >
+                        </doughnut-chart-custom>
+                        <pie-chart-custom v-if="notEmpty(info.charts.lastMonth.costs.byCategory)"
+                                          :raw-data="info.charts.lastMonth.costs.byCategory"
+                                          title="Last Month Costs By Category"
+                        >
+                        </pie-chart-custom>
                     </div>
-                    <div class="card-footer clearfix">
-                        <router-link :to="`/transactions`" class="btn btn-sm btn-outline-dark float-left">
-                            All transactions
-                        </router-link>
-                    </div>
+                    <div class="card-footer clearfix"></div>
                 </div>
             </div>
         </div>

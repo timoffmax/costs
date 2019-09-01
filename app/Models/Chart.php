@@ -72,6 +72,8 @@ class Chart
             $costsByCategories[$categoryName] = $categoryCosts;
         }
 
+        arsort($costsByCategories);
+
         return $costsByCategories;
     }
 

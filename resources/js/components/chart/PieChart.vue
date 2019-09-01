@@ -3,6 +3,7 @@
         <div class="col-12">
             <pie-chart :chart-data="chartData"
                        :options="options"
+                       height="250"
             >
             </pie-chart>
         </div>
@@ -53,7 +54,7 @@
                         fontSize: 15,
                     },
                     legend: {
-                        position: 'bottom',
+                        position: 'right',
                     },
                 };
             },
