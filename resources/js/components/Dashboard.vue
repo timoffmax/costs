@@ -136,11 +136,11 @@
                                                title="This Month Costs By Category"
                         >
                         </doughnut-chart-custom>
-                        <pie-chart-custom v-if="notEmpty(info.charts.lastMonth.costs.byCategory)"
+                        <doughnut-chart-custom v-if="notEmpty(info.charts.lastMonth.costs.byCategory)"
                                           :raw-data="info.charts.lastMonth.costs.byCategory"
                                           title="Last Month Costs By Category"
                         >
-                        </pie-chart-custom>
+                        </doughnut-chart-custom>
                     </div>
                     <div class="card-footer clearfix"></div>
                 </div>
