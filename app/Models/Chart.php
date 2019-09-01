@@ -64,12 +64,14 @@ class Chart
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            $categoryName = $transaction->category->name;
+            if ('cost' === $transaction->type->name) {
+                $categoryName = $transaction->category->name;
 
-            $categoryCosts = $costsByCategories[$categoryName] ?? 0;
-            $categoryCosts += $transaction->sum;
+                $categoryCosts = $costsByCategories[$categoryName] ?? 0;
+                $categoryCosts += $transaction->sum;
 
-            $costsByCategories[$categoryName] = $categoryCosts;
+                $costsByCategories[$categoryName] = $categoryCosts;
+            }
         }
 
         arsort($costsByCategories);
