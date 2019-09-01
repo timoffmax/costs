@@ -76,6 +76,18 @@
                         <span class="info-box-number">{{ info.transactions.lastMonth.count }}</span>
                     </div>
                 </div>
+                <div class="info-box mb-3" v-if="notEmpty(info.charts.thisMonth.costs.byCategory)">
+                    <doughnut-chart-custom :raw-data="info.charts.thisMonth.costs.byCategory"
+                                           title="This Month Costs By Category"
+                    >
+                    </doughnut-chart-custom>
+                </div>
+                <div class="info-box mb-3" v-if="notEmpty(info.charts.lastMonth.costs.byCategory)">
+                    <pie-chart-custom :raw-data="info.charts.lastMonth.costs.byCategory"
+                                      title="Last Month Costs By Category"
+                    >
+                    </pie-chart-custom>
+                </div>
             </div>
             <div v-if="info.transactions.latest && $gate.allow('viewAll', 'transaction')" class="col-md-8">
                 <div class="card">
@@ -191,6 +203,9 @@
                 }
 
                 return colorClass;
+            },
+            notEmpty(object) {
+                return Object.keys(object).length > 0;
             },
         },
         computed: {

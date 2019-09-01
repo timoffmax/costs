@@ -33,11 +33,13 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.8.1",
     "admin-lte": "^3.0.0-alpha.2",
+    "chart.js": "^2.8.0",
     "laravel-vue-pagination": "^2.3.0",
     "moment": "^2.24.0",
     "sass": "^1.20.1",
     "sweetalert2": "^7.33.1",
     "vform": "^1.0.0",
+    "vue-chartjs": "^3.4.2",
     "vue-good-table": "^2.16.4",
     "vue-loader": "^15.7.0",
     "vue-mq": "^1.0.1",
