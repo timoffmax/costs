@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Models;
 
+use App\Models\Service\Transaction\GetByPeriod;
 use App\Transaction;
 use App\TransactionType;
 use App\User;
@@ -13,8 +14,6 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * Class DashboardInfo
- *
- * @property $user
  */
 class DashboardInfo extends Model
 {
@@ -33,11 +32,25 @@ class DashboardInfo extends Model
      */
     private $user;
 
-    public function __construct(array $attributes = [])
-    {
-        $this->user = Auth::user();
+    /**
+     * @var GetByPeriod
+     */
+    private $getByPeriod;
 
+    /**
+     * DashboardInfo constructor.
+     * @param GetByPeriod $getByPeriod
+     * @param array $attributes
+     */
+    public function __construct(
+        GetByPeriod $getByPeriod,
+        array $attributes = []
+    ) {
         parent::__construct($attributes);
+
+        $this->user = Auth::user();
+//        $this->user = $user;
+        $this->getByPeriod = $getByPeriod;
     }
 
     /**
@@ -86,7 +99,7 @@ class DashboardInfo extends Model
             $thisMonthStart = new \DateTime('first day of this month');
             $now = new \DateTime();
 
-            $this->thisMonthTransactions = $this->loadTransactions($thisMonthStart, $now);
+            $this->thisMonthTransactions = $this->getByPeriod->execute($thisMonthStart, $now, $this->user);
         }
 
         return $this->thisMonthTransactions;
@@ -103,7 +116,7 @@ class DashboardInfo extends Model
             $lastMonthStart = new \DateTime('first day of last month');
             $lastMonthEnd = new \DateTime('last day of last month');
 
-            $this->lastMonthTransactions = $this->loadTransactions($lastMonthStart, $lastMonthEnd);
+            $this->lastMonthTransactions = $this->getByPeriod->execute($lastMonthStart, $lastMonthEnd, $this->user);
         }
 
         return $this->lastMonthTransactions;

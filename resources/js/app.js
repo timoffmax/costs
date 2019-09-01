@@ -170,6 +170,11 @@ import Gate from './Gate';
 Vue.prototype.$gate = new Gate(window.user);
 
 /**
+ * Import components
+ */
+import { components } from './vue-components';
+
+/**
  * Create Vue instance
  */
 
