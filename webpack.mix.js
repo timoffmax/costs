@@ -23,9 +23,20 @@ if (!mix.inProduction()) {
     mix.sourceMaps();
 }
 
-
 mix.svg({
     assets: ['./resources/svg/'], // a list of directories to search svg images
     output: './resources/js/svg.js', // Where the craeted js file needs to go.
 });
 
+mix.webpackConfig(webpack => {
+    return {
+        plugins: [
+            new webpack.ProvidePlugin({
+                $: 'jquery',
+                jQuery: 'jquery',
+                'window.jQuery': 'jquery',
+                Popper: ['popper.js', 'default'],
+            })
+        ]
+    };
+});
