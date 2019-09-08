@@ -3,7 +3,7 @@
         <div class="col-12">
             <doughnut-chart :chart-data="chartData"
                             :options="options"
-                            height="250"
+                            :width="resultWidth" :height="resultHeight"
             >
             </doughnut-chart>
         </div>
@@ -17,10 +17,11 @@
         components: {
             DoughnutChart
         },
-        props: ['rawData', 'title'],
+        props: ['rawData', 'title', 'width', 'height'],
         data() {
             return {
-
+                defaultWidth: 800,
+                defaultHeight: 450,
             };
         },
         computed: {
@@ -35,8 +36,8 @@
                 return {
                     datasets: [{
                         backgroundColor: this.getRandomColors(values.length),
-                        borderColor: 'rgba(200, 200, 200, 0.75)',
-                        hoverBorderColor: 'rgba(200, 200, 200, 1)',
+                        borderColor: '#fff',
+                        hoverBorderColor: '#fff',
                         data: values
                     }],
                     labels: labels
@@ -56,7 +57,14 @@
                     legend: {
                         position: 'right',
                     },
+                    cutoutPercentage: 65,
                 };
+            },
+            resultWidth() {
+                return this.width ? this.width : this.defaultWidth;
+            },
+            resultHeight() {
+                return this.height ? this.height : this.defaultHeight;
             },
         },
         methods: {

@@ -1,27 +1,25 @@
 <template>
     <div class="container container-fluid">
         <div class="col-12">
-            <pie-chart :chart-data="chartData"
-                       :options="options"
-                       :width="resultWidth" :height="resultHeight"
+            <horizontal-bar-chart :chart-data="chartData"
+                                  :options="options"
             >
-            </pie-chart>
+            </horizontal-bar-chart>
         </div>
     </div>
 </template>
 
 <script>
-    import PieChart from '../../charts/PieChart'
+    import HorizontalBarChart from '../../charts/HorizontalBarChart'
 
     export default {
         components: {
-            PieChart
+            HorizontalBarChart
         },
-        props: ['rawData', 'title', 'width', 'height'],
+        props: ['rawData', 'title'],
         data() {
             return {
-                defaultWidth: 800,
-                defaultHeight: 450,
+
             };
         },
         computed: {
@@ -55,15 +53,9 @@
                         fontSize: 15,
                     },
                     legend: {
-                        position: 'right',
+                        display: false,
                     },
                 };
-            },
-            resultWidth() {
-                return this.width ? this.width : this.defaultWidth;
-            },
-            resultHeight() {
-                return this.height ? this.height : this.defaultHeight;
             },
         },
         methods: {

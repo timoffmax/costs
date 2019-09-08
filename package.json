@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.8.1",
-    "admin-lte": "^3.0.0-alpha.2",
+    "admin-lte": "^3.0.0-rc.1",
     "chart.js": "^2.8.0",
     "laravel-vue-pagination": "^2.3.0",
     "moment": "^2.24.0",

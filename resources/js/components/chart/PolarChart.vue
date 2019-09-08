@@ -1,21 +1,21 @@
 <template>
     <div class="container container-fluid">
         <div class="col-12">
-            <pie-chart :chart-data="chartData"
-                       :options="options"
-                       :width="resultWidth" :height="resultHeight"
+            <polar-chart :chart-data="chartData"
+                         :options="options"
+                         :width="resultWidth" :height="resultHeight"
             >
-            </pie-chart>
+            </polar-chart>
         </div>
     </div>
 </template>
 
 <script>
-    import PieChart from '../../charts/PieChart'
+    import PolarChart from '../../charts/PolarChart'
 
     export default {
         components: {
-            PieChart
+            PolarChart
         },
         props: ['rawData', 'title', 'width', 'height'],
         data() {
