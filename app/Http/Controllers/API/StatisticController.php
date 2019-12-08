@@ -16,16 +16,6 @@ use Illuminate\Support\Facades\Auth;
 class StatisticController extends BaseController
 {
     /**
-     * @var string
-     */
-    private const PARAM_FROM = 'from';
-
-    /**
-     * @var string
-     */
-    private const PARAM_TO = 'to';
-
-    /**
      * @param Request $request
      * @param Statistic $statistic
      * @return array

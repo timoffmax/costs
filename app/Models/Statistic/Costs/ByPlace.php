@@ -24,7 +24,7 @@ class ByPlace extends StatisticAbstract
     {
         $result = [];
 
-        $transactions = $this->getTransactions($dateFrom, $dateTo);
+        $transactions = $this->getCostsTransactions($dateFrom, $dateTo);
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
@@ -34,6 +34,8 @@ class ByPlace extends StatisticAbstract
             $result[$placeName] = $result[$placeName] ?? 0;
             $result[$placeName] += $transaction->sum;
         }
+
+        rsort($result);
 
         return $result;
     }

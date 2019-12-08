@@ -24,7 +24,7 @@ class ByCategory extends StatisticAbstract
     {
         $result = [];
 
-        $transactions = $this->getTransactions($dateFrom, $dateTo);
+        $transactions = $this->getCostsTransactions($dateFrom, $dateTo);
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
@@ -35,7 +35,7 @@ class ByCategory extends StatisticAbstract
             $result[$placeName] += $transaction->sum;
         }
 
-        ksort($result);
+        rsort($result);
 
         return $result;
     }

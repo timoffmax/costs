@@ -23,7 +23,7 @@ class ByDay extends StatisticAbstract
     {
         $result = [];
 
-        $transactions = $this->getTransactions($dateFrom, $dateTo);
+        $transactions = $this->getCostsTransactions($dateFrom, $dateTo);
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
