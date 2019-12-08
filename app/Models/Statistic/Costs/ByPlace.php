@@ -35,7 +35,7 @@ class ByPlace extends StatisticAbstract
             $result[$placeName] += $transaction->sum;
         }
 
-        rsort($result);
+        arsort($result);
 
         return $result;
     }
