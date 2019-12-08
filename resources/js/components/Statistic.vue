@@ -10,7 +10,7 @@
         </div>
         <div class="row mt-5" v-if="statistic">
             <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
-                <div class="card">
+                <div class="card" v-if="notEmpty(statistic.costs.byPlace)">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Costs By Place</h3>
                     </div>
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
-                <div class="card">
+                <div class="card" v-if="notEmpty(statistic.costs.byCategory)">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Costs By Category</h3>
                     </div>
@@ -72,7 +72,7 @@
                 </div>
             </div>
             <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
-                <div class="card">
+                <div class="card" v-if="notEmpty(statistic.costs.byDay)">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Costs By Day</h3>
                     </div>
