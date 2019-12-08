@@ -49,7 +49,6 @@ class DashboardInfo extends Model
         parent::__construct($attributes);
 
         $this->user = Auth::user();
-//        $this->user = $user;
         $this->getByPeriod = $getByPeriod;
     }
 
