@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::apiResources([
     'dashboard' => 'API\DashboardController',
+    'statistic' => 'API\StatisticController',
     'user' => 'API\UserController',
     'userRole' => 'API\UserRoleController',
     'account' => 'API\AccountController',
@@ -31,3 +33,5 @@ Route::apiResources([
     'transactionCategoryType' => 'API\TransactionCategoryTypeController',
     'currency' => 'API\CurrencyController',
 ]);
+
+Route::get('statistic/{from}/{to}', 'API\StatisticController@index');

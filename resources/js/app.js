@@ -127,6 +127,11 @@ Vue.use(VueMq, {
     }
 });
 
+// Datepicker
+import VMdDateRangePicker from "v-md-date-range-picker";
+
+Vue.use(VMdDateRangePicker);
+
 /**
  * Add Laravel Passport components
  */

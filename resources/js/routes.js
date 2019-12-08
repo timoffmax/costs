@@ -1,4 +1,5 @@
 import Dashboard from "./components/Dashboard";
+import Statistic from "./components/Statistic";
 import Profile from "./components/Profile";
 import Users from "./components/admin/Users";
 import User from "./components/admin/User";
@@ -19,6 +20,7 @@ import NotFound from "./components/errors/NotFound";
 export const routes = [
     { path: '/', component: Dashboard },
     { path: '/dashboard', component: Dashboard },
+    { path: '/statistic', component: Statistic },
     { path: '/profile', component: Profile },
     { path: '/users', component: Users },
     { path: '/user/:id', component: User },
