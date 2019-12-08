@@ -3,6 +3,7 @@
 namespace App;
 
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -151,7 +152,7 @@ class Transaction extends ParseRequestAbstractModel
     /**
      * Get the transaction owner
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function user()
     {
@@ -161,7 +162,7 @@ class Transaction extends ParseRequestAbstractModel
     /**
      * Get the transaction account
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function account()
     {
@@ -171,7 +172,7 @@ class Transaction extends ParseRequestAbstractModel
     /**
      * Get type of the transaction
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function type()
     {
@@ -181,7 +182,7 @@ class Transaction extends ParseRequestAbstractModel
     /**
      * Get category of the transaction
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function category()
     {
@@ -191,7 +192,7 @@ class Transaction extends ParseRequestAbstractModel
     /**
      * Get place of the transaction
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function place()
     {

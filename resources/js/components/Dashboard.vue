@@ -78,7 +78,7 @@
                 </div>
             </div>
             <div v-if="info.transactions.latest && $gate.allow('viewAll', 'transaction')" class="col-md-8">
-                <div class="card card-primary">
+                <div class="card card-primary" v-if="notEmpty(info.charts.thisMonth.costs.byCategory)">
                     <div class="card-header">
                         <h3 class="card-title">This Month Costs By Category</h3>
                         <div class="card-tools">
@@ -91,13 +91,12 @@
                         </div>
                     </div>
                     <div class="card-body" id="this-month-costs">
-                        <doughnut-chart-custom v-if="notEmpty(info.charts.thisMonth.costs.byCategory)"
-                                          :raw-data="info.charts.thisMonth.costs.byCategory"
+                        <doughnut-chart-custom :raw-data="info.charts.thisMonth.costs.byCategory"
                         >
                         </doughnut-chart-custom>
                     </div>
                 </div>
-                <div class="card card-secondary">
+                <div class="card card-secondary" v-if="notEmpty(info.charts.lastMonth.costs.byCategory)">
                     <div class="card-header">
                         <h3 class="card-title">Last Month Costs By Category</h3>
                         <div class="card-tools">
@@ -110,10 +109,9 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <polar-chart-custom v-if="notEmpty(info.charts.lastMonth.costs.byCategory)"
-                                               :raw-data="info.charts.lastMonth.costs.byCategory"
+                        <doughnut-chart-custom :raw-data="info.charts.lastMonth.costs.byCategory"
                         >
-                        </polar-chart-custom>
+                        </doughnut-chart-custom>
                     </div>
                 </div>
                 <div class="card">

@@ -17,6 +17,7 @@ use Laravel\Passport\HasApiTokens;
  * @property UserRole $role
  * @property Account[] $accounts
  * @property Place[] $places
+ * @method static findOrFail($userId)
  */
 class User extends Authenticatable
 {

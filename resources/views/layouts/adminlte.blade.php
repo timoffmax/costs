@@ -101,6 +101,13 @@
                                 </router-link>
                             </li>
                             <li class="nav-item">
+
+                                <router-link to="/statistic" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
+                                    <i class="fas fa-poll nav-icon text-red"></i>
+                                    <p>{{ __('Statistic') }}</p>
+                                </router-link>
+                            </li>
+                            <li class="nav-item">
                                 <router-link to="/transactions" class="nav-link" :data-widget="$mq === 'sm' ? 'pushmenu' : ''">
                                     <i class="fas fa-exchange-alt nav-icon text-yellow"></i>
                                     <p>{{ __('Transactions') }}</p>
