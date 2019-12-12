@@ -8,6 +8,16 @@
 
             </v-md-date-range-picker>
         </div>
+        <div class="row totals mt-5">
+            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="info-box bg-danger">
+                <span class="info-box-icon"><i class="fas fa-coins"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Costs</span>
+                    <span class="info-box-number">{{ statistic.costs.grandTotal | price }}</span>
+                </div>
+            </div>
+        </div>
         <div class="row mt-5" v-if="statistic">
             <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
                 <div class="card" v-if="notEmpty(statistic.costs.byPlace)">
