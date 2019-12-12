@@ -6,7 +6,6 @@ namespace App\Models;
 use App\Models\Service\Transaction\GetByPeriod;
 use App\Transaction;
 use App\User;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class Chart
@@ -54,11 +53,11 @@ class Chart
     /**
      * Returns calculated total by transaction type
      *
-     * @param Collection $transactions
+     * @param array $transactions
      * @param string $type
      * @return float
      */
-    protected function getTotalCostsByCategories(Collection $transactions): array
+    protected function getTotalCostsByCategories(array $transactions): array
     {
         $costsByCategories = [];
 
@@ -114,9 +113,9 @@ class Chart
     /**
      * Returns this month transactions
      *
-     * @return Collection
+     * @return array
      */
-    protected function getThisMonthTransactions(): Collection
+    protected function getThisMonthTransactions(): array
     {
         $thisMonthStart = new \DateTime('first day of this month');
         $now = new \DateTime();
@@ -129,9 +128,9 @@ class Chart
     /**
      * Returns last month transactions
      *
-     * @return Collection
+     * @return array
      */
-    protected function getLastMonthTransactions(): Collection
+    protected function getLastMonthTransactions(): array
     {
         $lastMonthStart = new \DateTime('first day of last month');
         $lastMonthEnd = new \DateTime('last day of last month');
