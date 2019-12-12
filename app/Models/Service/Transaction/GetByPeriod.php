@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Models\Service\Transaction;
 
 use App\Transaction;
+use App\TransactionType;
 use App\User;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -18,18 +19,19 @@ class GetByPeriod
     private $cache = [];
 
     /**
-     * Returns transactions fo the specified period
+     * Returns transactions for the specified period
+     * Accepts date objects as arguments
      *
      * @param \DateTime $from
      * @param \DateTime $to
      * @param User $user
      * @return Collection
      */
-    public function execute(\DateTime $from, \DateTime $to, User $user): Collection
+    public function getByDates(\DateTime $from, \DateTime $to, User $user, ?string $type = null): Collection
     {
         $fromDate = $from->format('Y-m-d');
         $toDate = $to->format('Y-m-d 23:59:59');
-        $cacheKey = "{$fromDate}_{$toDate}";
+        $cacheKey = "{$type}_{$fromDate}_{$toDate}";
 
         $cachedValue = $this->getFromCache($cacheKey);
 
@@ -37,10 +39,29 @@ class GetByPeriod
             return $cachedValue;
         }
 
-        $transactions = $this->getTransactions($fromDate, $toDate, $user);
+        $transactions = $this->getTransactionsByType($fromDate, $toDate, $user, $type);
         $this->setCache($cacheKey, $transactions);
 
         return $transactions;
+    }
+
+    /**
+     * Returns transactions for the specified period
+     * Accepts date stings as arguments
+     *
+     * @param string $from
+     * @param string $to
+     * @param User $user
+     * @param string|null $type
+     * @return Collection
+     * @throws \Exception
+     */
+    public function getByStringDates(string $from, string $to, User $user, ?string $type = null): Collection
+    {
+        $startDate = new \DateTime($from);
+        $endDate = new \DateTime($to);
+
+        return $this->getByDates($startDate, $endDate, $user, $type);
     }
 
     /**
@@ -66,19 +87,24 @@ class GetByPeriod
     }
 
     /**
-     * Returns all existed transactions between two dates for the current user
+     * Returns only filtered by type transactions between two dates for the specified user
      *
      * @param string $from
      * @param string $to
      * @param User $user
      * @return Collection
      */
-    private function getTransactions(string $from, string $to, User $user): Collection
+    private function getTransactionsByType(string $from, string $to, User $user, ?string $type): Collection
     {
         $transactions = Transaction::all()
-            ->whereBetween('date', [$from, $to])
-            ->where('user_id', $user->id)
-        ;
+            ->whereBetween(Transaction::DATE, [$from, $to])
+            ->where(Transaction::USER_ID, $user->id);
+
+        if (null !== $type) {
+            /** @var TransactionType $transactionType */
+            $transactionType = TransactionType::whereName($type)->first();
+            $transactions->where(Transaction::TYPE_ID, $transactionType->id);
+        }
 
         return $transactions;
     }

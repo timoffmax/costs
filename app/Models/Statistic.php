@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Statistic\Costs\ByPlace as CostsByPlace;
 use App\Models\Statistic\Costs\ByCategory as CostsByCategory;
 use App\Models\Statistic\Costs\ByDay as CostsByDay;
+use App\Models\Statistic\Costs\GrandTotal;
 
 /**
  * Class Statistic
@@ -28,19 +29,27 @@ class Statistic
     private $costsByDay;
 
     /**
+     * @var GrandTotal
+     */
+    private $grandTotal;
+
+    /**
      * Statistic constructor.
      * @param CostsByPlace $costsByPlace
      * @param CostsByCategory $costsByCategory
      * @param CostsByDay $costsByDay
+     * @param GrandTotal $grandTotal
      */
     public function __construct(
         CostsByPlace $costsByPlace,
         CostsByCategory $costsByCategory,
-        CostsByDay $costsByDay
+        CostsByDay $costsByDay,
+        GrandTotal $grandTotal
     ) {
         $this->costsByPlace = $costsByPlace;
         $this->costsByCategory = $costsByCategory;
         $this->costsByDay = $costsByDay;
+        $this->grandTotal = $grandTotal;
     }
 
     /**
@@ -74,6 +83,7 @@ class Statistic
             'byPlace' => $this->costsByPlace->getInfo($dateFrom, $dateTo),
             'byCategory' => $this->costsByCategory->getInfo($dateFrom, $dateTo),
             'byDay' => $this->costsByDay->getInfo($dateFrom, $dateTo),
+            'grandTotal' => $this->grandTotal->getTotals($dateFrom, $dateTo),
         ];
     }
 }

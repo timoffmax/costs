@@ -26,6 +26,19 @@ use Illuminate\Support\Facades\DB;
 class Transaction extends ParseRequestAbstractModel
 {
     /**
+     * Field names
+     */
+    public const ID = 'id';
+    public const TYPE_ID = 'type_id';
+    public const ACCOUNT_ID = 'account_id';
+    public const USER_ID = 'user_id';
+    public const SUM = 'sum';
+    public const BALANCE_BEFORE = 'balance_before';
+    public const BALANCE_AFTER = 'balance_after';
+    public const DATE = 'date';
+    public const COMMENT = 'comment';
+
+    /**
      * The table associated with the model.
      *
      * @var string

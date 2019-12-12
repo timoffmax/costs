@@ -98,7 +98,7 @@ class DashboardInfo extends Model
             $thisMonthStart = new \DateTime('first day of this month');
             $now = new \DateTime();
 
-            $this->thisMonthTransactions = $this->getByPeriod->execute($thisMonthStart, $now, $this->user);
+            $this->thisMonthTransactions = $this->getByPeriod->getByDates($thisMonthStart, $now, $this->user);
         }
 
         return $this->thisMonthTransactions;
@@ -115,7 +115,7 @@ class DashboardInfo extends Model
             $lastMonthStart = new \DateTime('first day of last month');
             $lastMonthEnd = new \DateTime('last day of last month');
 
-            $this->lastMonthTransactions = $this->getByPeriod->execute($lastMonthStart, $lastMonthEnd, $this->user);
+            $this->lastMonthTransactions = $this->getByPeriod->getByDates($lastMonthStart, $lastMonthEnd, $this->user);
         }
 
         return $this->lastMonthTransactions;

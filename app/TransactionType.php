@@ -11,9 +11,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TransactionType extends Model
 {
+    /**
+     * Available types
+     */
     public const TYPE_INCOME = 'income';
     public const TYPE_COST = 'cost';
     public const TYPE_TRANSFER = 'transfer';
+
+    /**
+     * Field names
+     */
+    public const ID = 'id';
+    public const NAME = 'name';
 
     /**
      * Don't use 'created_at' and 'updated_at' fields
@@ -24,7 +33,7 @@ class TransactionType extends Model
 
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'transaction_type';
@@ -32,7 +41,7 @@ class TransactionType extends Model
     /**
      * @var array
      */
-    protected $fillable = ['name'];
+    protected $fillable = [self::NAME];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

@@ -9,9 +9,9 @@ use App\TransactionType;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
- * Class StatisticAbstract
+ * Class TotalsAbstract
  */
-abstract class StatisticAbstract implements StatisticInterface
+abstract class TotalsAbstract implements TotalsInterface
 {
     use CurrentUserTrait;
 
@@ -21,7 +21,7 @@ abstract class StatisticAbstract implements StatisticInterface
     protected $getByPeriod;
 
     /**
-     * StatisticAbstract constructor.
+     * TotalsAbstract constructor.
      * @param GetByPeriod $getByPeriod
      */
     public function __construct(GetByPeriod $getByPeriod)
@@ -69,5 +69,27 @@ abstract class StatisticAbstract implements StatisticInterface
         }
 
         return $transactions;
+    }
+
+    /**
+     * Format the total
+     *
+     * @param float $sum
+     * @return string
+     */
+    protected function formatSum(float $sum): string
+    {
+        return number_format((float)$sum, 2, '.', '');
+    }
+
+    /**
+     * Rounds the total to get exactly 2 number after the point
+     *
+     * @param float $sum
+     * @return string
+     */
+    protected function roundSum(float $sum): float
+    {
+        return round($sum, 2);
     }
 }

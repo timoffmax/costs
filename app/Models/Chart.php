@@ -121,7 +121,7 @@ class Chart
         $thisMonthStart = new \DateTime('first day of this month');
         $now = new \DateTime();
 
-        $transactions = $this->getByPeriod->execute($thisMonthStart, $now, $this->user);
+        $transactions = $this->getByPeriod->getByDates($thisMonthStart, $now, $this->user);
 
         return $transactions;
     }
@@ -136,7 +136,7 @@ class Chart
         $lastMonthStart = new \DateTime('first day of last month');
         $lastMonthEnd = new \DateTime('last day of last month');
 
-        $transactions = $this->getByPeriod->execute($lastMonthStart, $lastMonthEnd, $this->user);
+        $transactions = $this->getByPeriod->getByDates($lastMonthStart, $lastMonthEnd, $this->user);
 
         return $transactions;
     }
