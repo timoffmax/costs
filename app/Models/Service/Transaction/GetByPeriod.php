@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Collection;
 class GetByPeriod
 {
     /**
-     * @var Collection[]
+     * @var array
      */
     private $cache = [];
 
@@ -25,9 +25,9 @@ class GetByPeriod
      * @param \DateTime $from
      * @param \DateTime $to
      * @param User $user
-     * @return Collection
+     * @return array
      */
-    public function getByDates(\DateTime $from, \DateTime $to, User $user, ?string $type = null): Collection
+    public function getByDates(\DateTime $from, \DateTime $to, User $user, ?string $type = null): array
     {
         $fromDate = $from->format('Y-m-d');
         $toDate = $to->format('Y-m-d 23:59:59');
@@ -53,10 +53,10 @@ class GetByPeriod
      * @param string $to
      * @param User $user
      * @param string|null $type
-     * @return Collection
+     * @return array
      * @throws \Exception
      */
-    public function getByStringDates(string $from, string $to, User $user, ?string $type = null): Collection
+    public function getByStringDates(string $from, string $to, User $user, ?string $type = null): array
     {
         $startDate = new \DateTime($from);
         $endDate = new \DateTime($to);
@@ -68,9 +68,9 @@ class GetByPeriod
      * Returns cached value if exists
      *
      * @param string $cacheKey
-     * @return Collection|null
+     * @return array|null
      */
-    private function getFromCache(string $cacheKey): ?Collection
+    private function getFromCache(string $cacheKey): ?array
     {
         return $this->cache[$cacheKey] ?? null;
     }
@@ -81,7 +81,7 @@ class GetByPeriod
      * @param $cacheKey
      * @param Collection $transactions
      */
-    private function setCache($cacheKey, Collection $transactions): void
+    private function setCache($cacheKey, array $transactions): void
     {
         $this->cache[$cacheKey] = $transactions;
     }
@@ -92,12 +92,11 @@ class GetByPeriod
      * @param string $from
      * @param string $to
      * @param User $user
-     * @return Collection
+     * @return array
      */
-    private function getTransactionsByType(string $from, string $to, User $user, ?string $type): Collection
+    private function getTransactionsByType(string $from, string $to, User $user, ?string $type): array
     {
-        $transactions = Transaction::all()
-            ->whereBetween(Transaction::DATE, [$from, $to])
+        $transactions = Transaction:: whereBetween(Transaction::DATE, [$from, $to])
             ->where(Transaction::USER_ID, $user->id);
 
         if (null !== $type) {
@@ -106,6 +105,6 @@ class GetByPeriod
             $transactions->where(Transaction::TYPE_ID, $transactionType->id);
         }
 
-        return $transactions;
+        return $transactions->getModels();
     }
 }

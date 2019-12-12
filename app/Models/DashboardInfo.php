@@ -90,9 +90,9 @@ class DashboardInfo extends Model
     /**
      * Returns all the this month transactions
      *
-     * @return Collection
+     * @return array
      */
-    public function getThisMonthTransactions(): Collection
+    public function getThisMonthTransactions(): array
     {
         if (is_null($this->thisMonthTransactions)) {
             $thisMonthStart = new \DateTime('first day of this month');
@@ -107,9 +107,9 @@ class DashboardInfo extends Model
     /**
      * Returns all the last month transactions
      *
-     * @return Collection
+     * @return array
      */
-    public function getLastMonthTransactions(): Collection
+    public function getLastMonthTransactions(): array
     {
         if (is_null($this->lastMonthTransactions)) {
             $lastMonthStart = new \DateTime('first day of last month');
@@ -124,10 +124,10 @@ class DashboardInfo extends Model
     /**
      * Returns total sum of incomes for the provided transactions
      *
-     * @param Collection $transactions
+     * @param array $transactions
      * @return float
      */
-    public function getTotalCosts(Collection $transactions): float
+    public function getTotalCosts(array $transactions): float
     {
         return $this->getTotalByType($transactions, TransactionType::TYPE_COST);
     }
@@ -135,10 +135,10 @@ class DashboardInfo extends Model
     /**
      * Returns total sum of costs for the provided transactions
      *
-     * @param Collection $transactions
+     * @param array $transactions
      * @return float
      */
-    public function getTotalIncomes(Collection $transactions): float
+    public function getTotalIncomes(array $transactions): float
     {
         return $this->getTotalByType($transactions, TransactionType::TYPE_INCOME);
     }
@@ -165,11 +165,11 @@ class DashboardInfo extends Model
     /**
      * Returns calculated total by transaction type
      *
-     * @param Collection $transactions
+     * @param array $transactions
      * @param string $type
      * @return float
      */
-    protected function getTotalByType(Collection $transactions, string $type): float
+    protected function getTotalByType(array $transactions, string $type): float
     {
         $total = 0;
 

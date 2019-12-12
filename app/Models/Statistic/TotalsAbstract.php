@@ -32,10 +32,10 @@ abstract class TotalsAbstract implements TotalsInterface
     /**
      * Returns transactions for the specified period
      *
-     * @return Collection
+     * @return array
      * @throws \Exception
      */
-    protected function getTransactions(string $from, string $to): Collection
+    protected function getTransactions(string $from, string $to): array
     {
         $transactions = $this->getByPeriod->getByStringDates($from, $to, $this->getCurrentUser());
 
@@ -47,10 +47,10 @@ abstract class TotalsAbstract implements TotalsInterface
      *
      * @param string $from
      * @param string $to
-     * @return Collection
+     * @return array
      * @throws \Exception
      */
-    protected function getCostsTransactions(string $from, string $to): Collection
+    protected function getCostsTransactions(string $from, string $to): array
     {
         $transactions = $this->getByPeriod->getByStringDates(
             $from,
