@@ -33,6 +33,7 @@ class ByCategory extends StatisticAbstract
 
             $result[$placeName] = $result[$placeName] ?? 0;
             $result[$placeName] += $transaction->sum;
+            $result[$placeName] = $this->roundSum($result[$placeName]);
         }
 
         arsort($result);

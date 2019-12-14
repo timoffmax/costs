@@ -1,20 +1,34 @@
 <template>
     <div class="container container-fluid mt-5" v-if="$gate.allow('viewAll', 'statistic')">
         <div class="row control">
-            <v-md-date-range-picker start-date="2019-12-01"
-                                    end-date="2019-12-31"
-                                    @change="loadStatisticData"
-            >
+            <div class="col md-12">
+                <v-md-date-range-picker start-date="2019-12-01"
+                                        end-date="2019-12-31"
+                                        @change="loadStatisticData"
+                >
 
-            </v-md-date-range-picker>
+                </v-md-date-range-picker>
+            </div>
         </div>
         <div class="row totals mt-5">
-            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="info-box bg-danger">
-                <span class="info-box-icon"><i class="fas fa-coins"></i></span>
+            <div class="col-md-3">
+                <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="info-box bg-danger">
+                    <span class="info-box-icon"><i class="fas fa-coins"></i></span>
 
-                <div class="info-box-content">
-                    <span class="info-box-text">Costs</span>
-                    <span class="info-box-number">{{ statistic.costs.grandTotal | price }}</span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Costs</span>
+                        <span class="info-box-number">{{ statistic.costs.grandTotal | price }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div v-if="statistic.incomes && $gate.allow('viewAll', 'transaction')" class="info-box bg-success">
+                    <span class="info-box-icon"><i class="fas fa-donate"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Incomes</span>
+                        <span class="info-box-number">{{ statistic.incomes.grandTotal | price }}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -100,6 +114,37 @@
                                         <td class="d-none d-sm-block text-left">
                                             <router-link :to="`/transaction/${day}`">
                                                 {{ day | dateMoment('MMMM Do YYYY') }}
+                                            </router-link>
+                                        </td>
+                                        <td class="text-right text-bold">
+                                            {{ sum }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
+                <div class="card" v-if="notEmpty(statistic.costs.byAccount)">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title">Costs By Account</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                        <th class="d-none d-sm-block text-left">Account</th>
+                                        <th class="text-right">Sum</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(sum, account) in statistic.costs.byAccount">
+                                        <td class="d-none d-sm-block text-left">
+                                            <router-link :to="`/transaction/${account}`">
+                                                {{ account | capitalize }}
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">

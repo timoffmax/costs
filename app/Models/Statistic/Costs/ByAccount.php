@@ -4,16 +4,15 @@ declare(strict_types=1);
 namespace App\Models\Statistic\Costs;
 
 use App\Models\Statistic\StatisticAbstract;
-use App\Place;
 use App\Transaction;
 
 /**
- * Class ByPlace
+ * Class ByAccount
  */
-class ByPlace extends StatisticAbstract
+class ByAccount extends StatisticAbstract
 {
     /**
-     * Returns result
+     * Returns result of ca
      *
      * @param string $dateFrom
      * @param string $dateTo
@@ -28,15 +27,14 @@ class ByPlace extends StatisticAbstract
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            /** @var Place $place */
-            $placeName = $transaction->place ? $transaction->place->name : 'No place';
+            $accountName = $transaction->account->name;
 
-            $result[$placeName] = $result[$placeName] ?? 0;
-            $result[$placeName] += $transaction->sum;
-            $result[$placeName] = $this->roundSum($result[$placeName]);
+            $result[$accountName] = $result[$accountName] ?? 0;
+            $result[$accountName] += $transaction->sum;
+            $result[$accountName] = $this->roundSum($result[$accountName]);
         }
 
-        arsort($result);
+        ksort($result);
 
         return $result;
     }
