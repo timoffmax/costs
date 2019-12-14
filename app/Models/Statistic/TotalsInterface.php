@@ -9,7 +9,7 @@ namespace App\Models\Statistic;
 interface TotalsInterface
 {
     /**
-     * Returns total for the selected period
+     * Returns total of calculations for the selected period
      *
      * @param string $dateFrom
      * @param string $dateTo

@@ -6,7 +6,6 @@ namespace App\Models\Statistic;
 use App\Models\Service\Transaction\GetByPeriod;
 use App\Models\Traits\User\CurrentUserTrait;
 use App\TransactionType;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class StatisticAbstract
@@ -69,5 +68,16 @@ abstract class StatisticAbstract implements StatisticInterface
         }
 
         return $transactions;
+    }
+
+    /**
+     * Rounds the total to get exactly 2 number after the point
+     *
+     * @param float $sum
+     * @return string
+     */
+    protected function roundSum(float $sum): float
+    {
+        return round($sum, 2);
     }
 }

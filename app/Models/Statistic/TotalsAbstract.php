@@ -6,7 +6,6 @@ namespace App\Models\Statistic;
 use App\Models\Service\Transaction\GetByPeriod;
 use App\Models\Traits\User\CurrentUserTrait;
 use App\TransactionType;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class TotalsAbstract
@@ -57,6 +56,35 @@ abstract class TotalsAbstract implements TotalsInterface
             $to,
             $this->getCurrentUser(),
             TransactionType::TYPE_COST
+        );
+
+        foreach ($transactions as $key => $transaction) {
+            $notUah = $transaction->account->currency;
+            $dontCalculateCosts = !$transaction->account->calculate_costs;
+
+            if ($notUah || $dontCalculateCosts) {
+                unset($transactions[$key]);
+            }
+        }
+
+        return $transactions;
+    }
+
+    /**
+     * Returns only incomes transactions
+     *
+     * @param string $from
+     * @param string $to
+     * @return array
+     * @throws \Exception
+     */
+    protected function getIncomeTransactions(string $from, string $to): array
+    {
+        $transactions = $this->getByPeriod->getByStringDates(
+            $from,
+            $to,
+            $this->getCurrentUser(),
+            TransactionType::TYPE_INCOME
         );
 
         foreach ($transactions as $key => $transaction) {

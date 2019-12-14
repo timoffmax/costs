@@ -9,7 +9,7 @@ namespace App\Models\Statistic;
 interface StatisticInterface
 {
     /**
-     * Returns result
+     * Returns total of calculations for the selected period
      *
      * @param string $dateFrom
      * @param string $dateTo
