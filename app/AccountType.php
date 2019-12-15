@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App;
 
@@ -7,10 +8,29 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property string $name
+ * @property string $label
  * @property Account[] $accounts
  */
 class AccountType extends Model
 {
+    public const ENTITY_TABLE = 'account_type';
+
+    /**
+     * Available types
+     */
+    public const TYPE_CASH = 'cash';
+    public const TYPE_CARD = 'card';
+    public const TYPE_MONEYBOX = 'moneybox';
+    public const TYPE_DEPOSIT = 'deposit';
+    public const TYPE_SAVING = 'saving';
+
+    /**
+     * Field names
+     */
+    public const ID = 'id';
+    public const NAME = 'name';
+    public const LABEL = 'label';
+
     /**
      * Don't use 'created_at' and 'updated_at' fields
      *
@@ -20,15 +40,15 @@ class AccountType extends Model
 
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
-    protected $table = 'account_type';
+    protected $table = self::ENTITY_TABLE;
 
     /**
      * @var array
      */
-    protected $fillable = ['name'];
+    protected $fillable = [self::NAME];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
