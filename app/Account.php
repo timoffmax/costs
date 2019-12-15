@@ -1,11 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace App;
-
 
 /**
  * Class Account
  *
+ * @property int $id
  * @property string $name
  * @property int $type_id
  * @property int $user_id
@@ -17,6 +18,25 @@ namespace App;
  */
 class Account extends ParseRequestAbstractModel
 {
+    /**
+     * Field names
+     */
+    public const ID = 'id';
+    public const NAME = 'name';
+    public const TYPE_ID = 'type_id';
+    public const USER_ID = 'user_id';
+    public const BALANCE = 'balance';
+    public const CALCULATE_COSTS = 'calculate_costs';
+
+    public const FIELDS = [
+        self::ID,
+        self::NAME,
+        self::TYPE_ID,
+        self::USER_ID,
+        self::BALANCE,
+        self::CALCULATE_COSTS,
+    ];
+
     /**
      * Don't use 'created_at' and 'updated_at' fields
      *

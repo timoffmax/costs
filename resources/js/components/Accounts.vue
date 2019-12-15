@@ -12,45 +12,77 @@
                             </button>
                         </div>
                     </div>
-                    <!-- /.card-header -->
-                    <div class="card-body table-responsive p-0">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th v-if="isAdminMode">User</th>
-                                    <th>Name</th>
-                                    <th>Type</th>
-                                    <th class="text-right">Balance</th>
-                                    <th class="text-right">Manage</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="account in accounts.data">
-                                    <td>{{ account.id }}</td>
-                                    <td v-if="isAdminMode"><router-link :to="`/user/${account.user.id}`">{{ account.user.name }}</router-link></td>
-                                    <td>{{ account.name }}</td>
-                                    <td>{{ account.type.name | capitalize }}</td>
-                                    <td class="text-right">{{ account.balance | price(account.currency) }}</td>
-                                    <td class="text-right">
-                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'account', account)" @click="showAccountModal(account)">
-                                            <i class="fas fa-edit text-green"></i>
-                                        </button>
-                                        /
-                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'account', account)" @click="deleteAccount(account)">
-                                            <i class="fas fa-trash text-red"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.card-body -->
-                    <div class="card-footer">
-                        <pagination :data="accounts" @pagination-change-page="loadAccounts"/>
+                    <div class="card card-primary card-outline card-outline-tabs">
+                        <div class="card-header p-0 border-bottom-0">
+                            <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active"
+                                       id="all-accounts-tab"
+                                       data-toggle="pill"
+                                       href="#all-accounts"
+                                       role="tab"
+                                       aria-controls="account-tabs-all"
+                                       aria-selected="true"
+                                       @click="selectedType = null"
+                                    >
+                                        All
+                                    </a>
+                                </li>
+                                <li v-for="accountType in accountTypes" class="nav-item">
+                                    <a class="nav-link"
+                                       :id="`${accountType.name}-accounts-tab`"
+                                       data-toggle="pill"
+                                       :href="`#${accountType.name}-accounts`"
+                                       role="tab"
+                                       :aria-controls="`account-tabs-${accountType.name}`"
+                                       aria-selected="false"
+                                       @click="selectedType = accountType.id"
+                                    >
+                                        {{ accountType.label }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="account-tabs-all-tabContent">
+                                <div class="tab-pane fade active show" id="all-accounts" role="tabpanel" aria-labelledby="all-accounts-tab">
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th v-if="isAdminMode">User</th>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th class="text-right">Balance</th>
+                                                <th class="text-right">Manage</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="account in accounts.data">
+                                                <td>{{ account.id }}</td>
+                                                <td v-if="isAdminMode"><router-link :to="`/user/${account.user.id}`">{{ account.user.name }}</router-link></td>
+                                                <td>{{ account.name }}</td>
+                                                <td>{{ account.type.label | capitalize }}</td>
+                                                <td class="text-right">{{ account.balance | price(account.currency) }}</td>
+                                                <td class="text-right">
+                                                    <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'account', account)" @click="showAccountModal(account)">
+                                                        <i class="fas fa-edit text-green"></i>
+                                                    </button>
+                                                    /
+                                                    <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'account', account)" @click="deleteAccount(account)">
+                                                        <i class="fas fa-trash text-red"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!-- /.card -->
             </div>
         </div>
 
@@ -94,7 +126,7 @@
                                        :class="{'is-invalid': accountForm.errors.has('type_id')}"
                                 >
                                     <option value="">Select Account Type</option>
-                                    <option v-for="(type, id) in accountTypes" :value="id">{{ type | capitalize }}</option>
+                                    <option v-for="type in accountTypes" :value="type.id">{{ type.label | capitalize }}</option>
                                 </select>
                                 <has-error :form="accountForm" field="type_id"></has-error>
                             </div>
@@ -148,6 +180,7 @@
             return {
                 accounts: {},
                 accountTypes: [],
+                selectedType: null,
                 users: [],
                 currencies: {},
                 pageSize: 10,
@@ -176,6 +209,7 @@
                 let queryParams = {
                     page: page,
                     pageSize: this.pageSize,
+                    type_id: this.selectedType,
                 };
 
                 if (!this.isAdminMode) {
@@ -195,7 +229,7 @@
                 );
             },
             loadAccountTypes() {
-                axios.get(`api/accountType?mode=simple`).then(
+                axios.get(`api/accountType`).then(
                     (response) => {
                         this.accountTypes = response.data;
                     },
@@ -214,6 +248,9 @@
                         this.currencies = response.data;
                     },
                 );
+            },
+            selectAccountType() {
+
             },
             clearModal() {
                 this.accountForm.clear();
@@ -371,5 +408,12 @@
             }
         },
         mounted() {},
+        watch: {
+            selectedType: {
+                handler: function(newValue, oldValue) {
+                    this.loadAccounts();
+                },
+            }
+        },
     }
 </script>
