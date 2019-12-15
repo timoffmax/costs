@@ -48,13 +48,13 @@ class AccountType extends Model
     /**
      * @var array
      */
-    protected $fillable = [self::NAME];
+    protected $fillable = [self::NAME, self::LABEL];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function accounts()
     {
-        return $this->hasMany('App\Account', 'type_id');
+        return $this->hasMany(Account::class, Account::TYPE_ID);
     }
 }
