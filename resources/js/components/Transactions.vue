@@ -911,10 +911,10 @@
             transactionTypeIfTransferable() {
                 let result = false;
 
-                result = result || this.transactionTypeIsTransfer();
-                result = result || this.transactionTypeIsDeposit();
-                result = result || this.transactionTypeIsMoneybox();
-                result = result || this.transactionTypeIsSaving();
+                result = result || this.transactionTypeIsTransfer;
+                result = result || this.transactionTypeIsDeposit;
+                result = result || this.transactionTypeIsMoneybox;
+                result = result || this.transactionTypeIsSaving;
 
                 return result;
             },
