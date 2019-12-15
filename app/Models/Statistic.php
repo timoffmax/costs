@@ -118,7 +118,7 @@ class Statistic
     public function getIncomesInfo(string $dateFrom, string $dateTo): array
     {
         return [
-            'grandTotal' => $this->costsGrandTotal->getTotals($dateFrom, $dateTo),
+            'grandTotal' => $this->incomesGrandTotal->getTotals($dateFrom, $dateTo),
         ];
     }
 }
