@@ -70,7 +70,7 @@ class Account extends ParseRequestAbstractModel
     /**
      * @var array
      */
-    protected $with = ['currency'];
+    protected $with = ['currency', 'type'];
 
     /**
      * Get accounts of all users

@@ -178,7 +178,9 @@
                                             :class="{'is-invalid': transactionForm.errors.has('account_id')}"
                                     >
                                         <option value="">Select Account</option>
-                                        <option v-for="account in settings.currentUser.accounts" :value="account.id">{{ account.name | capitalize }}</option>
+                                        <option v-for="account in settings.currentUser.accounts"
+                                                v-if="account.type.name === 'card' || account.type.name === 'cash'"
+                                                :value="account.id">{{ account.name | capitalize }}</option>
                                     </select>
                                     <has-error :form="transactionForm" field="account_id"></has-error>
                                 </div>
