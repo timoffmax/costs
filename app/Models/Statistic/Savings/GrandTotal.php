@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Models\Statistic\Incomes;
+namespace App\Models\Statistic\Savings;
 
 use App\Models\Statistic\TotalsAbstract;
 use App\Transaction;
@@ -12,7 +12,7 @@ use App\Transaction;
 class GrandTotal extends TotalsAbstract
 {
     /**
-     * Returns totals sum of incomes for the period
+     * Returns totals sum of money temporarily put off to spend them in the future
      *
      * @inheritDoc
      * @throws \Exception
@@ -21,7 +21,7 @@ class GrandTotal extends TotalsAbstract
     {
         $result = 0.0;
 
-        $incomes = $this->getIncomeTransactions($dateFrom, $dateTo);
+        $incomes = $this->getSavingTransactions($dateFrom, $dateTo);
 
         /** @var Transaction $income */
         foreach ($incomes as $income) {

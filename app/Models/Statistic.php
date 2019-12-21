@@ -8,7 +8,10 @@ use App\Models\Statistic\Costs\ByPlace as CostsByPlace;
 use App\Models\Statistic\Costs\ByCategory as CostsByCategory;
 use App\Models\Statistic\Costs\ByDay as CostsByDay;
 use App\Models\Statistic\Costs\GrandTotal as CostsGrandTotal;
+use App\Models\Statistic\Deposits\GrandTotal as DepositsGrandTotal;
 use App\Models\Statistic\Incomes\GrandTotal as IncomesGrandTotal;
+use App\Models\Statistic\Moneybox\GrandTotal as MoneyboxGrandTotal;
+use App\Models\Statistic\Savings\GrandTotal as SavingsGrandTotal;
 
 /**
  * Class Statistic
@@ -46,13 +49,31 @@ class Statistic
     private $costsByAccount;
 
     /**
+     * @var DepositsGrandTotal
+     */
+    private $depositsGrandTotal;
+
+    /**
+     * @var MoneyboxGrandTotal
+     */
+    private $moneyboxGrandTotal;
+
+    /**
+     * @var SavingsGrandTotal
+     */
+    private $savingsGrandTotal;
+
+    /**
      * Statistic constructor.
      * @param CostsByPlace $costsByPlace
      * @param CostsByCategory $costsByCategory
      * @param CostsByDay $costsByDay
-     * @param CostsGrandTotal $costsGrandTotal
      * @param ByAccount $costsByAccount
+     * @param CostsGrandTotal $costsGrandTotal
      * @param IncomesGrandTotal $incomesGrandTotal
+     * @param DepositsGrandTotal $depositsGrandTotal
+     * @param MoneyboxGrandTotal $moneyboxGrandTotal
+     * @param SavingsGrandTotal $savingsGrandTotal
      */
     public function __construct(
         CostsByPlace $costsByPlace,
@@ -60,7 +81,10 @@ class Statistic
         CostsByDay $costsByDay,
         ByAccount $costsByAccount,
         CostsGrandTotal $costsGrandTotal,
-        IncomesGrandTotal $incomesGrandTotal
+        IncomesGrandTotal $incomesGrandTotal,
+        DepositsGrandTotal $depositsGrandTotal,
+        MoneyboxGrandTotal $moneyboxGrandTotal,
+        SavingsGrandTotal $savingsGrandTotal
     ) {
         $this->costsByPlace = $costsByPlace;
         $this->costsByCategory = $costsByCategory;
@@ -68,6 +92,9 @@ class Statistic
         $this->costsGrandTotal = $costsGrandTotal;
         $this->incomesGrandTotal = $incomesGrandTotal;
         $this->costsByAccount = $costsByAccount;
+        $this->depositsGrandTotal = $depositsGrandTotal;
+        $this->moneyboxGrandTotal = $moneyboxGrandTotal;
+        $this->savingsGrandTotal = $savingsGrandTotal;
     }
 
     /**
@@ -83,6 +110,9 @@ class Statistic
         $result = [
             'costs' => $this->getCostsInfo($dateFrom, $dateTo),
             'incomes' => $this->getIncomesInfo($dateFrom, $dateTo),
+            'deposits' => $this->getDepositsInfo($dateFrom, $dateTo),
+            'moneybox' => $this->getMoneyboxInfo($dateFrom, $dateTo),
+            'savings' => $this->getSavingsInfo($dateFrom, $dateTo),
         ];
 
         return $result;
@@ -119,6 +149,51 @@ class Statistic
     {
         return [
             'grandTotal' => $this->incomesGrandTotal->getTotals($dateFrom, $dateTo),
+        ];
+    }
+
+    /**
+     * Returns various statistic of incomes
+     *
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @return array
+     * @throws \Exception
+     */
+    public function getDepositsInfo(string $dateFrom, string $dateTo): array
+    {
+        return [
+            'grandTotal' => $this->depositsGrandTotal->getTotals($dateFrom, $dateTo),
+        ];
+    }
+
+    /**
+     * Returns various statistic of incomes
+     *
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @return array
+     * @throws \Exception
+     */
+    public function getMoneyboxInfo(string $dateFrom, string $dateTo): array
+    {
+        return [
+            'grandTotal' => $this->moneyboxGrandTotal->getTotals($dateFrom, $dateTo),
+        ];
+    }
+
+    /**
+     * Returns various statistic of incomes
+     *
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @return array
+     * @throws \Exception
+     */
+    public function getSavingsInfo(string $dateFrom, string $dateTo): array
+    {
+        return [
+            'grandTotal' => $this->savingsGrandTotal->getTotals($dateFrom, $dateTo),
         ];
     }
 }
