@@ -134,19 +134,19 @@
                                 >
                                     <option value="">Select Transaction Type</option>
                                     <option v-for="type in transactionTypes" :value="type.id">
-                                        {{ type.name | capitalize }}
+                                        {{ type.label | capitalize }}
                                     </option>
                                 </select>
                                 <has-error :form="transactionForm" field="type_id"></has-error>
                             </div>
-                            <template v-if="transactionTypeIsTransfer">
+                            <template v-if="transactionTypeIfTransferable">
                                 <div class="form-group">
                                     <select v-model="transactionForm.account_from_id"
                                             class="form-control"
                                             :class="{'is-invalid': transactionForm.errors.has('account_from_id')}"
                                     >
                                         <option value="">From Account</option>
-                                        <option v-for="account in settings.currentUser.accounts"
+                                        <option v-for="account in getAccountDropdownOptions('from')"
                                                 :value="account.id"
                                                 v-if="account.id !== transactionForm.account_to_id"
                                         >
@@ -161,7 +161,7 @@
                                             :class="{'is-invalid': transactionForm.errors.has('account_to_id')}"
                                     >
                                         <option value="">To Account</option>
-                                        <option v-for="account in settings.currentUser.accounts"
+                                        <option v-for="account in getAccountDropdownOptions('to')"
                                                 :value="account.id"
                                                 v-if="account.id !== transactionForm.account_from_id"
                                         >
@@ -178,12 +178,13 @@
                                             :class="{'is-invalid': transactionForm.errors.has('account_id')}"
                                     >
                                         <option value="">Select Account</option>
-                                        <option v-for="account in settings.currentUser.accounts" :value="account.id">{{ account.name | capitalize }}</option>
+                                        <option v-for="account in getAccountDropdownOptions()"
+                                                :value="account.id">{{ account.name | capitalize }}</option>
                                     </select>
                                     <has-error :form="transactionForm" field="account_id"></has-error>
                                 </div>
                             </template>
-                            <div v-if="!transactionTypeIsTransfer && !transactionTypeIsIncome" class="form-group">
+                            <div v-if="!transactionTypeIfTransferable && !transactionTypeIsIncome" class="form-group">
                                 <select v-model="transactionForm.place_id"
                                         class="form-control"
                                         :class="{'is-invalid': transactionForm.errors.has('place_id')}"
@@ -193,7 +194,7 @@
                                 </select>
                                 <has-error :form="transactionForm" field="place_id"></has-error>
                             </div>
-                            <div v-if="!transactionTypeIsTransfer" class="form-group">
+                            <div v-if="!transactionTypeIfTransferable" class="form-group">
                                 <select v-model="transactionForm.category_id"
                                         class="form-control"
                                         :class="{'is-invalid': transactionForm.errors.has('category_id')}"
@@ -233,7 +234,7 @@
                                 </small>
                                 <has-error :form="transactionForm" field="exchange_course"></has-error>
                             </div>
-                            <div v-if="transactionTypeIsTransfer" class="form-group">
+                            <div v-if="transactionTypeIfTransferable" class="form-group">
                                 <input type="text"
                                        v-model="transactionForm.fee"
                                        class="form-control"
@@ -246,7 +247,7 @@
                                 </small>
                                 <has-error :form="transactionForm" field="fee"></has-error>
                             </div>
-                            <div v-if="!transactionTypeIsTransfer" class="form-group">
+                            <div v-if="!transactionTypeIfTransferable" class="form-group">
                                 <textarea v-model="transactionForm.comment"
                                        class="form-control"
                                        :class="{'is-invalid': transactionForm.errors.has('comment')}"
@@ -485,7 +486,13 @@
             loadTransactionTypes() {
                 axios.get(`api/transactionType`).then(
                     (response) => {
-                        this.transactionTypes = response.data;
+                        let types = {};
+
+                        for (let type of response.data) {
+                            types[type.id] = type;
+                        }
+
+                        this.transactionTypes = types;
                     },
                 );
             },
@@ -761,7 +768,44 @@
                 }
 
                 return null;
-            }
+            },
+            getAccountDropdownOptions(type = 'from') {
+                let result = [];
+
+                if (!this.transactionForm.type_id) {
+                    return result;
+                }
+
+                let selectedTypeId = this.transactionForm.type_id;
+                let selectedTypeName = this.transactionTypes[selectedTypeId].name;
+
+                for (let account of this.settings.currentUser.accounts) {
+                    let isCasualAccount = account.type.name === 'cash' || account.type.name === 'card';
+
+                    switch (selectedTypeName) {
+                        case 'cost':
+                        case 'income':
+                            if (isCasualAccount) {
+                                result.push(account);
+                            }
+                            break;
+
+                        case 'transfer':
+                            result.push(account);
+                            break;
+
+                        default:
+                            if ('from' === type && isCasualAccount) {
+                                result.push(account);
+                            } else if ('to' === type && account.type.name === selectedTypeName) {
+                                result.push(account);
+                            }
+                            break;
+                    }
+                }
+
+                return result;
+            },
         },
         computed: {
             formAction() {
@@ -868,6 +912,16 @@
                     return result;
                 })
             },
+            transactionTypeIfTransferable() {
+                let result = false;
+
+                result = result || this.transactionTypeIsTransfer;
+                result = result || this.transactionTypeIsDeposit;
+                result = result || this.transactionTypeIsMoneybox;
+                result = result || this.transactionTypeIsSaving;
+
+                return result;
+            },
             transactionTypeIsTransfer() {
                 for (let type in this.transactionTypes) {
                     if (this.transactionTypes[type].id === this.transactionForm.type_id) {
@@ -881,6 +935,33 @@
                 for (let type in this.transactionTypes) {
                     if (this.transactionTypes[type].id === this.transactionForm.type_id) {
                         return this.transactionTypes[type].name === 'income';
+                    }
+                }
+
+                return false;
+            },
+            transactionTypeIsDeposit() {
+                for (let type in this.transactionTypes) {
+                    if (this.transactionTypes[type].id === this.transactionForm.type_id) {
+                        return this.transactionTypes[type].name === 'deposit';
+                    }
+                }
+
+                return false;
+            },
+            transactionTypeIsMoneybox() {
+                for (let type in this.transactionTypes) {
+                    if (this.transactionTypes[type].id === this.transactionForm.type_id) {
+                        return this.transactionTypes[type].name === 'moneybox';
+                    }
+                }
+
+                return false;
+            },
+            transactionTypeIsSaving() {
+                for (let type in this.transactionTypes) {
+                    if (this.transactionTypes[type].id === this.transactionForm.type_id) {
+                        return this.transactionTypes[type].name === 'saving';
                     }
                 }
 

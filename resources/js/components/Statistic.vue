@@ -31,6 +31,36 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-2">
+                <div v-if="statistic.deposits && $gate.allow('viewAll', 'transaction')" class="info-box bg-secondary">
+                    <span class="info-box-icon"><i class="fas fa-file-invoice-dollar"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Deposits</span>
+                        <span class="info-box-number">{{ statistic.deposits.grandTotal | price }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div v-if="statistic.moneybox && $gate.allow('viewAll', 'transaction')" class="info-box bg-primary">
+                    <span class="info-box-icon"><i class="fas fa-piggy-bank"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Moneybox</span>
+                        <span class="info-box-number">{{ statistic.moneybox.grandTotal | price }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div v-if="statistic.savings && $gate.allow('viewAll', 'transaction')" class="info-box bg-info">
+                    <span class="info-box-icon"><i class="fas fa-funnel-dollar"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Other savings</span>
+                        <span class="info-box-number">{{ statistic.savings.grandTotal | price }}</span>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row mt-5" v-if="statistic">
             <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">

@@ -6,6 +6,7 @@ use App\Interfaces\RestApiControllerInterface;
 use App\Transaction;
 use App\TransactionType;
 use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +20,7 @@ class TransactionController extends BaseController implements RestApiControllerI
      *
      * @param Request $request
      * @return mixed
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function index(Request $request)
     {
@@ -44,7 +45,7 @@ class TransactionController extends BaseController implements RestApiControllerI
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function store(Request $request)
     {
@@ -55,7 +56,7 @@ class TransactionController extends BaseController implements RestApiControllerI
         // Check permissions
         $this->authorize('create', $transaction);
 
-        if (TransactionType::TYPE_TRANSFER === $transaction->type->name) {
+        if (in_array($transaction->type->name, TransactionType::TRANSFERABLE_TYPES)) {
             // Validate data
             $this->validate($request, [
                 'user_id' => 'required|integer|exists:users,id',
@@ -92,7 +93,7 @@ class TransactionController extends BaseController implements RestApiControllerI
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function show(int $id)
     {
@@ -112,7 +113,7 @@ class TransactionController extends BaseController implements RestApiControllerI
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function update(Request $request, int $id)
     {
@@ -150,7 +151,7 @@ class TransactionController extends BaseController implements RestApiControllerI
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function destroy(int $id)
     {

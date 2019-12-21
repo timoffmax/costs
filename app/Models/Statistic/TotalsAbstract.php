@@ -51,23 +51,7 @@ abstract class TotalsAbstract implements TotalsInterface
      */
     protected function getCostsTransactions(string $from, string $to): array
     {
-        $transactions = $this->getByPeriod->getByStringDates(
-            $from,
-            $to,
-            $this->getCurrentUser(),
-            TransactionType::TYPE_COST
-        );
-
-        foreach ($transactions as $key => $transaction) {
-            $notUah = $transaction->account->currency;
-            $dontCalculateCosts = !$transaction->account->calculate_costs;
-
-            if ($notUah || $dontCalculateCosts) {
-                unset($transactions[$key]);
-            }
-        }
-
-        return $transactions;
+        return $this->getTransactionsByType($from, $to, TransactionType::TYPE_COST);
     }
 
     /**
@@ -80,11 +64,65 @@ abstract class TotalsAbstract implements TotalsInterface
      */
     protected function getIncomeTransactions(string $from, string $to): array
     {
+        return $this->getTransactionsByType($from, $to, TransactionType::TYPE_INCOME);
+    }
+
+    /**
+     * Returns only deposit transactions
+     *
+     * @param string $from
+     * @param string $to
+     * @return array
+     * @throws \Exception
+     */
+    protected function getDepositTransactions(string $from, string $to): array
+    {
+        return $this->getTransactionsByType($from, $to, TransactionType::TYPE_DEPOSIT);
+    }
+
+    /**
+     * Returns only moneybox transactions
+     *
+     * @param string $from
+     * @param string $to
+     * @return array
+     * @throws \Exception
+     */
+    protected function getMoneyboxTransactions(string $from, string $to): array
+    {
+        return $this->getTransactionsByType($from, $to, TransactionType::TYPE_MONEYBOX);
+    }
+
+    /**
+     * Returns only saving transactions
+     *
+     * @param string $from
+     * @param string $to
+     * @return array
+     * @throws \Exception
+     */
+    protected function getSavingTransactions(string $from, string $to): array
+    {
+        return $this->getTransactionsByType($from, $to, TransactionType::TYPE_SAVING);
+    }
+
+    /**
+     * Returns transactions of the specified type
+     * Filters out inappropriate ones
+     *
+     * @param string $from
+     * @param string $to
+     * @param string $type
+     * @return array
+     * @throws \Exception
+     */
+    protected function getTransactionsByType(string $from, string $to, string $type): array
+    {
         $transactions = $this->getByPeriod->getByStringDates(
             $from,
             $to,
             $this->getCurrentUser(),
-            TransactionType::TYPE_INCOME
+            $type
         );
 
         foreach ($transactions as $key => $transaction) {

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App;
 
@@ -6,13 +7,15 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-
+/**
+ * Class ParseRequestAbstractModel
+ */
 abstract class ParseRequestAbstractModel extends Model
 {
     protected const DEFAULT_PAGE_SIZE = 50;
 
     /**
-     * Returns array of accounts, filtered and paginated
+     * Returns array of entities, filtered and paginated
      *
      * @param Request $request
      * @param User|null $user
@@ -24,6 +27,18 @@ abstract class ParseRequestAbstractModel extends Model
             $query = static::getUserModels($user);
         } else {
             $query = static::getAllModels();
+        }
+
+        if (defined('static::FIELDS')) {
+            foreach (static::FIELDS as $fieldName) {
+                $filterValue = $request[$fieldName] ?? null;
+
+                if (null === $filterValue || 'null' === $filterValue) {
+                    continue;
+                }
+
+                $query->where([$fieldName => $filterValue]);
+            }
         }
 
         // Filter values
