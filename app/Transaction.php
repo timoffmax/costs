@@ -245,6 +245,7 @@ class Transaction extends ParseRequestAbstractModel
             $transferFromCategory = TransactionCategory::where(['name' => 'transfer from account'])->firstOrFail();
             $transferToCategory = TransactionCategory::where(['name' => 'transfer to account'])->firstOrFail();
             $transferFeeCategory = TransactionCategory::where(['name' => 'transfer fee'])->firstOrFail();
+            $transferType = $request['type_id'];
 
             $accountFrom = Account::findOrFail($request['account_from_id']);
             $accountTo = Account::findOrFail($request['account_to_id']);
@@ -267,7 +268,7 @@ class Transaction extends ParseRequestAbstractModel
                 'transfer_type' => 'from',
                 'category_id' => $transferFromCategory->id,
                 'user_id' => $request['user_id'],
-                'type_id' => $transferFromCategory->transaction_type_id,
+                'type_id' => $transferType,
                 'account_id' => $accountFrom->id,
                 'date' => $request['date'],
                 'sum' => -$request['sum'],

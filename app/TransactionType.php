@@ -29,6 +29,16 @@ class TransactionType extends Model
     public const TYPE_SAVING = 'saving';
 
     /**
+     * @var array
+     */
+    public const TRANSFERABLE_TYPES = [
+        self::TYPE_TRANSFER,
+        self::TYPE_DEPOSIT,
+        self::TYPE_MONEYBOX,
+        self::TYPE_SAVING,
+    ];
+
+    /**
      * Field names
      */
     public const ID = 'id';
