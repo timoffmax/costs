@@ -25,7 +25,7 @@ class GrandTotal extends TotalsAbstract
 
         /** @var Transaction $income */
         foreach ($incomes as $income) {
-            $result += $income->sum;
+            $result += abs($income->sum);
         }
 
         $result = $this->roundSum($result);
