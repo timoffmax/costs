@@ -46,6 +46,10 @@
                                             <i class="fas fa-edit text-green"></i>
                                         </button>
                                         /
+                                        <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'transaction', props.row)" @click="copyTransactionModal(props.row)">
+                                            <i class="fas fa-copy text-blue"></i>
+                                        </button>
+                                        /
                                         <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('delete', 'transaction', props.row)" @click="deleteTransaction(props.row)">
                                             <i class="fas fa-trash text-red"></i>
                                         </button>
@@ -534,6 +538,20 @@
                     this.transactionForm.sum = null;
                     this.transactionForm.date = this.currentDate;
                 }
+
+                // Show modal
+                $(this.$refs.transactionModal).modal('show');
+            },
+            copyTransactionModal(transaction) {
+                // Set modal params
+                this.modal.mode = 'create';
+                this.modal.title = 'Copy the transaction';
+                this.modal.buttonTitle = 'Copy';
+
+                // Fill form
+                this.transactionForm.fill(transaction);
+                this.transactionForm.user_id = this.settings.currentUser.id;
+                this.transactionForm.date = this.transactionForm.date.substr(0, 10);
 
                 // Show modal
                 $(this.$refs.transactionModal).modal('show');
