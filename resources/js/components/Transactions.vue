@@ -262,6 +262,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" @click="createTransaction(true)" class="btn btn-outline-dark">Save And Continue</button>
                             <button type="submit" class="btn btn-primary">{{ modal.buttonTitle }}</button>
                         </div>
                     </form>
@@ -560,7 +561,7 @@
                 // Show modal
                 $(this.$refs.columnsSettingsModal).modal('show');
             },
-            createTransaction() {
+            createTransaction(andContinue = false) {
                 this.$Progress.start();
 
                 // Add new user
@@ -568,13 +569,15 @@
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadTransactions();
 
-                        // Close the modal and clean the form
+                        if (true === andContinue) {
+                            let formData = this.transactionForm;
+                            this.showModalWithData(formData, 1000);
+                        }
+
                         $(this.$refs.transactionModal).modal('hide');
 
-                        // Show success message
                         toast({
                             type: 'success',
                             title: 'Transaction added successfully'
@@ -592,6 +595,19 @@
                         });
                     })
                 ;
+            },
+            showModalWithData(formData, delay = 500) {
+                let date = formData.date;
+                let typeId = formData.type_id;
+                let accountId = formData.account_id;
+
+                setTimeout(() => {
+                    this.showTransactionModal();
+
+                    this.transactionForm.date = date;
+                    this.transactionForm.type_id = typeId;
+                    this.transactionForm.account_id = accountId;
+                }, delay);
             },
             updateTransaction() {
                 this.$Progress.start();
@@ -799,11 +815,17 @@
 
                 for (let account of this.settings.currentUser.accounts) {
                     let isCasualAccount = account.type.name === 'cash' || account.type.name === 'card';
+                    let isDepositAccount = account.type.name === 'deposit';
 
                     switch (selectedTypeName) {
                         case 'cost':
-                        case 'income':
                             if (isCasualAccount) {
+                                result.push(account);
+                            }
+                            break;
+
+                        case 'income':
+                            if (isCasualAccount || isDepositAccount) {
                                 result.push(account);
                             }
                             break;
