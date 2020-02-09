@@ -56,7 +56,7 @@ class TransactionController extends BaseController implements RestApiControllerI
         // Check permissions
         $this->authorize('create', $transaction);
 
-        if (in_array($transaction->type->name, TransactionType::TRANSFERABLE_TYPES)) {
+        if ($transaction->type && in_array($transaction->type->name, TransactionType::TRANSFERABLE_TYPES)) {
             // Validate data
             $this->validate($request, [
                 'user_id' => 'required|integer|exists:users,id',
