@@ -2,7 +2,10 @@
     <div class="container-fluid mt-5" v-if="$gate.allow('viewAll', 'statistic')">
         <div class="row control">
             <div class="col md-12">
-                <v-md-date-range-picker @change="loadStatisticData">
+                <v-md-date-range-picker @change="loadStatisticData"
+                                        :startDate="dateFrom"
+                                        :endDate="dateTo"
+                >
                 </v-md-date-range-picker>
             </div>
         </div>

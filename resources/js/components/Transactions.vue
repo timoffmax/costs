@@ -1,5 +1,15 @@
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid mt-5">
+        <div class="row control">
+            <div class="col md-12">
+                <v-md-date-range-picker @change="onDateRangeChange"
+                                        :startDate="dateFrom"
+                                        :endDate="dateTo"
+                >
+
+                </v-md-date-range-picker>
+            </div>
+        </div>
         <div class="row mt-5" v-if="$gate.allow('viewAll', 'transaction')">
             <div class="col-12">
                 <div class="card">
@@ -286,6 +296,9 @@
         },
         data() {
             return {
+                dateFrom: null,
+                dateTo: null,
+
                 settings: {
                     currentUser: user,
                     viewMode: FLAG_MODE_USER,
@@ -352,7 +365,7 @@
                         thClass: 'text-center',
                         tdClass: 'text-center text-nowrap',
                         filterOptions: {
-                            enabled: true,
+                            enabled: false,
                             trigger: 'enter',
                         },
                     },
@@ -442,12 +455,31 @@
                     },
                 );
             },
-            loadTransactions(page = 1) {
-                // Prepare query params
+            loadTransactions() {
+                let queryString = this.prepareQueryString();
+
+                // Send request
+                axios.get(`api/transaction?${queryString}`).then(
+                    (response) => {
+                        this.transactions = response.data;
+                        this.totalRecords = response.data.total;
+                    },
+                );
+            },
+            prepareQueryString() {
                 let queryParams = Object.assign({}, this.serverParams);
 
                 if (this.$route.query) {
                     queryParams = Object.assign({}, queryParams, this.$route.query);
+                }
+
+                if (!queryParams.date) {
+                    if (null === this.dateFrom && null === this.dateTo) {
+                        this.dateFrom = moment().startOf('month').format('YYYY-MM-DD');
+                        this.dateTo = moment().endOf('month').format('YYYY-MM-DD');
+                    }
+
+                    queryParams.date = [this.dateFrom, this.dateTo];
                 }
 
                 for (let paramName in queryParams) {
@@ -470,7 +502,6 @@
                             }
                         }
 
-                        // Convert to JSON
                         queryParams[paramName] = JSON.stringify(parameter);
                     }
                 }
@@ -479,18 +510,12 @@
                     queryParams.userId = this.settings.currentUser.id;
                 }
 
-                queryParams = Object.keys(queryParams)
+                let result = Object.keys(queryParams)
                     .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(queryParams[k]))
                     .join('&')
                 ;
 
-                // Send request
-                axios.get(`api/transaction?${queryParams}`).then(
-                    (response) => {
-                        this.transactions = response.data;
-                        this.totalRecords = response.data.total;
-                    },
-                );
+                return result;
             },
             loadTransactionTypes() {
                 axios.get(`api/transactionType`).then(
@@ -741,6 +766,14 @@
                     }
 
                     this.serverParams.columnFilters[key] = params.columnFilters[columnName];
+                }
+
+                this.loadTransactions();
+            },
+            onDateRangeChange(momentObjects, datesArray) {
+                if (Array.isArray(datesArray)) {
+                    this.dateFrom = datesArray[0];
+                    this.dateTo = datesArray[1];
                 }
 
                 this.loadTransactions();
