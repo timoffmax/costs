@@ -51,21 +51,21 @@
             </div>
         </div>
         <div v-if="info.transactions" class="row justify-content-around">
-            <div class="col-lg-2 info-box bg-success d-none d-md-block">
+            <div class="col-lg-2 info-box bg-success d-none d-lg-block">
                 <span class="info-box-icon"><i class="fas fa-donate"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Last Month Incomes</span>
                     <span class="info-box-number">{{ info.transactions.lastMonth.incomes | price }}</span>
                 </div>
             </div>
-            <div class="col-lg-2 info-box bg-danger d-none d-md-block">
+            <div class="col-lg-2 info-box bg-danger d-none d-lg-block">
                 <span class="info-box-icon"><i class="fas fa-coins"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Last Month Costs</span>
                     <span class="info-box-number">{{ info.transactions.lastMonth.costs | price }}</span>
                 </div>
             </div>
-            <div class="col-lg-2 info-box bg-primary d-none d-md-block">
+            <div class="col-lg-2 info-box bg-primary d-none d-lg-block">
                 <span class="info-box-icon"><i class="fas fa-random"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Last Month Transactions</span>
@@ -74,7 +74,7 @@
             </div>
         </div>
         <div class="row" v-if="info.transactions && $gate.allow('viewAll', 'transaction')">
-            <div class="d-none d-md-block col-md-6">
+            <div class="d-none d-md-block col-lg-6 col-md-12 order-md-2">
                 <div class="card">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Latest Transactions</h3>
@@ -124,7 +124,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="info.transactions.latest && $gate.allow('viewAll', 'transaction')" class="col-md-6">
+            <div v-if="info.transactions.latest && $gate.allow('viewAll', 'transaction')" class="col-lg-6 col-md-12 order-md-1">
                 <div class="card card-primary" v-if="notEmpty(info.charts.thisMonth.costs.byCategory)">
                     <div class="card-header">
                         <h3 class="card-title">This Month Costs By Category</h3>
