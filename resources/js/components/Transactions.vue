@@ -446,6 +446,10 @@
                 // Prepare query params
                 let queryParams = Object.assign({}, this.serverParams);
 
+                if (this.$route.query) {
+                    queryParams = Object.assign({}, queryParams, this.$route.query);
+                }
+
                 for (let paramName in queryParams) {
                     if (typeof queryParams[paramName] === 'object' && Object.keys(queryParams[paramName]).length > 0) {
                         let parameter = queryParams[paramName];
