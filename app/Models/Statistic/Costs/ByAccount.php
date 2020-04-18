@@ -27,11 +27,15 @@ class ByAccount extends StatisticAbstract
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
+            $accountId = $transaction->account->id;
             $accountName = $transaction->account->name;
 
-            $result[$accountName] = $result[$accountName] ?? 0;
-            $result[$accountName] += $transaction->sum;
-            $result[$accountName] = $this->roundSum($result[$accountName]);
+            $sum = $result[$accountId]['sum'] ?? 0;
+            $sum += $transaction->sum;
+
+            $result[$accountId]['id'] = $accountId;
+            $result[$accountId]['name'] = $accountName;
+            $result[$accountId]['sum'] = $this->roundSum($sum);
         }
 
         ksort($result);

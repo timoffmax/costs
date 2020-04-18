@@ -27,9 +27,13 @@ class ByDay extends StatisticAbstract
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            $result[$transaction->date] = $result[$transaction->date] ?? 0;
-            $result[$transaction->date] += $transaction->sum;
-            $result[$transaction->date] = $this->roundSum($result[$transaction->date]);
+            $date = (new \DateTime($transaction->date))->format('Y-m-d');
+
+            $sum = $result[$date]['sum'] ?? 0;
+            $sum += $transaction->sum;
+
+            $result[$date]['sum'] = $this->roundSum($sum);
+            $result[$date]['date'] = $date;
         }
 
         ksort($result);
