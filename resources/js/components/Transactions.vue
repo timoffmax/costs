@@ -1,5 +1,5 @@
 <template>
-    <div class="container container-fluid">
+    <div class="container-fluid">
         <div class="row mt-5" v-if="$gate.allow('viewAll', 'transaction')">
             <div class="col-12">
                 <div class="card">
@@ -445,6 +445,10 @@
             loadTransactions(page = 1) {
                 // Prepare query params
                 let queryParams = Object.assign({}, this.serverParams);
+
+                if (this.$route.query) {
+                    queryParams = Object.assign({}, queryParams, this.$route.query);
+                }
 
                 for (let paramName in queryParams) {
                     if (typeof queryParams[paramName] === 'object' && Object.keys(queryParams[paramName]).length > 0) {

@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
@@ -19,7 +21,7 @@ abstract class ParseRequestAbstractModel extends Model
      *
      * @param Request $request
      * @param User|null $user
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return LengthAwarePaginator|Builder[]|Collection
      */
     public static function getAll(Request $request, ?User $user = null)
     {
@@ -29,20 +31,9 @@ abstract class ParseRequestAbstractModel extends Model
             $query = static::getAllModels();
         }
 
-        if (defined('static::FIELDS')) {
-            foreach (static::FIELDS as $fieldName) {
-                $filterValue = $request[$fieldName] ?? null;
-
-                if (null === $filterValue || 'null' === $filterValue) {
-                    continue;
-                }
-
-                $query->where([$fieldName => $filterValue]);
-            }
-        }
-
         // Filter values
-        $query = static::applyFilters($request, $query);
+        $query = static::applyQueryFilters($request, $query);
+        $query = static::applyColumnFilters($request, $query);
 
         // Sort
         $query = static::applySort($request, $query);
@@ -94,7 +85,7 @@ abstract class ParseRequestAbstractModel extends Model
      *
      * @param Request $request
      * @param Builder $query
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return LengthAwarePaginator|Builder[]|Collection
      */
     protected static function applyPagination(Request $request, Builder $query)
     {
@@ -109,13 +100,45 @@ abstract class ParseRequestAbstractModel extends Model
     }
 
     /**
+     * Applies filters from the query string
+     *
+     * @param Request $request
+     * @param Builder $query
+     * @return Builder
+     */
+    protected static function applyQueryFilters(Request $request, Builder $query): Builder
+    {
+        if (defined('static::FIELDS')) {
+            foreach (static::FIELDS as $fieldName) {
+                $filterValue = $request[$fieldName] ?? null;
+
+                if (null === $filterValue || 'null' === $filterValue) {
+                    continue;
+                }
+
+                $decodedValue = json_decode($filterValue);
+
+                if (is_array($decodedValue) && count($decodedValue) === 2) {
+                    $query->whereBetween($fieldName, $decodedValue);
+                } elseif (is_array($decodedValue) && count($decodedValue) > 2) {
+                    $query->whereIn($fieldName, $decodedValue);
+                } else {
+                    $query->where([$fieldName => $filterValue]);
+                }
+            }
+        }
+
+        return $query;
+    }
+
+    /**
      * Processes filters from the request
      *
      * @param Request $request
      * @param Builder $query
      * @return Builder
      */
-    protected static function applyFilters(Request $request, Builder $query): Builder
+    protected static function applyColumnFilters(Request $request, Builder $query): Builder
     {
         $filters = $request->get('columnFilters');
 

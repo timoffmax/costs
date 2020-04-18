@@ -1,7 +1,7 @@
 <?php
+declare(strict_types=1);
 
 namespace App;
-
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
@@ -29,14 +29,24 @@ class Transaction extends ParseRequestAbstractModel
      * Field names
      */
     public const ID = 'id';
+    public const USER_ID = 'user_id';
     public const TYPE_ID = 'type_id';
     public const ACCOUNT_ID = 'account_id';
-    public const USER_ID = 'user_id';
+    public const PLACE_ID = 'place_id';
+    public const CATEGORY_ID = 'category_id';
     public const SUM = 'sum';
     public const BALANCE_BEFORE = 'balance_before';
     public const BALANCE_AFTER = 'balance_after';
     public const DATE = 'date';
     public const COMMENT = 'comment';
+
+    public const FIELDS = [
+        self::DATE,
+        self::PLACE_ID,
+        self::TYPE_ID,
+        self::ACCOUNT_ID,
+        self::CATEGORY_ID,
+    ];
 
     /**
      * The table associated with the model.

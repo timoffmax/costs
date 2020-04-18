@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Models\Statistic\Costs;
 
 use App\Models\Statistic\StatisticAbstract;
-use App\Place;
 use App\Transaction;
 
 /**
@@ -28,12 +27,15 @@ class ByCategory extends StatisticAbstract
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            /** @var Place $place */
-            $placeName = $transaction->category ? $transaction->category->name : 'No category';
+            $categoryId = $transaction->category->id;
+            $categoryName = $transaction->category->name;
 
-            $result[$placeName] = $result[$placeName] ?? 0;
-            $result[$placeName] += $transaction->sum;
-            $result[$placeName] = $this->roundSum($result[$placeName]);
+            $sum = $result[$categoryId]['sum'] ?? 0;
+            $sum += $transaction->sum;
+
+            $result[$categoryId]['id'] = $categoryId;
+            $result[$categoryId]['sum'] = $this->roundSum($sum);
+            $result[$categoryId]['name'] = $categoryName;
         }
 
         arsort($result);

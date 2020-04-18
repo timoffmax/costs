@@ -1,12 +1,8 @@
 <template>
-    <div class="container container-fluid mt-5" v-if="$gate.allow('viewAll', 'statistic')">
+    <div class="container-fluid mt-5" v-if="$gate.allow('viewAll', 'statistic')">
         <div class="row control">
             <div class="col md-12">
-                <v-md-date-range-picker start-date="2019-12-01"
-                                        end-date="2019-12-31"
-                                        @change="loadStatisticData"
-                >
-
+                <v-md-date-range-picker @change="loadStatisticData">
                 </v-md-date-range-picker>
             </div>
         </div>
@@ -63,7 +59,7 @@
             </div>
         </div>
         <div class="row mt-5" v-if="statistic">
-            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
+            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-3">
                 <div class="card" v-if="notEmpty(statistic.costs.byPlace)">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Costs By Place</h3>
@@ -78,14 +74,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(sum, name) in statistic.costs.byPlace">
+                                    <tr v-for="place in statistic.costs.byPlace">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="`/transaction/${name}`">
-                                                {{ name | capitalize }}
+                                            <router-link :to="getFilterString('place_id', place.id)">
+                                                {{ place.name | capitalize }}
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">
-                                            {{ sum }}
+                                            {{ place.sum }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -94,7 +90,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
+            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-3">
                 <div class="card" v-if="notEmpty(statistic.costs.byCategory)">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Costs By Category</h3>
@@ -109,14 +105,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(sum, name) in statistic.costs.byCategory">
+                                    <tr v-for="category in statistic.costs.byCategory">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="`/transaction/${name}`">
-                                                {{ name | capitalize }}
+                                            <router-link :to="getFilterString('category_id', category.id)">
+                                                {{ category.name | capitalize }}
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">
-                                            {{ sum }}
+                                            {{ category.sum }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -125,7 +121,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
+            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-3">
                 <div class="card" v-if="notEmpty(statistic.costs.byDay)">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Costs By Day</h3>
@@ -140,14 +136,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(sum, day) in statistic.costs.byDay">
+                                    <tr v-for="day in statistic.costs.byDay">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="`/transaction/${day}`">
-                                                {{ day | dateMoment('MMMM Do YYYY') }}
+                                            <router-link :to="`/transactions?date=${day.date}`">
+                                                {{ day.date | dateMoment('MMMM Do YYYY') }}
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">
-                                            {{ sum }}
+                                            {{ day.sum }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -156,7 +152,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
+            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-3">
                 <div class="card" v-if="notEmpty(statistic.costs.byAccount)">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Costs By Account</h3>
@@ -171,14 +167,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(sum, account) in statistic.costs.byAccount">
+                                    <tr v-for="account in statistic.costs.byAccount">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="`/transaction/${account}`">
-                                                {{ account | capitalize }}
+                                            <router-link :to="getFilterString('account_id', account.id)">
+                                                {{ account.name | capitalize }}
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">
-                                            {{ sum }}
+                                            {{ account.sum }}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -200,21 +196,19 @@
                 },
                 userInfo: {},
                 statistic: {},
+                dateFrom: moment().startOf('month').format('YYYY-MM-DD'),
+                dateTo: moment().endOf('month').format('YYYY-MM-DD'),
             };
         },
         methods: {
             loadStatisticData(momentObjects, datesArray) {
-                // Set default values
-                let from = moment().startOf('month').format('YYYY-MM-DD');
-                let to = moment().endOf('month').format('YYYY-MM-DD');
-
                 // Get values from datepicker
                 if (Array.isArray(datesArray)) {
-                    from = datesArray[0];
-                    to = datesArray[1];
+                    this.dateFrom = datesArray[0];
+                    this.dateTo = datesArray[1];
                 }
 
-                axios.get(`api/statistic/${from}/${to}`).then(
+                axios.get(`api/statistic/${this.dateFrom}/${this.dateTo}`).then(
                     (response) => {
                         this.statistic = response.data;
                     },
@@ -231,9 +225,11 @@
             notEmpty(object) {
                 return Object.keys(object).length > 0;
             },
-        },
-        computed: {
+            getFilterString(parameter, value) {
+                let result = `/transactions?${parameter}=${value}&date=${this.dateFrom}&date=${this.dateTo}`;
 
+                return result
+            },
         },
         created() {
             this.loadUserData();
