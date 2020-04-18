@@ -1,5 +1,5 @@
 <template>
-    <div class="container container-fluid">
+    <div class="container-fluid">
         <div class="row mt-5" v-if="$gate.allow('viewAll', 'transaction')">
             <div class="col-12">
                 <div class="card">

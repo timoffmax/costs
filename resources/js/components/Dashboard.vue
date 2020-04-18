@@ -1,5 +1,5 @@
 <template>
-    <div class="container container-fluid mt-5" v-if="$gate.allow('viewAll', 'dashboard')">
+    <div class="container-fluid mt-5" v-if="$gate.allow('viewAll', 'dashboard')">
         <div v-if="info.transactions" class="row">
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-danger">
@@ -50,34 +50,81 @@
                 </div>
             </div>
         </div>
+        <div v-if="info.transactions" class="row justify-content-around">
+            <div class="col-lg-2 info-box bg-success d-none d-md-block">
+                <span class="info-box-icon"><i class="fas fa-donate"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Last Month Incomes</span>
+                    <span class="info-box-number">{{ info.transactions.lastMonth.incomes | price }}</span>
+                </div>
+            </div>
+            <div class="col-lg-2 info-box bg-danger d-none d-md-block">
+                <span class="info-box-icon"><i class="fas fa-coins"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Last Month Costs</span>
+                    <span class="info-box-number">{{ info.transactions.lastMonth.costs | price }}</span>
+                </div>
+            </div>
+            <div class="col-lg-2 info-box bg-primary d-none d-md-block">
+                <span class="info-box-icon"><i class="fas fa-random"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Last Month Transactions</span>
+                    <span class="info-box-number">{{ info.transactions.lastMonth.count }}</span>
+                </div>
+            </div>
+        </div>
         <div class="row" v-if="info.transactions && $gate.allow('viewAll', 'transaction')">
-            <div class="d-none d-md-block col-md-4">
-                <div class="info-box mb-3 bg-success">
-                    <span class="info-box-icon"><i class="fas fa-donate"></i></span>
-
-                    <div class="info-box-content">
-                        <span class="info-box-text">Last Month Incomes</span>
-                        <span class="info-box-number">{{ info.transactions.lastMonth.incomes | price }}</span>
+            <div class="d-none d-md-block col-md-6">
+                <div class="card">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title">Latest Transactions</h3>
                     </div>
-                </div>
-                <div class="info-box mb-3 bg-danger">
-                    <span class="info-box-icon"><i class="fas fa-coins"></i></span>
-
-                    <div class="info-box-content">
-                        <span class="info-box-text">Last Month Costs</span>
-                        <span class="info-box-number">{{ info.transactions.lastMonth.costs | price }}</span>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table m-0">
+                                <thead>
+                                <tr>
+                                    <th class="d-none d-sm-block text-center">ID</th>
+                                    <th class="text-center">Date</th>
+                                    <th class="d-none d-sm-block text-center">Account</th>
+                                    <th class="text-right">Sum</th>
+                                    <th class="d-none d-sm-block text-center">Category</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="transaction in info.transactions.latest">
+                                    <td class="d-none d-sm-block text-center">
+                                        <router-link :to="`/transaction/${transaction.id}`">
+                                            {{ transaction.id }}
+                                        </router-link>
+                                    </td>
+                                    <td class="text-center">
+                                        {{ transaction.date | dateMoment('MMMM Do YYYY') }}
+                                    </td>
+                                    <td class="d-none d-sm-block text-center">
+                                        {{ transaction.account.name | capitalize }}
+                                    </td>
+                                    <td class="text-right text-bold" :class="getAmountClass(transaction, 'text')">
+                                        {{ transaction | transactionAmount }}
+                                    </td>
+                                    <td class="d-none d-sm-block text-center">
+                                    <span class="badge badge-dark text-white">
+                                        {{ transaction.category.name | capitalize }}
+                                    </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div class="info-box mb-3 bg-primary">
-                    <span class="info-box-icon"><i class="fas fa-random"></i></span>
-
-                    <div class="info-box-content">
-                        <span class="info-box-text">Last Month Transactions</span>
-                        <span class="info-box-number">{{ info.transactions.lastMonth.count }}</span>
+                    <div class="card-footer clearfix">
+                        <router-link :to="`/transactions`" class="btn btn-sm btn-outline-dark float-left">
+                            All transactions
+                        </router-link>
                     </div>
                 </div>
             </div>
-            <div v-if="info.transactions.latest && $gate.allow('viewAll', 'transaction')" class="col-md-8">
+            <div v-if="info.transactions.latest && $gate.allow('viewAll', 'transaction')" class="col-md-6">
                 <div class="card card-primary" v-if="notEmpty(info.charts.thisMonth.costs.byCategory)">
                     <div class="card-header">
                         <h3 class="card-title">This Month Costs By Category</h3>
@@ -112,54 +159,6 @@
                         <doughnut-chart-custom :raw-data="info.charts.lastMonth.costs.byCategory"
                         >
                         </doughnut-chart-custom>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header border-transparent">
-                        <h3 class="card-title">Latest Transactions</h3>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table m-0">
-                                <thead>
-                                <tr>
-                                    <th class="d-none d-sm-block text-center">ID</th>
-                                    <th class="text-center">Date</th>
-                                    <th class="d-none d-sm-block text-center">Account</th>
-                                    <th class="text-right">Sum</th>
-                                    <th class="d-none d-sm-block text-center">Category</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr v-for="transaction in info.transactions.latest">
-                                    <td class="d-none d-sm-block text-center">
-                                        <router-link :to="`/transaction/${transaction.id}`">
-                                            {{ transaction.id }}
-                                        </router-link>
-                                    </td>
-                                    <td class="text-center">
-                                        {{ transaction.date | dateMoment('MMMM Do YYYY') }}
-                                    </td>
-                                    <td class="d-none d-sm-block text-center">
-                                        {{ transaction.account.name | capitalize }}
-                                    </td>
-                                    <td class="text-right text-bold" :class="getAmountClass(transaction, 'text')">
-                                        {{ transaction | transactionAmount }}
-                                    </td>
-                                    <td class="d-none d-sm-block text-center">
-                                            <span class="badge badge-dark text-white">
-                                                {{ transaction.category.name | capitalize }}
-                                            </span>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-footer clearfix">
-                        <router-link :to="`/transactions`" class="btn btn-sm btn-outline-dark float-left">
-                            All transactions
-                        </router-link>
                     </div>
                 </div>
             </div>

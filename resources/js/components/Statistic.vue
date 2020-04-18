@@ -1,5 +1,5 @@
 <template>
-    <div class="container container-fluid mt-5" v-if="$gate.allow('viewAll', 'statistic')">
+    <div class="container-fluid mt-5" v-if="$gate.allow('viewAll', 'statistic')">
         <div class="row control">
             <div class="col md-12">
                 <v-md-date-range-picker @change="loadStatisticData">
@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="row mt-5" v-if="statistic">
-            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
+            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-3">
                 <div class="card" v-if="notEmpty(statistic.costs.byPlace)">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Costs By Place</h3>
@@ -90,7 +90,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
+            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-3">
                 <div class="card" v-if="notEmpty(statistic.costs.byCategory)">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Costs By Category</h3>
@@ -121,7 +121,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
+            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-3">
                 <div class="card" v-if="notEmpty(statistic.costs.byDay)">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Costs By Day</h3>
@@ -152,7 +152,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-4">
+            <div v-if="statistic.costs && $gate.allow('viewAll', 'transaction')" class="col-md-3">
                 <div class="card" v-if="notEmpty(statistic.costs.byAccount)">
                     <div class="card-header border-transparent">
                         <h3 class="card-title">Costs By Account</h3>
