@@ -1,7 +1,7 @@
 <template>
-    <div class="container-fluid mt-5">
-        <div class="row control">
-            <div class="col md-12">
+    <div class="container-fluid">
+        <div class="row control mt-5">
+            <div class="col-lg-12">
                 <v-md-date-range-picker @change="onDateRangeChange"
                                         :startDate="dateFrom"
                                         :endDate="dateTo"
@@ -10,9 +10,31 @@
                 </v-md-date-range-picker>
             </div>
         </div>
+        <div class="row search-filters mt-5">
+            <div class="col-lg-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">Active filters</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="this-month-costs">
+                        <button type="button" class="btn btn-primary mr-2" v-for="(value, parameter) in searchFiltersToDisplay">
+                            <b>{{ parameter }}:</b> {{ value }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row mt-5" v-if="$gate.allow('viewAll', 'transaction')">
             <div class="col-12">
-                <div class="card">
+                <div class="card card-secondary">
                     <div class="card-header">
                         <h3 class="card-title">Transactions List</h3>
                         <div class="card-tools">
@@ -316,6 +338,11 @@
                 transactionCategories: [],
                 userAccounts: [],
                 users: [],
+                idNameMap: {
+                    category_id: [],
+                    account_id: [],
+                    place_id: [],
+                },
 
                 modal: {
                     target: this.$refs.transactionModal,
@@ -453,6 +480,8 @@
                 axios.get(`api/user/${window.user.id}`).then(
                     (response) => {
                         this.settings.currentUser = response.data;
+                        this.updateIdNameMap(this.settings.currentUser.accounts, 'account_id');
+                        this.updateIdNameMap(this.settings.currentUser.places, 'place_id');
                     },
                 );
             },
@@ -469,21 +498,6 @@
             },
             prepareQueryString() {
                 let queryParams = Object.assign({}, this.serverParams, this.searchFilters);
-
-                if (!queryParams.date) {
-                    if (null === this.dateFrom && null === this.dateTo) {
-                        this.dateFrom = moment().startOf('month').format('YYYY-MM-DD');
-                        this.dateTo = moment().endOf('month').format('YYYY-MM-DD');
-                    }
-
-                    queryParams.date = [this.dateFrom, this.dateTo];
-                } else if (2 === queryParams.date.length) {
-                    this.dateFrom = queryParams.date[0];
-                    this.dateTo = queryParams.date[1];
-                } else if (queryParams.date.length) {
-                    this.dateFrom = queryParams.date;
-                    this.dateTo = queryParams.date;
-                }
 
                 for (let paramName in queryParams) {
                     if (typeof queryParams[paramName] === 'object' && Object.keys(queryParams[paramName]).length > 0) {
@@ -537,6 +551,7 @@
                 axios.get(`api/transactionCategory`).then(
                     (response) => {
                         this.transactionCategories = response.data;
+                        this.updateIdNameMap(this.transactionCategories, 'category_id');
                     },
                 );
             },
@@ -546,6 +561,21 @@
                         this.users = response.data;
                     },
                 );
+            },
+            updateIdNameMap(objectsArray, key) {
+                for (let item of objectsArray) {
+                    this.idNameMap[key][item.id] = item.name;
+                }
+            },
+            getMappedValueById(key, id) {
+                let result = null;
+                let mapValues = this.idNameMap[key];
+
+                if (typeof mapValues !== 'undefined') {
+                    result = mapValues[id] ? mapValues[id] : null;
+                }
+
+                return result;
             },
             clearModal() {
                 this.transactionForm.clear();
@@ -739,8 +769,6 @@
                 this.serverParams = Object.assign({}, this.serverParams, newProps);
             },
             onPageChange(params) {
-                console.log('page change');
-
                 this.updateParams({page: params.currentPage});
                 this.loadTransactions();
             },
@@ -781,6 +809,40 @@
 
                 this.updateParams({columnFilters: columnFilters});
                 this.loadTransactions();
+            },
+            getColumnName(key) {
+                let result = key;
+
+                for (let realColumnName in this.settings.columnNameAliases) {
+                    if (this.settings.columnNameAliases[realColumnName] === key) {
+                        result = realColumnName;
+                    }
+                }
+
+                return result;
+            },
+            getColumnKey(columnName) {
+                let result = columnName;
+
+                for (let realColumnName in this.settings.columnNameAliases) {
+                    if (realColumnName === columnName) {
+                        result = this.settings.columnNameAliases[realColumnName];
+                    }
+                }
+
+                return result;
+            },
+            getColumnLabel(columnName) {
+                let columnKey = this.getColumnKey(columnName);
+                let result = columnKey;
+
+                for (let column of this.columns) {
+                    if (column.field === columnKey) {
+                        result = column.label;
+                    }
+                }
+
+                return result;
             },
             onDateRangeChange(momentObjects, datesArray) {
                 if (Array.isArray(datesArray)) {
@@ -1079,12 +1141,48 @@
                     result = Object.assign(result, this.filters);
                 }
 
+                if (!result.date) {
+                    if (null === this.dateFrom && null === this.dateTo) {
+                        this.dateFrom = moment().startOf('month').format('YYYY-MM-DD');
+                        this.dateTo = moment().endOf('month').format('YYYY-MM-DD');
+                    }
+
+                    result.date = [this.dateFrom, this.dateTo];
+                } else if (2 === queryParams.date.length) {
+                    this.dateFrom = queryParams.date[0];
+                    this.dateTo = queryParams.date[1];
+                } else if (queryParams.date.length) {
+                    this.dateFrom = queryParams.date;
+                    this.dateTo = queryParams.date;
+                }
+
                 return result;
-            }
+            },
+            searchFiltersToDisplay() {
+                let result = {};
+
+                if (!this.searchFilters) {
+                    return;
+                }
+
+                for (let columnName in this.searchFilters) {
+                    let displayName = this.getColumnLabel(columnName);
+                    let filterValue = this.searchFilters[columnName];
+
+                    if (Array.isArray(filterValue) && filterValue.length === 2) {
+                        filterValue = `from ${filterValue[0]} to ${filterValue[1]}`
+                        result[displayName] = filterValue;
+                    } else {
+                        filterValue = this.searchFilters[columnName];
+                        let mappedValue = this.getMappedValueById(columnName, filterValue)
+                        result[displayName] = mappedValue ? mappedValue : filterValue;
+                    }
+                }
+
+                return result;
+            },
         },
         created() {
-            console.log('created');
-
             // Events
             $(document).on("hidden.bs.modal", this.clearModal);
 
