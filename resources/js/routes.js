@@ -28,7 +28,7 @@ export const routes = [
     { path: '/accounts', component: Accounts },
     { path: '/places', component: Places },
     { path: '/accountTypes', component: AccountTypes },
-    { path: '/transactions', component: Transactions },
+    { path: '/transactions', name: 'transactions', component: Transactions, props: true },
     { path: '/transaction/:id', component: Transaction },
     { path: '/transactionTypes', component: TransactionTypes },
     { path: '/transactionCategoryTypes', component: TransactionCategoryTypes },

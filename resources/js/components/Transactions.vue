@@ -1,8 +1,40 @@
 <template>
     <div class="container-fluid">
+        <div class="row control mt-5">
+            <div class="col-lg-12">
+                <v-md-date-range-picker @change="onDateRangeChange"
+                                        :startDate="dateFrom"
+                                        :endDate="dateTo"
+                >
+
+                </v-md-date-range-picker>
+            </div>
+        </div>
+        <div class="row search-filters mt-5">
+            <div class="col-lg-12">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">Active filters</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="this-month-costs">
+                        <button type="button" class="btn btn-primary mr-2" v-for="(value, parameter) in searchFiltersToDisplay">
+                            <b>{{ parameter }}:</b> {{ value }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row mt-5" v-if="$gate.allow('viewAll', 'transaction')">
             <div class="col-12">
-                <div class="card">
+                <div class="card card-secondary">
                     <div class="card-header">
                         <h3 class="card-title">Transactions List</h3>
                         <div class="card-tools">
@@ -28,7 +60,7 @@
                                             :pagination-options="{
                                                 enabled: true,
                                                 perPage: serverParams.perPage,
-                                                perPageDropdown: [1, 50, 100, 200],
+                                                perPageDropdown: [10, 20, 50, 100, 200],
                                             }"
                                             :columns="dynamicColumns"
                                             :rows="transactions.data"
@@ -284,8 +316,12 @@
         components: {
             VueGoodTable,
         },
+        props: ['filters'],
         data() {
             return {
+                dateFrom: null,
+                dateTo: null,
+
                 settings: {
                     currentUser: user,
                     viewMode: FLAG_MODE_USER,
@@ -302,6 +338,11 @@
                 transactionCategories: [],
                 userAccounts: [],
                 users: [],
+                idNameMap: {
+                    category_id: [],
+                    account_id: [],
+                    place_id: [],
+                },
 
                 modal: {
                     target: this.$refs.transactionModal,
@@ -352,7 +393,7 @@
                         thClass: 'text-center',
                         tdClass: 'text-center text-nowrap',
                         filterOptions: {
-                            enabled: true,
+                            enabled: false,
                             trigger: 'enter',
                         },
                     },
@@ -429,7 +470,7 @@
                     sortField: '',
                     sort: 'dateIdDesc',
                     page: 1,
-                    perPage: 100,
+                    perPage: 50,
                 }
             };
         },
@@ -439,16 +480,24 @@
                 axios.get(`api/user/${window.user.id}`).then(
                     (response) => {
                         this.settings.currentUser = response.data;
+                        this.updateIdNameMap(this.settings.currentUser.accounts, 'account_id');
+                        this.updateIdNameMap(this.settings.currentUser.places, 'place_id');
                     },
                 );
             },
-            loadTransactions(page = 1) {
-                // Prepare query params
-                let queryParams = Object.assign({}, this.serverParams);
+            loadTransactions() {
+                let queryString = this.prepareQueryString();
 
-                if (this.$route.query) {
-                    queryParams = Object.assign({}, queryParams, this.$route.query);
-                }
+                // Send request
+                axios.get(`api/transaction?${queryString}`).then(
+                    (response) => {
+                        this.transactions = response.data;
+                        this.totalRecords = response.data.total;
+                    },
+                );
+            },
+            prepareQueryString() {
+                let queryParams = Object.assign({}, this.serverParams, this.searchFilters);
 
                 for (let paramName in queryParams) {
                     if (typeof queryParams[paramName] === 'object' && Object.keys(queryParams[paramName]).length > 0) {
@@ -470,7 +519,6 @@
                             }
                         }
 
-                        // Convert to JSON
                         queryParams[paramName] = JSON.stringify(parameter);
                     }
                 }
@@ -479,18 +527,12 @@
                     queryParams.userId = this.settings.currentUser.id;
                 }
 
-                queryParams = Object.keys(queryParams)
+                let result = Object.keys(queryParams)
                     .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(queryParams[k]))
                     .join('&')
                 ;
 
-                // Send request
-                axios.get(`api/transaction?${queryParams}`).then(
-                    (response) => {
-                        this.transactions = response.data;
-                        this.totalRecords = response.data.total;
-                    },
-                );
+                return result;
             },
             loadTransactionTypes() {
                 axios.get(`api/transactionType`).then(
@@ -509,6 +551,7 @@
                 axios.get(`api/transactionCategory`).then(
                     (response) => {
                         this.transactionCategories = response.data;
+                        this.updateIdNameMap(this.transactionCategories, 'category_id');
                     },
                 );
             },
@@ -518,6 +561,21 @@
                         this.users = response.data;
                     },
                 );
+            },
+            updateIdNameMap(objectsArray, key) {
+                for (let item of objectsArray) {
+                    this.idNameMap[key][item.id] = item.name;
+                }
+            },
+            getMappedValueById(key, id) {
+                let result = null;
+                let mapValues = this.idNameMap[key];
+
+                if (typeof mapValues !== 'undefined') {
+                    result = mapValues[id] ? mapValues[id] : null;
+                }
+
+                return result;
             },
             clearModal() {
                 this.transactionForm.clear();
@@ -715,6 +773,10 @@
                 this.loadTransactions();
             },
             onPerPageChange(params) {
+                if (params.currentPerPage === this.serverParams.perPage) {
+                    return;
+                }
+
                 this.updateParams({perPage: params.currentPerPage});
                 this.loadTransactions();
             },
@@ -730,6 +792,8 @@
                     return;
                 }
 
+                let columnFilters = {};
+
                 for (let columnName in params.columnFilters) {
                     let key = columnName;
 
@@ -740,7 +804,50 @@
                         }
                     }
 
-                    this.serverParams.columnFilters[key] = params.columnFilters[columnName];
+                    columnFilters[key] = params.columnFilters[columnName];
+                }
+
+                this.updateParams({columnFilters: columnFilters});
+                this.loadTransactions();
+            },
+            getColumnName(key) {
+                let result = key;
+
+                for (let realColumnName in this.settings.columnNameAliases) {
+                    if (this.settings.columnNameAliases[realColumnName] === key) {
+                        result = realColumnName;
+                    }
+                }
+
+                return result;
+            },
+            getColumnKey(columnName) {
+                let result = columnName;
+
+                for (let realColumnName in this.settings.columnNameAliases) {
+                    if (realColumnName === columnName) {
+                        result = this.settings.columnNameAliases[realColumnName];
+                    }
+                }
+
+                return result;
+            },
+            getColumnLabel(columnName) {
+                let columnKey = this.getColumnKey(columnName);
+                let result = columnKey;
+
+                for (let column of this.columns) {
+                    if (column.field === columnKey) {
+                        result = column.label;
+                    }
+                }
+
+                return result;
+            },
+            onDateRangeChange(momentObjects, datesArray) {
+                if (Array.isArray(datesArray)) {
+                    this.dateFrom = datesArray[0];
+                    this.dateTo = datesArray[1];
                 }
 
                 this.loadTransactions();
@@ -1023,6 +1130,53 @@
 
                 if (accountFrom.currency_id !== accountTo.currency_id) {
                     result = true;
+                }
+
+                return result;
+            },
+            searchFilters() {
+                let result = Object.assign({}, this.serverParams.columnFilters);
+
+                if (typeof this.filters !== 'undefined') {
+                    result = Object.assign(result, this.filters);
+                }
+
+                if (!result.date) {
+                    if (null === this.dateFrom && null === this.dateTo) {
+                        this.dateFrom = moment().startOf('month').format('YYYY-MM-DD');
+                        this.dateTo = moment().endOf('month').format('YYYY-MM-DD');
+                    }
+
+                    result.date = [this.dateFrom, this.dateTo];
+                } else if (2 === queryParams.date.length) {
+                    this.dateFrom = queryParams.date[0];
+                    this.dateTo = queryParams.date[1];
+                } else if (queryParams.date.length) {
+                    this.dateFrom = queryParams.date;
+                    this.dateTo = queryParams.date;
+                }
+
+                return result;
+            },
+            searchFiltersToDisplay() {
+                let result = {};
+
+                if (!this.searchFilters) {
+                    return;
+                }
+
+                for (let columnName in this.searchFilters) {
+                    let displayName = this.getColumnLabel(columnName);
+                    let filterValue = this.searchFilters[columnName];
+
+                    if (Array.isArray(filterValue) && filterValue.length === 2) {
+                        filterValue = `from ${filterValue[0]} to ${filterValue[1]}`
+                        result[displayName] = filterValue;
+                    } else {
+                        filterValue = this.searchFilters[columnName];
+                        let mappedValue = this.getMappedValueById(columnName, filterValue)
+                        result[displayName] = mappedValue ? mappedValue : filterValue;
+                    }
                 }
 
                 return result;
