@@ -38,7 +38,7 @@
                                             :pagination-options="{
                                                 enabled: true,
                                                 perPage: serverParams.perPage,
-                                                perPageDropdown: [1, 50, 100, 200],
+                                                perPageDropdown: [10, 20, 50, 100, 200],
                                             }"
                                             :columns="dynamicColumns"
                                             :rows="transactions.data"
@@ -443,7 +443,7 @@
                     sortField: '',
                     sort: 'dateIdDesc',
                     page: 1,
-                    perPage: 100,
+                    perPage: 50,
                 }
             };
         },
@@ -468,11 +468,7 @@
                 );
             },
             prepareQueryString() {
-                let queryParams = Object.assign({}, this.serverParams);
-
-                if (typeof this.filters !== 'undefined') {
-                    queryParams = Object.assign({}, queryParams, this.filters);
-                }
+                let queryParams = Object.assign({}, this.serverParams, this.searchFilters);
 
                 if (!queryParams.date) {
                     if (null === this.dateFrom && null === this.dateTo) {
@@ -743,10 +739,16 @@
                 this.serverParams = Object.assign({}, this.serverParams, newProps);
             },
             onPageChange(params) {
+                console.log('page change');
+
                 this.updateParams({page: params.currentPage});
                 this.loadTransactions();
             },
             onPerPageChange(params) {
+                if (params.currentPerPage === this.serverParams.perPage) {
+                    return;
+                }
+
                 this.updateParams({perPage: params.currentPerPage});
                 this.loadTransactions();
             },
@@ -762,6 +764,8 @@
                     return;
                 }
 
+                let columnFilters = {};
+
                 for (let columnName in params.columnFilters) {
                     let key = columnName;
 
@@ -772,9 +776,10 @@
                         }
                     }
 
-                    this.serverParams.columnFilters[key] = params.columnFilters[columnName];
+                    columnFilters[key] = params.columnFilters[columnName];
                 }
 
+                this.updateParams({columnFilters: columnFilters});
                 this.loadTransactions();
             },
             onDateRangeChange(momentObjects, datesArray) {
@@ -1067,8 +1072,19 @@
 
                 return result;
             },
+            searchFilters() {
+                let result = Object.assign({}, this.serverParams.columnFilters);
+
+                if (typeof this.filters !== 'undefined') {
+                    result = Object.assign(result, this.filters);
+                }
+
+                return result;
+            }
         },
         created() {
+            console.log('created');
+
             // Events
             $(document).on("hidden.bs.modal", this.clearModal);
 
