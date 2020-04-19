@@ -79,7 +79,7 @@
                                 <tbody>
                                     <tr v-for="place in statistic.costs.byPlace">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="getFilterString('place_id', place.id)">
+                                            <router-link :to="{name: 'transactions', params: {filters: {place_id: place.id}}}">
                                                 {{ place.name | capitalize }}
                                             </router-link>
                                         </td>
@@ -110,7 +110,7 @@
                                 <tbody>
                                     <tr v-for="category in statistic.costs.byCategory">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="getFilterString('category_id', category.id)">
+                                            <router-link :to="{name: 'transactions', params: {filters: {category_id: category.id}}}">
                                                 {{ category.name | capitalize }}
                                             </router-link>
                                         </td>
@@ -141,7 +141,7 @@
                                 <tbody>
                                     <tr v-for="day in statistic.costs.byDay">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="`/transactions?date=${day.date}`">
+                                            <router-link :to="{name: 'transactions', params: {filters: {date: day.date}}}">
                                                 {{ day.date | dateMoment('MMMM Do YYYY') }}
                                             </router-link>
                                         </td>
@@ -172,7 +172,7 @@
                                 <tbody>
                                     <tr v-for="account in statistic.costs.byAccount">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="getFilterString('account_id', account.id)">
+                                            <router-link :to="{name: 'transactions', params: {filters: {account_id: account.id}}}">
                                                 {{ account.name | capitalize }}
                                             </router-link>
                                         </td>
@@ -227,11 +227,6 @@
             },
             notEmpty(object) {
                 return Object.keys(object).length > 0;
-            },
-            getFilterString(parameter, value) {
-                let result = `/transactions?${parameter}=${value}&date=${this.dateFrom}&date=${this.dateTo}`;
-
-                return result
             },
         },
         created() {

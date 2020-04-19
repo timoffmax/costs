@@ -294,6 +294,7 @@
         components: {
             VueGoodTable,
         },
+        props: ['filters'],
         data() {
             return {
                 dateFrom: null,
@@ -469,8 +470,8 @@
             prepareQueryString() {
                 let queryParams = Object.assign({}, this.serverParams);
 
-                if (this.$route.query) {
-                    queryParams = Object.assign({}, queryParams, this.$route.query);
+                if (typeof this.filters !== 'undefined') {
+                    queryParams = Object.assign({}, queryParams, this.filters);
                 }
 
                 if (!queryParams.date) {
@@ -480,6 +481,12 @@
                     }
 
                     queryParams.date = [this.dateFrom, this.dateTo];
+                } else if (2 === queryParams.date.length) {
+                    this.dateFrom = queryParams.date[0];
+                    this.dateTo = queryParams.date[1];
+                } else if (queryParams.date.length) {
+                    this.dateFrom = queryParams.date;
+                    this.dateTo = queryParams.date;
                 }
 
                 for (let paramName in queryParams) {
