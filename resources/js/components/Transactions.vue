@@ -25,8 +25,11 @@
                         </div>
                     </div>
                     <div class="card-body" id="this-month-costs">
-                        <button type="button" class="btn btn-primary mr-2" v-for="(value, parameter) in searchFiltersToDisplay">
-                            <b>{{ parameter }}:</b> {{ value }}
+                        <button type="button" class="btn btn-primary mr-2" v-for="filter in searchFiltersToDisplay" v-if="filter.value">
+                            <b>{{ filter.label }}:</b> {{ filter.value }}
+                            <a href="#" class="badge badge-danger ml-1" @click.prevent="removeFilter(filter.name)">
+                                <i class="fas fa-times"></i>
+                            </a>
                         </button>
                     </div>
                 </div>
@@ -51,6 +54,7 @@
                     <div class="card-body table-responsive p-0">
                         <div>
                             <vue-good-table v-if="transactions"
+                                            ref="transactionTable"
                                             @on-page-change="onPageChange"
                                             @on-sort-change="onSortChange"
                                             @on-column-filter="onColumnFilter"
@@ -388,8 +392,8 @@
                         label: 'Date',
                         field: 'date',
                         type: 'date',
-                        dateInputFormat: 'YYYY-MM-DD',
-                        dateOutputFormat: 'MMMM Do YYYY',
+                        dateInputFormat: 'yyyy-MM-dd HH:mm:ss',
+                        dateOutputFormat: 'MMMM do yyyy',
                         thClass: 'text-center',
                         tdClass: 'text-center text-nowrap',
                         filterOptions: {
@@ -743,6 +747,27 @@
                         ;
                     }
                 })
+            },
+            removeFilter(filterName) {
+                var field = this.getColumnKey(filterName);
+                let foundIndex = this.columns.findIndex((column) => {
+                    return column.field === field;
+                });
+
+                this.$delete(this.serverParams.columnFilters, filterName);
+
+                if (foundIndex > 0) {
+                    this.$delete(this.columns[foundIndex].filterOptions, 'filterValue');
+                }
+
+                let filterRow = this.$refs.transactionTable.$refs['table-header-primary'].$refs['filter-row'];
+                this.$delete(filterRow.columnFilters, field);
+
+                if (typeof this.filters !== 'undefined') {
+                    this.$delete(this.filters, filterName);
+                }
+
+                this.loadTransactions();
             },
             getAmountClasses(transaction) {
                 let colorClass = 'text-';
@@ -1159,7 +1184,7 @@
                 return result;
             },
             searchFiltersToDisplay() {
-                let result = {};
+                let result = [];
 
                 if (!this.searchFilters) {
                     return;
@@ -1169,14 +1194,19 @@
                     let displayName = this.getColumnLabel(columnName);
                     let filterValue = this.searchFilters[columnName];
 
+                    let filter = {};
+                    filter.label = displayName;
+                    filter.name = columnName;
+
                     if (Array.isArray(filterValue) && filterValue.length === 2) {
-                        filterValue = `from ${filterValue[0]} to ${filterValue[1]}`
-                        result[displayName] = filterValue;
+                        filter.value = `from ${filterValue[0]} to ${filterValue[1]}`;
                     } else {
                         filterValue = this.searchFilters[columnName];
                         let mappedValue = this.getMappedValueById(columnName, filterValue)
-                        result[displayName] = mappedValue ? mappedValue : filterValue;
+                        filter.value = mappedValue ? mappedValue : filterValue;
                     }
+
+                    result.push(filter);
                 }
 
                 return result;
