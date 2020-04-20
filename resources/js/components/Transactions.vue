@@ -757,16 +757,17 @@
                 this.$delete(this.serverParams.columnFilters, filterName);
 
                 if (foundIndex > 0) {
-                    this.$set(this.columns[foundIndex].filterOptions, 'filterValue', 0);
+                    this.$delete(this.columns[foundIndex].filterOptions, 'filterValue');
                 }
+
+                let filterRow = this.$refs.transactionTable.$refs['table-header-primary'].$refs['filter-row'];
+                this.$delete(filterRow.columnFilters, field);
 
                 if (typeof this.filters !== 'undefined') {
                     this.$delete(this.filters, filterName);
                 }
 
-                this.$refs.transactionTable.$emit('on-column-filter', {
-                    columnFilters: this.serverParams.columnFilters
-                });
+                this.loadTransactions();
             },
             getAmountClasses(transaction) {
                 let colorClass = 'text-';
