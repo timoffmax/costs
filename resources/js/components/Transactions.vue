@@ -54,6 +54,7 @@
                     <div class="card-body table-responsive p-0">
                         <div>
                             <vue-good-table v-if="transactions"
+                                            ref="transactionTable"
                                             @on-page-change="onPageChange"
                                             @on-sort-change="onSortChange"
                                             @on-column-filter="onColumnFilter"
@@ -391,8 +392,8 @@
                         label: 'Date',
                         field: 'date',
                         type: 'date',
-                        dateInputFormat: 'YYYY-MM-DD',
-                        dateOutputFormat: 'MMMM Do YYYY',
+                        dateInputFormat: 'yyyy-MM-dd HH:mm:ss',
+                        dateOutputFormat: 'MMMM do yyyy',
                         thClass: 'text-center',
                         tdClass: 'text-center text-nowrap',
                         filterOptions: {
@@ -756,14 +757,16 @@
                 this.$delete(this.serverParams.columnFilters, filterName);
 
                 if (foundIndex > 0) {
-                    this.$delete(this.columns[foundIndex].filterOptions, 'filterValue');
+                    this.$set(this.columns[foundIndex].filterOptions, 'filterValue', 0);
                 }
 
                 if (typeof this.filters !== 'undefined') {
                     this.$delete(this.filters, filterName);
                 }
 
-                this.loadTransactions();
+                this.$refs.transactionTable.$emit('on-column-filter', {
+                    columnFilters: this.serverParams.columnFilters
+                });
             },
             getAmountClasses(transaction) {
                 let colorClass = 'text-';
