@@ -27,9 +27,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
 
-/**
- * Class AuthServiceProvider
- */
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -50,7 +47,6 @@ class AuthServiceProvider extends ServiceProvider
         TransactionCategoryType::class => TransactionCategoryTypePolicy::class,
         Currency::class => CurrencyPolicy::class,
     ];
-
 
     /**
      * Register any authentication / authorization services.

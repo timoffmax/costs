@@ -1,12 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Account;
 use App\Place;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Transaction places management policies
+ */
 class PlacePolicy
 {
     use HandlesAuthorization;
@@ -28,7 +33,7 @@ class PlacePolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @return mixed
      */
     public function viewAll(User $user)
@@ -39,8 +44,8 @@ class PlacePolicy
     /**
      * Determine whether the user can view the list of own places
      *
-     * @param  \App\User  $user
-     * @param  \App\user  $model
+     * @param User $user
+     * @param User $model
      * @return mixed
      */
     public function viewOwn(User $user, User $model)
@@ -49,10 +54,22 @@ class PlacePolicy
     }
 
     /**
+     * Used to automatically check whether the user can view index controller method
+     *
+     * @param User $user
+     * @param Place $model
+     * @return bool
+     */
+    public function viewAny(User $user, Place $model)
+    {
+        return false;
+    }
+
+    /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\Account  $model
+     * @param User $user
+     * @param  Account  $model
      * @return mixed
      */
     public function view(User $user, Place $model)
@@ -63,8 +80,8 @@ class PlacePolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\User  $user
-     * @param  \App\Account  $model
+     * @param User $user
+     * @param  Account  $model
      * @return mixed
      */
     public function create(User $user, Place $model)
@@ -75,8 +92,8 @@ class PlacePolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\Account  $model
+     * @param User $user
+     * @param  Account  $model
      * @return mixed
      */
     public function update(User $user, Place $model)
@@ -87,8 +104,8 @@ class PlacePolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\Account  $model
+     * @param User $user
+     * @param  Account  $model
      * @return mixed
      */
     public function delete(User $user, Place $model)

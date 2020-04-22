@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Policies;
 
@@ -7,6 +8,9 @@ use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Account types management policies
+ */
 class AccountTypePolicy
 {
     use HandlesAuthorization;
@@ -34,6 +38,18 @@ class AccountTypePolicy
     public function viewAll(User $user)
     {
         return true;
+    }
+
+    /**
+     * Used to automatically check whether the user can view index controller method
+     *
+     * @param User $user
+     * @param AccountType $model
+     * @return bool
+     */
+    public function viewAny(User $user, AccountType $model)
+    {
+        return false;
     }
 
     /**

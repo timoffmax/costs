@@ -1,24 +1,29 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
 use App\Interfaces\RestApiControllerInterface;
 use App\UserRole;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
+/**
+ * User role REST controller
+ */
 class UserRoleController extends BaseController implements RestApiControllerInterface
 {
     /**
      * Display a listing of the roles
      *
      * @param Request $request
-     * @return array|\Illuminate\Database\Eloquent\Collection
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return array|Collection
+     * @throws AuthorizationException
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAll', UserRole::class);
-
         $roles = UserRole::all();
         $arrayOfRoles = [];
 
@@ -34,8 +39,8 @@ class UserRoleController extends BaseController implements RestApiControllerInte
      * Create a user role
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response|void
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return Response|void
+     * @throws AuthorizationException
      */
     public function store(Request $request)
     {
@@ -47,8 +52,8 @@ class UserRoleController extends BaseController implements RestApiControllerInte
      * Display the specified user role
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return Response
+     * @throws AuthorizationException
      */
     public function show(int $id)
     {
@@ -65,8 +70,8 @@ class UserRoleController extends BaseController implements RestApiControllerInte
      *
      * @param Request $request
      * @param int $id
-     * @return \Illuminate\Http\Response|void
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return Response|void
+     * @throws AuthorizationException
      */
     public function update(Request $request, int $id)
     {
@@ -80,8 +85,8 @@ class UserRoleController extends BaseController implements RestApiControllerInte
      * Remove the specified user role
      *
      * @param int $id
-     * @return \Illuminate\Http\Response|void
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return Response|void
+     * @throws AuthorizationException
      */
     public function destroy(int $id)
     {
