@@ -1,14 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Place;
+use App\Currency;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class CurrencyPolicy
+ * Account currency management policy
  */
 class CurrencyPolicy
 {
@@ -31,7 +32,7 @@ class CurrencyPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @return mixed
      */
     public function viewAll(User $user)
@@ -40,13 +41,25 @@ class CurrencyPolicy
     }
 
     /**
+     * Used to automatically check whether the user can view index controller method
+     *
+     * @param User $user
+     * @param Currency $model
+     * @return bool
+     */
+    public function viewAny(User $user, Currency $model)
+    {
+        return false;
+    }
+
+    /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\Account  $model
+     * @param User $user
+     * @param Currency  $model
      * @return mixed
      */
-    public function view(User $user, Place $model)
+    public function view(User $user, Currency $model)
     {
         return false;
     }
@@ -54,11 +67,11 @@ class CurrencyPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\User  $user
-     * @param  \App\Account  $model
+     * @param User $user
+     * @param Currency  $model
      * @return mixed
      */
-    public function create(User $user, Place $model)
+    public function create(User $user, Currency $model)
     {
         return false;
     }
@@ -66,11 +79,11 @@ class CurrencyPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\Account  $model
+     * @param User $user
+     * @param Currency $model
      * @return mixed
      */
-    public function update(User $user, Place $model)
+    public function update(User $user, Currency $model)
     {
         return false;
     }
@@ -78,11 +91,11 @@ class CurrencyPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\Account  $model
+     * @param User $user
+     * @param Currency $model
      * @return mixed
      */
-    public function delete(User $user, Place $model)
+    public function delete(User $user, Currency $model)
     {
         return false;
     }

@@ -1,4 +1,8 @@
 <?php
+declare(strict_types=1);
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,4 +18,4 @@
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('{path}', 'HomeController@index')->where('path', '([A-z\d-\/_.]+)?');
+Route::get('{path}', 'HomeController@index')->where('path', '([A-z\d\-\/_.]+)?');

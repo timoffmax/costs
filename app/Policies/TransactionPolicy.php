@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Policies;
 
@@ -28,7 +29,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can view the list of transactions.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @return mixed
      */
     public function viewAll(User $user)
@@ -37,10 +38,22 @@ class TransactionPolicy
     }
 
     /**
+     * Used to automatically check whether the user can view index controller method
+     *
+     * @param User $user
+     * @param Transaction $model
+     * @return bool
+     */
+    public function viewAny(User $user, Transaction $model)
+    {
+        return false;
+    }
+
+    /**
      * Determine whether the user can view the list of own transactions
      *
-     * @param  \App\User  $user
-     * @param  \App\user  $model
+     * @param User $user
+     * @param User $model
      * @return mixed
      */
     public function viewOwn(User $user, User $model)
@@ -51,7 +64,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @param  \App\Transaction $model
      * @return mixed
      */
@@ -63,7 +76,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @param  \App\Transaction  $model
      * @return mixed
      */
@@ -75,7 +88,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @param  \App\Transaction  $model
      * @return mixed
      */
@@ -87,7 +100,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @param  \App\Transaction  $model
      * @return mixed
      */
