@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
 use App\Interfaces\RestApiControllerInterface;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 
@@ -44,8 +46,8 @@ class UserController extends BaseController implements RestApiControllerInterfac
     /**
      * Store a newly created user
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -72,12 +74,11 @@ class UserController extends BaseController implements RestApiControllerInterfac
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(int $id)
     {
         $userModel = User::with('role')
-            ->with('transactions')
             ->findOrFail($id)
         ;
 
@@ -89,9 +90,9 @@ class UserController extends BaseController implements RestApiControllerInterfac
     /**
      * Update a user
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, int $id)
     {
@@ -153,7 +154,7 @@ class UserController extends BaseController implements RestApiControllerInterfac
      * Remove user
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(int $id)
     {
