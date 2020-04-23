@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
@@ -59,7 +61,7 @@ class User extends Authenticatable
     /**
      * Get role
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function role()
     {
@@ -69,7 +71,7 @@ class User extends Authenticatable
     /**
      * Get list of accounts
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function accounts()
     {
@@ -79,7 +81,7 @@ class User extends Authenticatable
     /**
      * Get list of places
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function places()
     {
@@ -89,7 +91,7 @@ class User extends Authenticatable
     /**
      * Get list of transactions
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function transactions()
     {

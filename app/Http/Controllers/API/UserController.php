@@ -5,11 +5,15 @@ namespace App\Http\Controllers\API;
 
 use App\Interfaces\RestApiControllerInterface;
 use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 
+/**
+ * User REST controller
+ */
 class UserController extends BaseController implements RestApiControllerInterface
 {
     /**
@@ -17,13 +21,13 @@ class UserController extends BaseController implements RestApiControllerInterfac
      *
      * @param Request $request
      * @return array
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function index(Request $request)
     {
         $this->authorize('viewAll', User::class);
 
-        $users = User::latest()->with('role');
+        $users = User::latest();
 
         // Prepare a simple list (id => name)
         if (isset($request['mode']) && $request['mode'] === 'simple') {
@@ -79,6 +83,7 @@ class UserController extends BaseController implements RestApiControllerInterfac
     public function show(int $id)
     {
         $userModel = User::with('role')
+            ->withCount('transactions')
             ->findOrFail($id)
         ;
 

@@ -2,7 +2,6 @@
     <div class="container container-fluid">
         <div class="row mt-5" v-if="$gate.allow('view', 'user', profile)">
             <div class="col-md-3">
-                <!-- Profile Image -->
                 <div class="card card-primary card-outline">
                     <div class="card-body box-profile">
                         <div class="text-center">
@@ -22,56 +21,13 @@
                                 <b>Money</b> <a v-if="profile.accounts" class="float-right">{{ allAccountsAmount }}</a>
                             </li>
                             <li class="list-group-item">
-                                <b>Transactions</b> <a v-if="profile.accounts" class="float-right">{{ Object.keys(profile.transactions).length }}</a>
+                                <b>Transactions</b> <a v-if="profile.accounts" class="float-right">{{ profile.transactions_count }}</a>
                             </li>
                         </ul>
 
                         <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
                     </div>
-                    <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
-
-                <!-- About Me Box -->
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">About Me</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <strong><i class="fa fa-book mr-1"></i> Education</strong>
-
-                        <p class="text-muted">
-                            B.S. in Computer Science from the University of Tennessee at Knoxville
-                        </p>
-
-                        <hr>
-
-                        <strong><i class="fa fa-map-marker mr-1"></i> Location</strong>
-
-                        <p class="text-muted">Malibu, California</p>
-
-                        <hr>
-
-                        <strong><i class="fa fa-pencil mr-1"></i> Skills</strong>
-
-                        <p class="text-muted">
-                            <span class="tag tag-danger">UI Design</span>
-                            <span class="tag tag-success">Coding</span>
-                            <span class="tag tag-info">Javascript</span>
-                            <span class="tag tag-warning">PHP</span>
-                            <span class="tag tag-primary">Node.js</span>
-                        </p>
-
-                        <hr>
-
-                        <strong><i class="fa fa-file-text-o mr-1"></i> Notes</strong>
-
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
             </div>
 
             <div class="col-md-9">
@@ -80,7 +36,7 @@
                         <ul class="nav nav-pills">
                             <li class="nav-item"><a class="nav-link active show" href="#settings" data-toggle="tab">Settings</a></li>
                         </ul>
-                    </div><!-- /.card-header -->
+                    </div>
                     <div class="card-body">
                         <div class="tab-content">
                             <div class="tab-pane active show" id="settings">
@@ -126,7 +82,6 @@
                                             <has-error :form="profileForm" field="photo"></has-error>
                                         </div>
                                     </div>
-
 
                                     <div v-show="showPasswordFields">
                                         <div class="form-group">
@@ -179,12 +134,9 @@
                                     </div>
                                 </form>
                             </div>
-                            <!-- /.tab-pane -->
                         </div>
-                        <!-- /.tab-content -->
-                    </div><!-- /.card-body -->
+                    </div>
                 </div>
-                <!-- /.nav-tabs-custom -->
             </div>
 
         </div>
@@ -266,7 +218,7 @@
             encodeProfileImage(e) {
                 let file = e.target.files[0];
                 let reader = new FileReader();
-                
+
                 reader.onloadend = () => {
                     this.profileForm.photo = reader.result;
                 };
