@@ -1,12 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
 use App\AccountType;
-use App\Interfaces\RestApiControllerInterface;
 use Illuminate\Http\Request;
 
-class AccountTypeController extends BaseController implements RestApiControllerInterface
+/**
+ * Account type controller
+ */
+class AccountTypeController extends BaseController
 {
     /**
      * Display a list of types

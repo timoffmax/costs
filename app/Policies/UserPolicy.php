@@ -5,33 +5,23 @@ namespace App\Policies;
 
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Auth;
 
+/**
+ * Auth policies for User model
+ */
 class UserPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Don't check permissions for admin
-     *
-     * @param $user
-     * @param $ability
-     * @return bool
-     */
-    public function before($user, $ability)
-    {
-        if (Auth::user()->role->name === 'admin') {
-            return true;
-        }
-    }
-
-    /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view all the models
      *
      * @param User $user
-     * @return mixed
+     * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function viewAll(User $user)
+    public function viewAll(User $user): bool
     {
         return false;
     }
@@ -42,8 +32,10 @@ class UserPolicy
      * @param User $user
      * @param User $model
      * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function viewAny(User $user, User $model)
+    public function viewAny(User $user): bool
     {
         return false;
     }
@@ -52,22 +44,24 @@ class UserPolicy
      * Determine whether the user can view the model.
      *
      * @param User $user
-     * @return mixed
+     * @return bool
      */
-    public function view(User $user, User $model)
+    public function view(User $user, User $model): bool
     {
-        return Auth::user()->id === $model->id;
+        return $user->id === $model->id;
     }
 
     /**
      * Determine whether the user can create models.
      *
      * @param User $user
-     * @return mixed
+     * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
-        return Auth::user()->role->name === 'admin';
+        return false;
     }
 
     /**
@@ -75,11 +69,11 @@ class UserPolicy
      *
      * @param User $user
      * @param User $model
-     * @return mixed
+     * @return bool
      */
-    public function update(User $user, User $model)
+    public function update(User $user, User $model): bool
     {
-        return Auth::user()->role->name === 'admin' || $user->id === $model->id;
+        return $user->id === $model->id;
     }
 
     /**
@@ -87,10 +81,10 @@ class UserPolicy
      *
      * @param User $user
      * @param User $model
-     * @return mixed
+     * @return bool
      */
-    public function delete(User $user, User $model)
+    public function delete(User $user, User $model): bool
     {
-        return (Auth::user()->role->name === 'admin') || ($user->id === $model->id);
+        return $user->id === $model->id;
     }
 }

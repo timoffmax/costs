@@ -19,19 +19,21 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResources([
-    'dashboard' => 'API\DashboardController',
-    'statistic' => 'API\StatisticController',
-    'user' => 'API\UserController',
-    'userRole' => 'API\UserRoleController',
-    'account' => 'API\AccountController',
-    'accountType' => 'API\AccountTypeController',
-    'place' => 'API\PlaceController',
-    'transaction' => 'API\TransactionController',
-    'transactionType' => 'API\TransactionTypeController',
-    'transactionCategory' => 'API\TransactionCategoryController',
-    'transactionCategoryType' => 'API\TransactionCategoryTypeController',
-    'currency' => 'API\CurrencyController',
-]);
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::apiResources([
+        'dashboard' => 'API\DashboardController',
+        'statistic' => 'API\StatisticController',
+        'user' => 'API\UserController',
+        'userRole' => 'API\UserRoleController',
+        'account' => 'API\AccountController',
+        'accountType' => 'API\AccountTypeController',
+        'place' => 'API\PlaceController',
+        'transaction' => 'API\TransactionController',
+        'transactionType' => 'API\TransactionTypeController',
+        'transactionCategory' => 'API\TransactionCategoryController',
+        'transactionCategoryType' => 'API\TransactionCategoryTypeController',
+        'currency' => 'API\CurrencyController',
+    ]);
 
-Route::get('statistic/{from}/{to}', 'API\StatisticController@index');
+    Route::get('statistic/{from}/{to}', 'API\StatisticController@index');
+});

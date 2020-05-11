@@ -1,15 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
 use App\Currency;
-use App\Interfaces\RestApiControllerInterface;
 use Illuminate\Http\Request;
 
 /**
- * Class CurrencyController
+ * Currency controller
  */
-class CurrencyController extends BaseController implements RestApiControllerInterface
+class CurrencyController extends BaseController
 {
     /**
      * Display a list of currencies

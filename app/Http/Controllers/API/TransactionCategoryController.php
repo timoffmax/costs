@@ -1,16 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
-use App\Interfaces\RestApiControllerInterface;
 use App\TransactionCategory;
-
 use Illuminate\Http\Request;
 
 /**
- * Class TransactionCategoryController
+ * Transaction category controller
  */
-class TransactionCategoryController extends BaseController implements RestApiControllerInterface
+class TransactionCategoryController extends BaseController
 {
     /**
      * Display a list of types

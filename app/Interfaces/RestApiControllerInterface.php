@@ -2,7 +2,9 @@
 
 namespace App\Interfaces;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 interface RestApiControllerInterface
 {
@@ -27,11 +29,10 @@ interface RestApiControllerInterface
     /**
      * Display the specified item
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @param Model $model
+     * @return JsonResource
      */
-    public function show(int $id);
+    public function show(Model $model): JsonResource;
 
     /**
      * Update an item

@@ -480,10 +480,9 @@
         },
         methods: {
             loadUserData() {
-                // Update current user data
                 axios.get(`api/user/${window.user.id}`).then(
                     (response) => {
-                        this.settings.currentUser = response.data;
+                        this.settings.currentUser = response.data.data;
                         this.updateIdNameMap(this.settings.currentUser.accounts, 'account_id');
                         this.updateIdNameMap(this.settings.currentUser.places, 'place_id');
                     },

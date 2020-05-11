@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Providers;
 
@@ -22,7 +23,6 @@ use App\TransactionCategoryType;
 use App\TransactionType;
 use App\User;
 use App\UserRole;
-
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
@@ -35,8 +35,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
-        User::class => UserPolicy::class,
+//        User::class => UserPolicy::class,
         UserRole::class => UserRolePolicy::class,
         Account::class => AccountPolicy::class,
         Place::class => PlacePolicy::class,
@@ -59,5 +58,11 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Passport::routes();
+
+        Gate::before(function (User $user, $ability) {
+            if (true === $user->isAdmin()) {
+                return true;
+            }
+        });
     }
 }

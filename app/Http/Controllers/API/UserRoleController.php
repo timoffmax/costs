@@ -3,26 +3,32 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
-use App\Interfaces\RestApiControllerInterface;
+use App\Http\Resources\UserRoleResource;
 use App\UserRole;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 /**
  * User role REST controller
  */
-class UserRoleController extends BaseController implements RestApiControllerInterface
+class UserRoleController extends BaseController
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->authorizeResource(UserRole::class);
+    }
+
     /**
      * Display a listing of the roles
      *
-     * @param Request $request
-     * @return array|Collection
+     * @return array
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(): array
     {
         $roles = UserRole::all();
         $arrayOfRoles = [];
@@ -34,64 +40,49 @@ class UserRoleController extends BaseController implements RestApiControllerInte
         return $arrayOfRoles;
     }
 
-
     /**
-     * Create a user role
-     *
-     * @param Request $request
-     * @return Response|void
-     * @throws AuthorizationException
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(): JsonResponse
     {
-        $this->authorize('create', UserRole::class);
+        return response()->json(
+            [
+                'error' => 'Creating new roles is not allowed.'
+            ],
+            403
+        );
     }
 
+    /**
+     * @param UserRole $role
+     * @return UserRoleResource
+     */
+    public function show(UserRole $role): UserRoleResource
+    {
+        return new UserRoleResource($role);
+    }
 
     /**
-     * Display the specified user role
-     *
-     * @param int $id
+     * @param Request $request
+     * @param UserRole $role
+     * @return UserRoleResource
+     */
+    public function update(Request $request, UserRole $role)
+    {
+        $role->update($request->only(['name']));
+
+        return new UserRoleResource($role);
+    }
+
+    /**
+     * @param UserRole $role
      * @return Response
-     * @throws AuthorizationException
+     * @throws \Exception
      */
-    public function show(int $id)
+    public function destroy(UserRole $role)
     {
-        $userRoleModel = UserRole::findOrFail($id);
+        $role->delete();
 
-        $this->authorize('view', $userRoleModel);
-
-        return $userRoleModel;
-    }
-
-
-    /**
-     * Display the specified user role
-     *
-     * @param Request $request
-     * @param int $id
-     * @return Response|void
-     * @throws AuthorizationException
-     */
-    public function update(Request $request, int $id)
-    {
-        $userRoleModel = UserRole::findOrFail($id);
-
-        $this->authorize('update', $userRoleModel);
-    }
-
-
-    /**
-     * Remove the specified user role
-     *
-     * @param int $id
-     * @return Response|void
-     * @throws AuthorizationException
-     */
-    public function destroy(int $id)
-    {
-        $userRoleModel = UserRole::findOrFail($id);
-
-        $this->authorize('delete', $userRoleModel);
+        return response()->noContent();
     }
 }

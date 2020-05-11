@@ -164,7 +164,8 @@
                 // Get current user data
                 axios.get(`api/user/${window.user.id}`).then(
                     (response) => {
-                        this.profile = response.data;
+                        let payload = response.data;
+                        this.profile = payload.data;
 
                         // Fill form
                         this.profileForm.fill(this.profile);

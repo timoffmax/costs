@@ -1,10 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 
-class BaseController extends Controller
+/**
+ * Custom base controller
+ */
+abstract class BaseController extends Controller
 {
     /**
      * Create a new controller instance.

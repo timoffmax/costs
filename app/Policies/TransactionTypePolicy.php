@@ -29,10 +29,10 @@ class TransactionTypePolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\User  $user
-     * @return mixed
+     * @param User $user
+     * @return bool
      */
-    public function viewAll(User $user)
+    public function viewAll(User $user): bool
     {
         return true;
     }
@@ -40,11 +40,11 @@ class TransactionTypePolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @param TransactionType $model
-     * @return mixed
+     * @return bool
      */
-    public function view(User $user, TransactionType $model)
+    public function view(User $user, TransactionType $model): bool
     {
         return false;
     }
@@ -55,8 +55,10 @@ class TransactionTypePolicy
      * @param User $user
      * @param TransactionType $model
      * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function viewAny(User $user, TransactionType $model)
+    public function viewAny(User $user, TransactionType $model): bool
     {
         return false;
     }
@@ -65,9 +67,11 @@ class TransactionTypePolicy
      * Determine whether the user can create models.
      *
      * @param TransactionType $model
-     * @return mixed
+     * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function create(TransactionType $model)
+    public function create(TransactionType $model): bool
     {
         return false;
     }
@@ -75,11 +79,13 @@ class TransactionTypePolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @param TransactionType $model
-     * @return mixed
+     * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function update(User $user, TransactionType $model)
+    public function update(User $user, TransactionType $model): bool
     {
         return false;
     }
@@ -87,11 +93,13 @@ class TransactionTypePolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\User  $user
+     * @param User $user
      * @param TransactionType $model
-     * @return mixed
+     * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function delete(User $user, TransactionType $model)
+    public function delete(User $user, TransactionType $model): bool
     {
         return false;
     }

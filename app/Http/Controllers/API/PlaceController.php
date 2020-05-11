@@ -1,17 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
 use App\Place;
-use App\Interfaces\RestApiControllerInterface;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class PlaceController
+ * Place controller
  */
-class PlaceController extends BaseController implements RestApiControllerInterface
+class PlaceController extends BaseController
 {
     /**
      * Display a list of places

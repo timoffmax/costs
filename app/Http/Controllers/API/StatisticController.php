@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class StatisticsController
+ * Statistic controller
  */
 class StatisticController extends BaseController
 {

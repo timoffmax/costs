@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class DashboardController
+ * Dashboard controller
  */
 class DashboardController extends BaseController
 {

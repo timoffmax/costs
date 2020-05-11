@@ -9,8 +9,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 
 /**
- * Class User
+ * User model
  *
+ * @property int $id
  * @property string $name
  * @property string $email
  * @property string $password
@@ -57,6 +58,16 @@ class User extends Authenticatable
      * @var array
      */
     protected $with = ['role', 'accounts', 'places'];
+
+    /**
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        $result = $this->role->name === 'admin';
+
+        return $result;
+    }
 
     /**
      * Get role

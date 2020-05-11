@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
-use App\Interfaces\RestApiControllerInterface;
 use App\Transaction;
 use App\TransactionType;
 use App\User;
@@ -11,9 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class TransactionController
+ * Transactions controller
  */
-class TransactionController extends BaseController implements RestApiControllerInterface
+class TransactionController extends BaseController
 {
     /**
      * Display a list of transactions

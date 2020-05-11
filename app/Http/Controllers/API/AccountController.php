@@ -1,14 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
 use App\Account;
-use App\Interfaces\RestApiControllerInterface;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AccountController extends BaseController implements RestApiControllerInterface
+/**
+ * Account controller
+ */
+class AccountController extends BaseController
 {
     /**
      * Display a list of accounts
