@@ -15,7 +15,7 @@ class CreateTableTransaction extends Migration
     {
         Schema::create('transaction', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned()->nullable(false);
+            $table->bigInteger('user_id')->unsigned()->nullable(false);
             $table->integer('account_id')->unsigned()->nullable(false);
             $table->integer('type_id')->unsigned()->nullable(false);
             $table->decimal('sum', 10, 2)->default('0.00');

@@ -115,13 +115,13 @@ class CreateTableTransactionCategory extends Migration
                 ['transaction_type_id' => 2, 'type_id' => $typeMoneySavings->id, 'name' => 'investments'],
                 ['transaction_type_id' => 2, 'type_id' => $typeMoneySavings->id, 'name' => 'moneybox'],
                 ['transaction_type_id' => 2, 'type_id' => $typeMoneySavings->id, 'name' => 'other money savings'],
-                ['transaction_type_id' => 2, 'type_id' => $typeEducation, 'name' => 'courses'],
-                ['transaction_type_id' => 2, 'type_id' => $typeEducation, 'name' => 'books'],
-                ['transaction_type_id' => 2, 'type_id' => $typeEducation, 'name' => 'events'],
-                ['transaction_type_id' => 2, 'type_id' => $typeServiceChanges, 'name' => 'service charge'],
-                ['transaction_type_id' => 2, 'type_id' => $typeServiceChanges, 'name' => 'service fee'],
-                ['transaction_type_id' => 1, 'type_id' => $typeGifts, 'name' => 'gifts'],
-                ['transaction_type_id' => 2, 'type_id' => $typeGifts, 'name' => 'gifts'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEducation->id, 'name' => 'courses'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEducation->id, 'name' => 'books'],
+                ['transaction_type_id' => 2, 'type_id' => $typeEducation->id, 'name' => 'events'],
+                ['transaction_type_id' => 2, 'type_id' => $typeServiceChanges->id, 'name' => 'service charge'],
+                ['transaction_type_id' => 2, 'type_id' => $typeServiceChanges->id, 'name' => 'service fee'],
+                ['transaction_type_id' => 1, 'type_id' => $typeGifts->id, 'name' => 'gifts'],
+                ['transaction_type_id' => 2, 'type_id' => $typeGifts->id, 'name' => 'gifts'],
             ]
         );
     }
