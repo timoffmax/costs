@@ -15,7 +15,7 @@ class CreateTablePlace extends Migration
     {
         Schema::create('place', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned()->nullable(false);
+            $table->bigInteger('user_id')->unsigned()->nullable(false);
             $table->string('name', 100)->nullable(false);
 
             $table->foreign('user_id', 'fk_place_user_id')
