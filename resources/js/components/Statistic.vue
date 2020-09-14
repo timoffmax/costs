@@ -16,7 +16,12 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Costs</span>
-                        <span class="info-box-number">{{ statistic.costs.grandTotal | price }}</span>
+                        <span v-for="(sum, currency) in statistic.costs.totalsByCurrency" class="info-box-number">
+                            {{ currency }}{{ sum | price }}
+                        </span>
+                        <span class="info-box-number">
+                            <b>Total: {{ statistic.costs.grandTotal | price }}</b>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -26,7 +31,12 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Incomes</span>
-                        <span class="info-box-number">{{ statistic.incomes.grandTotal | price }}</span>
+                        <span v-for="(sum, currency) in statistic.incomes.totalsByCurrency" class="info-box-number">
+                            {{ currency }}{{ sum | price }}
+                        </span>
+                        <span class="info-box-number">
+                            <b>Total: {{ statistic.incomes.grandTotal | price }}</b>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -36,7 +46,12 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Deposits</span>
-                        <span class="info-box-number">{{ statistic.deposits.grandTotal | price }}</span>
+                        <span v-for="(sum, currency) in statistic.deposits.totalsByCurrency" class="info-box-number">
+                            {{ currency }}{{ sum | price }}
+                        </span>
+                        <span class="info-box-number">
+                            <b>Total: {{ statistic.deposits.grandTotal | price }}</b>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -46,7 +61,12 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Moneybox</span>
-                        <span class="info-box-number">{{ statistic.moneybox.grandTotal | price }}</span>
+                        <span v-for="(sum, currency) in statistic.moneybox.totalsByCurrency" class="info-box-number">
+                            {{ currency }}{{ sum | price }}
+                        </span>
+                        <span class="info-box-number">
+                            <b>Total: {{ statistic.moneybox.grandTotal | price }}</b>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -56,7 +76,12 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Other savings</span>
-                        <span class="info-box-number">{{ statistic.savings.grandTotal | price }}</span>
+                        <span v-for="(sum, currency) in statistic.savings.totalsByCurrency" class="info-box-number">
+                            {{ currency }}{{ sum | price }}
+                        </span>
+                        <span class="info-box-number">
+                            <b>Total: {{ statistic.savings.grandTotal | price }}</b>
+                        </span>
                     </div>
                 </div>
             </div>

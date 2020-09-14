@@ -4,32 +4,18 @@ declare(strict_types=1);
 namespace App\Models\Statistic\Incomes;
 
 use App\Models\Statistic\TotalsAbstract;
-use App\Transaction;
+use App\TransactionType;
 
 /**
- * Class GrandTotal
+ * Income transaction totals calculation model
  */
 class GrandTotal extends TotalsAbstract
 {
     /**
-     * Returns totals sum of incomes for the period
-     *
      * @inheritDoc
-     * @throws \Exception
      */
-    public function getTotals(string $dateFrom, string $dateTo): float
+    protected function getTransactionType(): string
     {
-        $result = 0.0;
-
-        $incomes = $this->getIncomeTransactions($dateFrom, $dateTo);
-
-        /** @var Transaction $income */
-        foreach ($incomes as $income) {
-            $result += abs($income->sum);
-        }
-
-        $result = $this->roundSum($result);
-
-        return $result;
+        return TransactionType::TYPE_INCOME;
     }
 }

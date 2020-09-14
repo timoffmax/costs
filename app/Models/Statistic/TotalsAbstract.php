@@ -5,10 +5,11 @@ namespace App\Models\Statistic;
 
 use App\Models\Service\Transaction\GetByPeriod;
 use App\Models\Traits\User\CurrentUserTrait;
+use App\Transaction;
 use App\TransactionType;
 
 /**
- * Class TotalsAbstract
+ * Abstract model for calculating totals
  */
 abstract class TotalsAbstract implements TotalsInterface
 {
@@ -26,6 +27,60 @@ abstract class TotalsAbstract implements TotalsInterface
     public function __construct(GetByPeriod $getByPeriod)
     {
         $this->getByPeriod = $getByPeriod;
+    }
+
+    /**
+     * You must specify transaction type to filter by it
+     *
+     * @return string
+     */
+    abstract protected function getTransactionType(): string;
+
+    /**
+     * Returns totals sum of money temporarily put off to spend them in the future
+     *
+     * @inheritDoc
+     * @throws \Exception
+     */
+    public function getTotals(string $dateFrom, string $dateTo): float
+    {
+        $result = 0.0;
+
+        $type = $this->getTransactionType();
+        $transactions = $this->getTransactionsByType($dateFrom, $dateTo, $type);
+
+        /** @var Transaction $transaction */
+        foreach ($transactions as $transaction) {
+            $result += abs($transaction->sum);
+        }
+
+        $result = $this->roundSum($result);
+
+        return $result;
+    }
+
+    /**
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @return array
+     * @throws \Exception
+     */
+    public function getTotalsByCurrency(string $dateFrom, string $dateTo): array
+    {
+        $result = [];
+
+        $type = $this->getTransactionType();
+        $transactions = $this->getTransactionsByType($dateFrom, $dateTo, $type);
+
+        /** @var Transaction $transaction */
+        foreach ($transactions as $transaction) {
+            $currency = $transaction->account->currency->sign;
+            $total = $result[$currency] ?? 0.0;
+
+            $result[$currency] = abs($this->roundSum($total + $transaction->sum));
+        }
+
+        return $result;
     }
 
     /**
@@ -103,7 +158,7 @@ abstract class TotalsAbstract implements TotalsInterface
      */
     protected function getSavingTransactions(string $from, string $to): array
     {
-        return $this->getTransactionsByType($from, $to, TransactionType::TYPE_SAVING);
+        return $this->getTransactionsByTypeAndCurrency($from, $to, TransactionType::TYPE_SAVING);
     }
 
     /**
@@ -126,10 +181,36 @@ abstract class TotalsAbstract implements TotalsInterface
         );
 
         foreach ($transactions as $key => $transaction) {
-            $notUah = $transaction->account->currency;
             $dontCalculateCosts = !$transaction->account->calculate_costs;
 
-            if ($notUah || $dontCalculateCosts) {
+            if (true === $dontCalculateCosts) {
+                unset($transactions[$key]);
+            }
+        }
+
+        return $transactions;
+    }
+
+    /**
+     * @param string $from
+     * @param string $to
+     * @param string $type
+     * @return array
+     * @throws \Exception
+     */
+    protected function getTransactionsByTypeAndCurrency(string $from, string $to, string $type): array
+    {
+        $transactions = $this->getByPeriod->getByStringDates(
+            $from,
+            $to,
+            $this->getCurrentUser(),
+            $type
+        );
+
+        foreach ($transactions as $key => $transaction) {
+            $dontCalculateCosts = (false === (bool)$transaction->account->calculate_costs);
+
+            if ($dontCalculateCosts) {
                 unset($transactions[$key]);
             }
         }
