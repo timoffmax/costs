@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types = 1);
 
 namespace App\Models;
@@ -13,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class DashboardInfo
+ * Collects and returns some info you can use for dashboard
  */
 class DashboardInfo extends Model
 {
@@ -125,22 +124,22 @@ class DashboardInfo extends Model
      * Returns total sum of incomes for the provided transactions
      *
      * @param array $transactions
-     * @return float
+     * @return array
      */
-    public function getTotalCosts(array $transactions): float
+    public function getTotalCosts(array $transactions): array
     {
-        return $this->getTotalByType($transactions, TransactionType::TYPE_COST);
+        return $this->getTotalsByCurrency($transactions, TransactionType::TYPE_COST);
     }
 
     /**
      * Returns total sum of costs for the provided transactions
      *
      * @param array $transactions
-     * @return float
+     * @return array
      */
-    public function getTotalIncomes(array $transactions): float
+    public function getTotalIncomes(array $transactions): array
     {
-        return $this->getTotalByType($transactions, TransactionType::TYPE_INCOME);
+        return $this->getTotalsByCurrency($transactions, TransactionType::TYPE_INCOME);
     }
 
     /**
@@ -163,26 +162,27 @@ class DashboardInfo extends Model
     }
 
     /**
-     * Returns calculated total by transaction type
+     * Returns totals for all currencies filtered by the transaction type
      *
      * @param array $transactions
      * @param string $type
-     * @return float
+     * @return array
      */
-    protected function getTotalByType(array $transactions, string $type): float
+    public function getTotalsByCurrency(array $transactions, string $type): array
     {
-        $total = 0;
+        $result = [];
 
+        /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            // TODO: Add support of sum by currency. Temporary just ignore transactions with it.
-            if (!$transaction->account->currency && $transaction->account->calculate_costs) {
-                if ($type === $transaction->type->name) {
-                    $total += $transaction->sum;
-                }
+            if ($type === $transaction->type->name) {
+                $currency = $transaction->account->currency->sign;
+                $total = $result[$currency] ?? 0.0;
+
+                $result[$currency] = abs($this->roundSum($total + $transaction->sum));
             }
         }
 
-        return $total;
+        return $result;
     }
 
     /**
@@ -201,5 +201,16 @@ class DashboardInfo extends Model
         ;
 
         return $transactions;
+    }
+
+    /**
+     * Rounds the total to get exactly 2 number after the point
+     *
+     * @param float $sum
+     * @return string
+     */
+    private function roundSum(float $sum): float
+    {
+        return round($sum, 2);
     }
 }

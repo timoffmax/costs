@@ -4,7 +4,9 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>{{ info.transactions.currentMonth.costs | price }}</h3>
+                        <h3 v-for="(sum, currency) in info.transactions.currentMonth.costs">
+                            {{ currency }}{{ sum | price }}
+                        </h3>
                         <p>Costs</p>
                     </div>
                     <div class="icon">
@@ -16,7 +18,9 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>{{ info.transactions.currentMonth.incomes | price }}</h3>
+                        <h3 v-for="(sum, currency) in info.transactions.currentMonth.incomes">
+                            {{ currency }}{{ sum | price }}
+                        </h3>
                         <p>Incomes</p>
                     </div>
                     <div class="icon">
@@ -40,7 +44,9 @@
             <div v-if="userInfo.accounts" class="col-lg-3 col-6">
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>{{ allAccountsAmount }}</h3>
+                        <h3 v-for="(sum, currency) in allAccountsAmount">
+                            {{ currency }}{{ sum | price }}
+                        </h3>
                         <p>Total Amount</p>
                     </div>
                     <div class="icon">
@@ -55,14 +61,18 @@
                 <span class="info-box-icon"><i class="fas fa-donate"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Last Month Incomes</span>
-                    <span class="info-box-number">{{ info.transactions.lastMonth.incomes | price }}</span>
+                    <span v-for="(sum, currency) in info.transactions.lastMonth.incomes" class="info-box-number">
+                        {{ currency }}{{ sum | price }}
+                    </span>
                 </div>
             </div>
             <div class="col-lg-2 info-box bg-danger d-none d-lg-block">
                 <span class="info-box-icon"><i class="fas fa-coins"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Last Month Costs</span>
-                    <span class="info-box-number">{{ info.transactions.lastMonth.costs | price }}</span>
+                    <span v-for="(sum, currency) in info.transactions.lastMonth.costs" class="info-box-number">
+                        {{ currency }}{{ sum | price }}
+                    </span>
                 </div>
             </div>
             <div class="col-lg-2 info-box bg-primary d-none d-lg-block">
@@ -233,15 +243,17 @@
         },
         computed: {
             allAccountsAmount() {
-                let sum = 0;
+                let result = {};
 
                 for (let account of this.userInfo.accounts) {
                     if (account.calculate_costs) {
-                        sum += parseFloat(account.balance);
+                        let currency = account.currency ? account.currency.sign : '';
+                        result[currency] = result[currency] ? result[currency] : 0.0;
+                        result[currency] += parseFloat(account.balance);
                     }
                 }
 
-                return sum.toFixed(2);
+                return result;
             },
             monthTransactions() {
                 let sum = 0;
