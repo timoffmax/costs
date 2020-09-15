@@ -267,10 +267,10 @@
                                        class="form-control"
                                        :class="{'is-invalid': transactionForm.errors.has('exchange_course')}"
                                        placeholder="Exchange course"
-                                       pattern="\d+(\.\d{1,2})?"
+                                       pattern="\d+(\.\d{1,4})?"
                                 >
                                 <small class="form-text text-muted">
-                                    Use format 123 or 123.45
+                                    Use format 123, 123.45 or 123.4567
                                 </small>
                                 <has-error :form="transactionForm" field="exchange_course"></has-error>
                             </div>

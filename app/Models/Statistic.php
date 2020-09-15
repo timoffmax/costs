@@ -134,6 +134,7 @@ class Statistic
             'byDay' => $this->costsByDay->getInfo($dateFrom, $dateTo),
             'byAccount' => $this->costsByAccount->getInfo($dateFrom, $dateTo),
             'grandTotal' => $this->costsGrandTotal->getTotals($dateFrom, $dateTo),
+            'totalsByCurrency' => $this->costsGrandTotal->getTotalsByCurrency($dateFrom, $dateTo),
         ];
     }
 
@@ -149,6 +150,7 @@ class Statistic
     {
         return [
             'grandTotal' => $this->incomesGrandTotal->getTotals($dateFrom, $dateTo),
+            'totalsByCurrency' => $this->incomesGrandTotal->getTotalsByCurrency($dateFrom, $dateTo),
         ];
     }
 
@@ -164,6 +166,7 @@ class Statistic
     {
         return [
             'grandTotal' => $this->depositsGrandTotal->getTotals($dateFrom, $dateTo),
+            'totalsByCurrency' => $this->depositsGrandTotal->getTotalsByCurrency($dateFrom, $dateTo),
         ];
     }
 
@@ -179,6 +182,7 @@ class Statistic
     {
         return [
             'grandTotal' => $this->moneyboxGrandTotal->getTotals($dateFrom, $dateTo),
+            'totalsByCurrency' => $this->moneyboxGrandTotal->getTotalsByCurrency($dateFrom, $dateTo),
         ];
     }
 
@@ -192,8 +196,11 @@ class Statistic
      */
     public function getSavingsInfo(string $dateFrom, string $dateTo): array
     {
-        return [
+        $result = [
             'grandTotal' => $this->savingsGrandTotal->getTotals($dateFrom, $dateTo),
+            'totalsByCurrency' => $this->savingsGrandTotal->getTotalsByCurrency($dateFrom, $dateTo),
         ];
+
+        return $result;
     }
 }
