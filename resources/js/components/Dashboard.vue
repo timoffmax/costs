@@ -4,9 +4,14 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3 v-for="(sum, currency) in info.transactions.currentMonth.costs">
-                            {{ currency }}{{ sum | price }}
-                        </h3>
+                        <template v-if="Object.keys(info.transactions.currentMonth.costs).length > 0">
+                            <h3 v-for="(sum, currency) in info.transactions.currentMonth.costs" v-if="sum > 0">
+                                {{ currency }}{{ sum | price }}
+                            </h3>
+                        </template>
+                        <template v-else>
+                            <h3>--</h3>
+                        </template>
                         <p>Costs</p>
                     </div>
                     <div class="icon">
@@ -18,9 +23,14 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3 v-for="(sum, currency) in info.transactions.currentMonth.incomes">
-                            {{ currency }}{{ sum | price }}
-                        </h3>
+                        <template v-if="Object.keys(info.transactions.currentMonth.incomes).length > 0">
+                            <h3 v-for="(sum, currency) in info.transactions.currentMonth.incomes" v-if="sum > 0">
+                                {{ currency }}{{ sum | price }}
+                            </h3>
+                        </template>
+                        <template v-else>
+                            <h3>--</h3>
+                        </template>
                         <p>Incomes</p>
                     </div>
                     <div class="icon">
@@ -44,9 +54,14 @@
             <div v-if="userInfo.accounts" class="col-lg-3 col-6">
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3 v-for="(sum, currency) in allAccountsAmount">
-                            {{ currency }}{{ sum | price }}
-                        </h3>
+                        <template v-if="Object.keys(allAccountsAmount).length > 0">
+                            <h3 v-for="(sum, currency) in allAccountsAmount" v-if="sum > 0">
+                                {{ currency }}{{ sum | price }}
+                            </h3>
+                        </template>
+                        <template v-else>
+                            <h3>--</h3>
+                        </template>
                         <p>Total Amount</p>
                     </div>
                     <div class="icon">
@@ -61,18 +76,28 @@
                 <span class="info-box-icon"><i class="fas fa-donate"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Last Month Incomes</span>
-                    <span v-for="(sum, currency) in info.transactions.lastMonth.incomes" class="info-box-number">
-                        {{ currency }}{{ sum | price }}
-                    </span>
+                    <template v-if="Object.keys(info.transactions.lastMonth.incomes).length > 0">
+                        <span v-for="(sum, currency) in info.transactions.lastMonth.incomes" v-if="sum > 0" class="info-box-number">
+                            {{ currency }}{{ sum | price }}
+                        </span>
+                    </template>
+                    <template v-else>
+                        <span class="info-box-number">--</span>
+                    </template>
                 </div>
             </div>
             <div class="col-lg-2 info-box bg-danger d-none d-lg-block">
                 <span class="info-box-icon"><i class="fas fa-coins"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Last Month Costs</span>
-                    <span v-for="(sum, currency) in info.transactions.lastMonth.costs" class="info-box-number">
-                        {{ currency }}{{ sum | price }}
-                    </span>
+                    <template v-if="Object.keys(info.transactions.lastMonth.costs).length > 0">
+                        <span v-for="(sum, currency) in info.transactions.lastMonth.costs" v-if="sum > 0" class="info-box-number">
+                            {{ currency }}{{ sum | price }}
+                        </span>
+                    </template>
+                    <template v-else>
+                        <span class="info-box-number">--</span>
+                    </template>
                 </div>
             </div>
             <div class="col-lg-2 info-box bg-primary d-none d-lg-block">

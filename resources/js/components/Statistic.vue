@@ -16,9 +16,14 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Costs</span>
-                        <span v-for="(sum, currency) in statistic.costs.totalsByCurrency" class="info-box-number">
-                            {{ currency }}{{ sum | price }}
-                        </span>
+                        <template v-if="Object.keys(statistic.costs.totalsByCurrency).length > 0">
+                            <span v-for="(sum, currency) in statistic.costs.totalsByCurrency" v-if="sum > 0" class="info-box-number">
+                                {{ currency }}{{ sum | price }}
+                            </span>
+                        </template>
+                        <template v-else>
+                            <span class="info-box-number">--</span>
+                        </template>
                         <span v-if="false" class="info-box-number">
                             <!-- hide till currency conversion is implemented -->
                             <b>Total: {{ statistic.costs.grandTotal | price }}</b>
@@ -32,9 +37,14 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Incomes</span>
-                        <span v-for="(sum, currency) in statistic.incomes.totalsByCurrency" class="info-box-number">
-                            {{ currency }}{{ sum | price }}
-                        </span>
+                        <template v-if="Object.keys(statistic.incomes.totalsByCurrency).length > 0">
+                            <span v-for="(sum, currency) in statistic.incomes.totalsByCurrency" v-if="sum > 0" class="info-box-number">
+                                {{ currency }}{{ sum | price }}
+                            </span>
+                        </template>
+                        <template v-else>
+                            <span class="info-box-number">--</span>
+                        </template>
                         <span v-if="false" class="info-box-number">
                             <!-- hide till currency conversion is implemented -->
                             <b>Total: {{ statistic.incomes.grandTotal | price }}</b>
@@ -48,9 +58,14 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Deposits</span>
-                        <span v-for="(sum, currency) in statistic.deposits.totalsByCurrency" class="info-box-number">
-                            {{ currency }}{{ sum | price }}
-                        </span>
+                        <template v-if="Object.keys(statistic.deposits.totalsByCurrency).length > 0">
+                            <span v-for="(sum, currency) in statistic.deposits.totalsByCurrency" v-if="sum > 0" class="info-box-number">
+                                {{ currency }}{{ sum | price }}
+                            </span>
+                        </template>
+                        <template v-else>
+                            <span class="info-box-number">--</span>
+                        </template>
                         <span v-if="false" class="info-box-number">
                             <!-- hide till currency conversion is implemented -->
                             <b>Total: {{ statistic.deposits.grandTotal | price }}</b>
@@ -64,9 +79,14 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Moneybox</span>
-                        <span v-for="(sum, currency) in statistic.moneybox.totalsByCurrency" class="info-box-number">
-                            {{ currency }}{{ sum | price }}
-                        </span>
+                        <template v-if="Object.keys(statistic.moneybox.totalsByCurrency).length > 0">
+                            <span v-for="(sum, currency) in statistic.moneybox.totalsByCurrency" v-if="sum > 0" class="info-box-number">
+                                {{ currency }}{{ sum | price }}
+                            </span>
+                        </template>
+                        <template v-else>
+                            <span class="info-box-number">--</span>
+                        </template>
                         <span v-if="false" class="info-box-number">
                             <!-- hide till currency conversion is implemented -->
                             <b>Total: {{ statistic.moneybox.grandTotal | price }}</b>
@@ -80,9 +100,14 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Other savings</span>
-                        <span v-for="(sum, currency) in statistic.savings.totalsByCurrency" class="info-box-number">
-                            {{ currency }}{{ sum | price }}
-                        </span>
+                        <template v-if="Object.keys(statistic.savings.totalsByCurrency).length > 0">
+                            <span v-for="(sum, currency) in statistic.savings.totalsByCurrency" v-if="sum > 0" class="info-box-number">
+                                {{ currency }}{{ sum | price }}
+                            </span>
+                        </template>
+                        <template v-else>
+                            <span class="info-box-number">--</span>
+                        </template>
                         <span v-if="false" class="info-box-number">
                             <!-- hide till currency conversion is implemented -->
                             <b>Total: {{ statistic.savings.grandTotal | price }}</b>
