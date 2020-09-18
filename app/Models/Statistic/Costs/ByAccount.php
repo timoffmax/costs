@@ -7,35 +7,36 @@ use App\Models\Statistic\StatisticAbstract;
 use App\Transaction;
 
 /**
- * Class ByAccount
+ * Calculates costs by account
  */
 class ByAccount extends StatisticAbstract
 {
     /**
-     * Returns result of ca
-     *
-     * @param string $dateFrom
-     * @param string $dateTo
-     * @return array
-     * @throws \Exception
+     * @inheritdoc
      */
     public function getInfo(string $dateFrom, string $dateTo): array
     {
         $result = [];
+        $transactionsByCurrency = $this->getCostsTransactions($dateFrom, $dateTo);
 
-        $transactions = $this->getCostsTransactions($dateFrom, $dateTo);
+        foreach ($transactionsByCurrency as $currency => $transactions) {
+            /** @var Transaction $transaction */
+            foreach ($transactions as $transaction) {
+                $accountId = $transaction->account->id;
+                $accountName = $transaction->account->name;
 
-        /** @var Transaction $transaction */
-        foreach ($transactions as $transaction) {
-            $accountId = $transaction->account->id;
-            $accountName = $transaction->account->name;
+                $sum = $result[$accountName]['sum'] ?? 0;
+                $sum += $transaction->sum;
 
-            $sum = $result[$accountId]['sum'] ?? 0;
-            $sum += $transaction->sum;
+                $accountSummary = [
+                    'id' => $accountId,
+                    'name' => $accountName,
+                    'currency' => $currency,
+                    'sum' => $this->roundSum($sum),
+                ];
 
-            $result[$accountId]['id'] = $accountId;
-            $result[$accountId]['name'] = $accountName;
-            $result[$accountId]['sum'] = $this->roundSum($sum);
+                $result[$accountName] = $accountSummary;
+            }
         }
 
         ksort($result);

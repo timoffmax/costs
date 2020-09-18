@@ -80,6 +80,8 @@ abstract class TotalsAbstract implements TotalsInterface
             $result[$currency] = abs($this->roundSum($total + $transaction->sum));
         }
 
+        arsort($result);
+
         return $result;
     }
 

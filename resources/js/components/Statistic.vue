@@ -132,14 +132,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="place in statistic.costs.byPlace">
+                                    <tr v-for="(place, placeName) in statistic.costs.byPlace">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="{name: 'transactions', params: {filters: {place_id: place.id}}}">
-                                                {{ place.name | capitalize }}
+                                            <router-link :to="{name: 'transactions', params: {filters: {category_id: categoryId}}}">
+                                                {{ placeName | capitalize }}
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">
-                                            {{ place.sum }}
+                                            <p v-for="(sum, currency) in place.sum">
+                                                {{ currency }}{{ sum }}
+                                            </p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -163,14 +165,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="category in statistic.costs.byCategory">
+                                    <tr v-for="(category, categoryId) in statistic.costs.byCategory">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="{name: 'transactions', params: {filters: {category_id: category.id}}}">
+                                            <router-link :to="{name: 'transactions', params: {filters: {category_id: categoryId}}}">
                                                 {{ category.name | capitalize }}
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">
-                                            {{ category.sum }}
+                                            <p v-for="(sum, currency) in category.sum">
+                                                {{ currency }}{{ sum }}
+                                            </p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -194,14 +198,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="day in statistic.costs.byDay">
+                                    <tr v-for="(day, date) in statistic.costs.byDay">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="{name: 'transactions', params: {filters: {date: day.date}}}">
-                                                {{ day.date | dateMoment('MMMM Do YYYY') }}
+                                            <router-link :to="{name: 'transactions', params: {filters: {date: date}}}">
+                                                {{ date | dateMoment('MMMM Do YYYY') }}
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">
-                                            {{ day.sum }}
+                                            <p v-for="(info, currency) in day">
+                                                {{ currency }}{{ info.sum }}
+                                            </p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -232,7 +238,7 @@
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">
-                                            {{ account.sum }}
+                                            {{ account.currency }}{{ account.sum }}
                                         </td>
                                     </tr>
                                 </tbody>
