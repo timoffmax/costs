@@ -7,35 +7,30 @@ use App\Models\Statistic\StatisticAbstract;
 use App\Transaction;
 
 /**
- * Class ByPlace
+ * Calculates costs by place
  */
 class ByPlace extends StatisticAbstract
 {
     /**
-     * Returns result
-     *
-     * @param string $dateFrom
-     * @param string $dateTo
-     * @return array
-     * @throws \Exception
+     * @inheritdoc
      */
     public function getInfo(string $dateFrom, string $dateTo): array
     {
         $result = [];
+        $transactionsByCurrency = $this->getCostsTransactions($dateFrom, $dateTo);
 
-        $transactions = $this->getCostsTransactions($dateFrom, $dateTo);
+        foreach ($transactionsByCurrency as $currency => $transactions) {
+            /** @var Transaction $transaction */
+            foreach ($transactions as $transaction) {
+                $placeName = $transaction->place ? $transaction->place->name : 'No place';
+                $placeId = $transaction->place ? $transaction->place->id : null;
 
-        /** @var Transaction $transaction */
-        foreach ($transactions as $transaction) {
-            $placeName = $transaction->place ? $transaction->place->name : 'No place';
-            $placeId = $transaction->place ? $transaction->place->id : null;
+                $sum = $result[$placeName]['sum'][$currency] ?? 0;
+                $sum += $transaction->sum;
 
-            $sum = $result[$placeName]['sum'] ?? 0;
-            $sum += $transaction->sum;
-
-            $result[$placeName]['id'] = $placeId;
-            $result[$placeName]['name'] = $placeName;
-            $result[$placeName]['sum'] = $this->roundSum($sum);
+                $result[$placeName]['id'] = $placeId;
+                $result[$placeName]['sum'][$currency] = $this->roundSum($sum);
+            }
         }
 
         arsort($result);

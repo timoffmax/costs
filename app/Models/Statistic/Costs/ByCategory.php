@@ -7,38 +7,33 @@ use App\Models\Statistic\StatisticAbstract;
 use App\Transaction;
 
 /**
- * Class ByCategory
+ * Calculates costs by category
  */
 class ByCategory extends StatisticAbstract
 {
     /**
-     * Returns result
-     *
-     * @param string $dateFrom
-     * @param string $dateTo
-     * @return array
-     * @throws \Exception
+     * @inheritdoc
      */
     public function getInfo(string $dateFrom, string $dateTo): array
     {
         $result = [];
+        $transactionsByCurrency = $this->getCostsTransactions($dateFrom, $dateTo);
 
-        $transactions = $this->getCostsTransactions($dateFrom, $dateTo);
+        foreach ($transactionsByCurrency as $currency => $transactions) {
+            /** @var Transaction $transaction */
+            foreach ($transactions as $transaction) {
+                $categoryId = $transaction->category->id;
+                $categoryName = $transaction->category->name;
 
-        /** @var Transaction $transaction */
-        foreach ($transactions as $transaction) {
-            $categoryId = $transaction->category->id;
-            $categoryName = $transaction->category->name;
+                $sum = $result[$categoryId]['sum'][$currency] ?? 0;
+                $sum += $transaction->sum;
 
-            $sum = $result[$categoryId]['sum'] ?? 0;
-            $sum += $transaction->sum;
+                $result[$categoryId]['name'] = $categoryName;
+                $result[$categoryId]['sum'][$currency] = $this->roundSum($sum);
+            }
 
-            $result[$categoryId]['id'] = $categoryId;
-            $result[$categoryId]['sum'] = $this->roundSum($sum);
-            $result[$categoryId]['name'] = $categoryName;
+            arsort($result[$categoryId]['sum']);
         }
-
-        arsort($result);
 
         return $result;
     }

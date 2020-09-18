@@ -5,6 +5,7 @@ namespace App\Models\Statistic;
 
 use App\Models\Service\Transaction\GetByPeriod;
 use App\Models\Traits\User\CurrentUserTrait;
+use App\Transaction;
 use App\TransactionType;
 
 /**
@@ -31,12 +32,16 @@ abstract class StatisticAbstract implements StatisticInterface
     /**
      * Returns transactions for the specified period
      *
+     * @param string $from
+     * @param string $to
+     * @param string|null $type
      * @return array
      * @throws \Exception
      */
-    protected function getTransactions(string $from, string $to): array
+    protected function getTransactions(string $from, string $to, ?string $type = null): array
     {
-        $transactions = $this->getByPeriod->getByStringDates($from, $to, $this->getCurrentUser());
+        $user = $this->getCurrentUser();
+        $transactions = $this->getByPeriod->getByStringDates($from, $to, $user, $type);
 
         return $transactions;
     }
@@ -51,23 +56,22 @@ abstract class StatisticAbstract implements StatisticInterface
      */
     protected function getCostsTransactions(string $from, string $to): array
     {
-        $transactions = $this->getByPeriod->getByStringDates(
-            $from,
-            $to,
-            $this->getCurrentUser(),
-            TransactionType::TYPE_COST
-        );
+        $result = [];
+        $transactions = $this->getTransactions($from, $to, TransactionType::TYPE_COST);
 
+        /** @var Transaction $transaction */
         foreach ($transactions as $key => $transaction) {
-            $notUah = $transaction->account->currency;
+            $currency = $transaction->account->currency->sign;
             $dontCalculateCosts = !$transaction->account->calculate_costs;
 
-            if ($notUah || $dontCalculateCosts) {
-                unset($transactions[$key]);
+            if (true === $dontCalculateCosts) {
+                continue;
             }
+
+            $result[$currency][] = $transaction;
         }
 
-        return $transactions;
+        return $result;
     }
 
     /**
