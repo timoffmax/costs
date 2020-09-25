@@ -5,7 +5,7 @@ namespace App\Models\Api\CurrConv;
 
 use App\Interfaces\Api\ContentTypeInterface;
 use App\Interfaces\Api\CurrConv\RequestInterface;
-use App\Models\Api\MethodInterface;
+use App\Interfaces\Api\MethodInterface;
 
 /**
  * Model of request that returns auth token

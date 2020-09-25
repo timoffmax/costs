@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Models\Api;
+namespace App\Interfaces\Api;
 
 /**
  * Describes HTTP request method types
