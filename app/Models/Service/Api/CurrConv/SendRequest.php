@@ -68,7 +68,7 @@ class SendRequest
         } catch (GuzzleException $exception) {
             /** @var Response $response */
             $response = new Response([
-                'status' => $exception->getCode(),
+                'status' => (int)$exception->getCode(),
                 'reason' => $exception->getMessage()
             ]);
 
@@ -105,7 +105,8 @@ class SendRequest
      */
     private function processSuccess(Response $response): array
     {
-        $result = json_decode($response->getBody(), true);
+        $responseJson = $response->getBody()->getContents();
+        $result = json_decode($responseJson, true);
 
         return $result;
     }
@@ -151,13 +152,9 @@ class SendRequest
     private function getClient(): Client
     {
         /** @var Client $client */
-        $client = new Client(
-            [
-                'config' => [
-                    'base_uri' => $this->config->getApiUrl(),
-                ]
-            ]
-        );
+        $client = new Client([
+            'base_uri' => $this->config->getApiUrl(),
+        ]);
 
         return $client;
     }
