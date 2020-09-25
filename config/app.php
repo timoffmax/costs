@@ -176,6 +176,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\StatisticServiceProvider::class,
         App\Providers\ConfigServiceProvider::class,
+        App\Providers\FactoryProvider::class,
+        App\Providers\GenericServiceProvider::class,
     ],
 
     /*
