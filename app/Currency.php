@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App;
 
@@ -6,10 +7,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Currency
+ * Currency entity model
  *
  * @property string $name
- * @property int $sign
+ * @property string $sign
+ * @property string $code
+ * @property float $course
+ * @property string $course_updated_at
  * @property Account[] $accounts
  */
 class Currency extends Model
@@ -34,7 +38,7 @@ class Currency extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sign',
+        'name', 'sign', 'code'
     ];
 
     /**
