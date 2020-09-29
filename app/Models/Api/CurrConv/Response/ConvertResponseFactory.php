@@ -21,7 +21,7 @@ class ConvertResponseFactory
         $result = new ConvertResponse();
 
         $key = "{$request->getCodeFrom()}_{$request->getCodeTo()}";
-        $data = $payload[$key] ?? [];
+        $data = $payload[$key] ?? 0;
         $result->setVal($data);
 
         return $result;
