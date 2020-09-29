@@ -79,7 +79,7 @@ class ModifyCurrencyTable extends Migration
         $eur->code = 'EUR';
         $eur->save();
 
-        $rur->code = 'RUR';
+        $rur->code = 'RUB';
         $rur->save();
     }
 }
