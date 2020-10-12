@@ -20,15 +20,19 @@
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Sign</th>
+                                    <th>Course</th>
+                                    <th>Course Updated At</th>
                                     <th class="text-right">Manage</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="currency in currencies">
-                                    <td class="w-25">{{ currency.id }}</td>
+                                    <td>{{ currency.id }}</td>
                                     <td class="w-25">{{ currency.name | capitalize }}</td>
-                                    <td class="w-25">{{ currency.sign }}</td>
-                                    <td class="w-25 text-right">
+                                    <td>{{ currency.sign }}</td>
+                                    <td>{{ currency.course }}</td>
+                                    <td class="w-25">{{ currency.course_updated_at | dateMoment('MMMM Do YYYY') }}</td>
+                                    <td class="text-right">
                                         <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'currency', currency)" @click="showCurrencyModal(currency); return false;">
                                             <i class="fas fa-edit text-green"></i>
                                         </button>
