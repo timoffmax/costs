@@ -20,8 +20,9 @@
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Sign</th>
+                                    <th>Code</th>
                                     <th>Course</th>
-                                    <th>Course Updated At</th>
+                                    <th>Updated At</th>
                                     <th class="text-right">Manage</th>
                                 </tr>
                             </thead>
@@ -30,8 +31,9 @@
                                     <td>{{ currency.id }}</td>
                                     <td class="w-25">{{ currency.name | capitalize }}</td>
                                     <td>{{ currency.sign }}</td>
+                                    <td>{{ currency.code }}</td>
                                     <td>{{ currency.course }}</td>
-                                    <td class="w-25">{{ currency.course_updated_at | dateMoment('MMMM Do YYYY') }}</td>
+                                    <td class="w-25">{{ currency.course_updated_at | dateMoment('MMMM Do YYYY HH:mm:ss') }}</td>
                                     <td class="text-right">
                                         <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'currency', currency)" @click="showCurrencyModal(currency); return false;">
                                             <i class="fas fa-edit text-green"></i>
@@ -81,10 +83,20 @@
                                        v-model="currencyForm.sign"
                                        class="form-control"
                                        :class="{'is-invalid': currencyForm.errors.has('sign')}"
-                                       placeholder="Sign (up to 3 chars)"
+                                       placeholder="Sign"
                                        pattern=".{1,3}"
                                 >
                                 <has-error :form="currencyForm" field="sign"></has-error>
+                            </div>
+                            <div class="form-group">
+                                <input type="text"
+                                       v-model="currencyForm.code"
+                                       class="form-control"
+                                       :class="{'is-invalid': currencyForm.errors.has('code')}"
+                                       placeholder="Code (3 chars)"
+                                       pattern="\w{3}"
+                                >
+                                <has-error :form="currencyForm" field="code"></has-error>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -113,6 +125,7 @@
                     id : null,
                     name: '',
                     sign: '',
+                    code: '',
                 }),
             };
         },
