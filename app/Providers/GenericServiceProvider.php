@@ -5,6 +5,7 @@ namespace App\Providers;
 
 use App\Models\Service\Api\CurrConv\Request\Convert as CurrConvConvert;
 use App\Models\Service\Api\CurrConv\SendRequest as CurrConvSendRequest;
+use App\Models\Service\Currency\GetCourses as GetCurrencyCourses;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -23,6 +24,7 @@ class GenericServiceProvider extends ServiceProvider
     public $singletons = [
         CurrConvSendRequest::class => CurrConvSendRequest::class,
         CurrConvConvert::class => CurrConvConvert::class,
+        GetCurrencyCourses::class => GetCurrencyCourses::class,
     ];
 
     /**
