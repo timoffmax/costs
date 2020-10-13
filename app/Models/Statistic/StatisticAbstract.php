@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models\Statistic;
 
+use App\Models\Service\Currency\GetCourses;
 use App\Models\Service\Transaction\GetByPeriod;
 use App\Models\Traits\User\CurrentUserTrait;
 use App\Transaction;
@@ -21,12 +22,19 @@ abstract class StatisticAbstract implements StatisticInterface
     protected $getByPeriod;
 
     /**
+     * @var GetCourses
+     */
+    private $getCourses;
+
+    /**
      * StatisticAbstract constructor.
      * @param GetByPeriod $getByPeriod
+     * @param GetCourses $getCourses
      */
-    public function __construct(GetByPeriod $getByPeriod)
+    public function __construct(GetByPeriod $getByPeriod, GetCourses $getCourses)
     {
         $this->getByPeriod = $getByPeriod;
+        $this->getCourses = $getCourses;
     }
 
     /**
@@ -83,5 +91,15 @@ abstract class StatisticAbstract implements StatisticInterface
     protected function roundSum(float $sum): float
     {
         return round($sum, 2);
+    }
+
+    /**
+     * @return float[]
+     */
+    protected function getCurrencyCourses(): array
+    {
+        $result = $this->getCourses->bySign();
+
+        return $result;
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models\Statistic;
 
+use App\Models\Service\Currency\GetCourses;
 use App\Models\Service\Transaction\GetByPeriod;
 use App\Models\Traits\User\CurrentUserTrait;
 use App\Transaction;
@@ -21,12 +22,19 @@ abstract class TotalsAbstract implements TotalsInterface
     protected $getByPeriod;
 
     /**
+     * @var GetCourses
+     */
+    private $getCourses;
+
+    /**
      * TotalsAbstract constructor.
      * @param GetByPeriod $getByPeriod
+     * @param GetCourses $getCourses
      */
-    public function __construct(GetByPeriod $getByPeriod)
+    public function __construct(GetByPeriod $getByPeriod, GetCourses $getCourses)
     {
         $this->getByPeriod = $getByPeriod;
+        $this->getCourses = $getCourses;
     }
 
     /**
@@ -37,7 +45,7 @@ abstract class TotalsAbstract implements TotalsInterface
     abstract protected function getTransactionType(): string;
 
     /**
-     * Returns totals sum of money temporarily put off to spend them in the future
+     * Returns grand total in the base currency
      *
      * @inheritDoc
      * @throws \Exception
@@ -47,14 +55,16 @@ abstract class TotalsAbstract implements TotalsInterface
         $result = 0.0;
 
         $type = $this->getTransactionType();
+        $currencyCourses = $this->getCourses->bySign();
         $transactions = $this->getTransactionsByType($dateFrom, $dateTo, $type);
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            $result += abs($transaction->sum);
-        }
+            $currency = $transaction->account->currency->sign;
+            $course = $currencyCourses[$currency] ?? 1;
 
-        $result = $this->roundSum($result);
+            $result += $this->roundSum(abs($transaction->sum * $course));
+        }
 
         return $result;
     }
@@ -75,9 +85,11 @@ abstract class TotalsAbstract implements TotalsInterface
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
             $currency = $transaction->account->currency->sign;
-            $total = $result[$currency] ?? 0.0;
 
-            $result[$currency] = abs($this->roundSum($total + $transaction->sum));
+            $total = $result[$currency] ?? 0.0;
+            $total += abs($this->roundSum((float)$transaction->sum));
+
+            $result[$currency] = $total;
         }
 
         arsort($result);

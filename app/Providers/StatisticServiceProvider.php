@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Providers;
 
@@ -8,7 +9,7 @@ use App\User;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * Class StatisticServiceProvider
+ * Allows automatic DI of classes needed for building statistics
  */
 class StatisticServiceProvider extends ServiceProvider
 {

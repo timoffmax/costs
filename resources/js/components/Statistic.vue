@@ -24,8 +24,7 @@
                         <template v-else>
                             <span class="info-box-number">--</span>
                         </template>
-                        <span v-if="false" class="info-box-number">
-                            <!-- hide till currency conversion is implemented -->
+                        <span class="info-box-number">
                             <b>Total: {{ statistic.costs.grandTotal | price }}</b>
                         </span>
                     </div>
@@ -45,8 +44,7 @@
                         <template v-else>
                             <span class="info-box-number">--</span>
                         </template>
-                        <span v-if="false" class="info-box-number">
-                            <!-- hide till currency conversion is implemented -->
+                        <span class="info-box-number">
                             <b>Total: {{ statistic.incomes.grandTotal | price }}</b>
                         </span>
                     </div>
@@ -66,8 +64,7 @@
                         <template v-else>
                             <span class="info-box-number">--</span>
                         </template>
-                        <span v-if="false" class="info-box-number">
-                            <!-- hide till currency conversion is implemented -->
+                        <span class="info-box-number">
                             <b>Total: {{ statistic.deposits.grandTotal | price }}</b>
                         </span>
                     </div>
@@ -87,8 +84,7 @@
                         <template v-else>
                             <span class="info-box-number">--</span>
                         </template>
-                        <span v-if="false" class="info-box-number">
-                            <!-- hide till currency conversion is implemented -->
+                        <span class="info-box-number">
                             <b>Total: {{ statistic.moneybox.grandTotal | price }}</b>
                         </span>
                     </div>
@@ -108,8 +104,7 @@
                         <template v-else>
                             <span class="info-box-number">--</span>
                         </template>
-                        <span v-if="false" class="info-box-number">
-                            <!-- hide till currency conversion is implemented -->
+                        <span class="info-box-number">
                             <b>Total: {{ statistic.savings.grandTotal | price }}</b>
                         </span>
                     </div>
@@ -134,14 +129,17 @@
                                 <tbody>
                                     <tr v-for="(place, placeName) in statistic.costs.byPlace">
                                         <td class="d-none d-sm-block text-left">
-                                            <router-link :to="{name: 'transactions', params: {filters: {category_id: categoryId}}}">
+                                            <router-link :to="{name: 'transactions', params: {filters: {place_name: placeName}}}">
                                                 {{ placeName | capitalize }}
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">
-                                            <p v-for="(sum, currency) in place.sum">
+                                            <p v-for="(sum, currency) in place.sum" v-if="'base' !== currency">
                                                 {{ currency }}{{ sum }}
                                             </p>
+                                            <strong v-if="place.sum['base']" class="text-red">
+                                                {{ place.sum['base'] }}
+                                            </strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -172,9 +170,12 @@
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">
-                                            <p v-for="(sum, currency) in category.sum">
+                                            <p v-for="(sum, currency) in category.sum" v-if="'base' !== currency">
                                                 {{ currency }}{{ sum }}
                                             </p>
+                                            <strong v-if="category.sum['base']" class="text-red">
+                                                {{ category.sum['base'] }}
+                                            </strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -205,9 +206,12 @@
                                             </router-link>
                                         </td>
                                         <td class="text-right text-bold">
-                                            <p v-for="(info, currency) in day">
+                                            <p v-for="(info, currency) in day" v-if="'base' !== currency">
                                                 {{ currency }}{{ info.sum }}
                                             </p>
+                                            <strong v-if="day.base" class="text-red">
+                                                {{ day.base.sum }}
+                                            </strong>
                                         </td>
                                     </tr>
                                 </tbody>
