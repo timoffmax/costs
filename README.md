@@ -35,10 +35,17 @@ This service written with using Laravel and VueJS technologies allows you to tra
   - `./artisan passport:keys`
   - `npm run dev`
 
-## Default admin account
-- *email*: admin@costs.local
-- *password:* admin
-
 ## Used integrations
 ### Course convert service
 Free version of https://www.currencyconverterapi.com/ service is used. In case you're going to use different currencies, you must register a free account and fill the `CURR_CONV_API_KEY` ENV variable. Then you need to set up Laravel cron.
+
+## Tips
+### Default admin account
+- *email*: admin@costs.local
+- *password:* admin
+
+### Makefile
+You can use Makefile to simplify running CLI commands inside Docker containers.
+Example:
+`make js_watch` command runs the following
+`docker-compose exec costs-app npm run watch`. Autocompletion works well with makefiles. 
