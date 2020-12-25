@@ -64,6 +64,19 @@ Vue.filter('transactionAmount', function (transaction) {
 
     return formattedValue;
 });
+
+Vue.filter('accountBalance', function (account) {
+    let formattedValue;
+
+    formattedValue = `${account.balance}`;
+
+    if (account.currency) {
+        formattedValue = `${account.currency.sign}${formattedValue}`
+    }
+
+    return formattedValue;
+});
+
 Vue.filter('price', function (price, currency = null) {
     let priceValue = Number(price);
     priceValue = priceValue.toFixed(2);

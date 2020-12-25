@@ -93,7 +93,7 @@
                                     <router-link v-if="props.column.field === 'user.name'" :to="`/user/${props.row.user.id}`">
                                         {{ props.row.user.name }}
                                     </router-link>
-                                    <span v-else-if="props.column.field === 'sum'" :class="getAmountClasses(props.row)" >
+                                    <span v-else-if="props.column.field === 'sum'" :class="getAmountClasses(props.row)">
                                         {{ props.row | transactionAmount }}
                                     </span>
                                     <span v-else>
@@ -186,11 +186,12 @@
                                             :class="{'is-invalid': transactionForm.errors.has('account_from_id')}"
                                     >
                                         <option value="">From Account</option>
-                                        <option v-for="account in getAccountDropdownOptions('from')"
+                                        <option  v-for="account in getAccountDropdownOptions('from')"
+                                                 v-if="account.id !== transactionForm.account_to_id"
+                                                :class="getSumClass(account.balance)"
                                                 :value="account.id"
-                                                v-if="account.id !== transactionForm.account_to_id"
                                         >
-                                            {{ account.name | capitalize }}
+                                            {{ account.name | capitalize }} ({{ account | accountBalance }})
                                         </option>
                                     </select>
                                     <has-error :form="transactionForm" field="account_from_id"></has-error>
@@ -201,11 +202,12 @@
                                             :class="{'is-invalid': transactionForm.errors.has('account_to_id')}"
                                     >
                                         <option value="">To Account</option>
-                                        <option v-for="account in getAccountDropdownOptions('to')"
-                                                :value="account.id"
-                                                v-if="account.id !== transactionForm.account_from_id"
+                                        <option  v-for="account in getAccountDropdownOptions('to')"
+                                                 v-if="account.id !== transactionForm.account_from_id"
+                                                 :class="getSumClass(account.balance)"
+                                                 :value="account.id"
                                         >
-                                            {{ account.name | capitalize }}
+                                            {{ account.name | capitalize }} ({{ account | accountBalance }})
                                         </option>
                                     </select>
                                     <has-error :form="transactionForm" field="account_to_id"></has-error>
@@ -219,7 +221,11 @@
                                     >
                                         <option value="">Select Account</option>
                                         <option v-for="account in getAccountDropdownOptions()"
-                                                :value="account.id">{{ account.name | capitalize }}</option>
+                                                :class="getSumClass(account.balance)"
+                                                :value="account.id"
+                                        >
+                                            {{ account.name | capitalize }} ({{ account | accountBalance }})
+                                        </option>
                                     </select>
                                     <has-error :form="transactionForm" field="account_id"></has-error>
                                 </div>
@@ -587,18 +593,19 @@
                 this.transactionForm.reset();
             },
             showTransactionModal(transaction = null) {
+                toast.fire({
+                    icon: 'success',
+                    title: 'Transaction added successfully'
+                });
+
                 if (transaction) {
-                    // Set modal params
                     this.modal.mode = 'edit';
                     this.modal.title = 'Edit the transaction';
                     this.modal.buttonTitle = 'Save';
 
-                    // Fill form
                     this.transactionForm.fill(transaction);
                     this.transactionForm.date = this.transactionForm.date.substr(0, 10);
-
                 } else {
-                    // Set modal params
                     this.modal.mode = 'create';
                     this.modal.title = 'Add a new transaction';
                     this.modal.buttonTitle = 'Create';
@@ -607,8 +614,8 @@
                     this.transactionForm.date = this.currentDate;
                 }
 
-                // Show modal
                 $(this.$refs.transactionModal).modal('show');
+                this.loadUserData();
             },
             copyTransactionModal(transaction) {
                 // Set modal params
@@ -645,19 +652,18 @@
 
                         $(this.$refs.transactionModal).modal('hide');
 
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Transaction added successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
@@ -684,36 +690,32 @@
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadTransactions();
 
-                        // Close the modal and clean the form
                         $(this.$refs.transactionModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Transaction updated successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
                 ;
             },
             deleteTransaction(transaction) {
-                swal({
+                swal.fire({
                     title: 'Are you sure?',
                     html: `You're going to delete transaction "<span class="font-weight-bold">${transaction.id}</span>"!`,
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
@@ -722,26 +724,22 @@
                     if (result.value) {
                         this.$Progress.start();
 
-                        // Delete
                         axios.delete(`api/transaction/${transaction.id}`)
                             .then(response => {
-                                // Update progress bar
                                 this.$Progress.finish();
 
-                                // Update the table
                                 this.loadTransactions();
 
-                                // Show the success message
-                                toast({
-                                    type: 'success',
+                                toast.fire({
+                                    icon: 'success',
                                     title: 'Transaction has been deleted'
                                 });
                             })
                             .catch(error => {
                                 this.$Progress.fail();
 
-                                toast({
-                                    type: 'error',
+                                toast.fire({
+                                    icon: 'error',
                                     title: 'Server error! Can`t delete the transaction.'
                                 });
                             })
@@ -785,6 +783,18 @@
 
                     default:
                         colorClass += 'info';
+                }
+
+                return [colorClass, additionalClasses].join(' ');
+            },
+            getSumClass(sum) {
+                let colorClass = 'text-';
+                let additionalClasses = 'text-bold';
+
+                if (sum > 0) {
+                    colorClass += 'success';
+                } else {
+                    colorClass += 'danger';
                 }
 
                 return [colorClass, additionalClasses].join(' ');
