@@ -177,31 +177,26 @@
             createPlace() {
                 this.$Progress.start();
 
-                // Add new user
                 this.placeForm.post('api/place')
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadPlaces();
 
-                        // Close the modal and clean the form
                         $(this.$refs.placeModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Place added successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
@@ -210,41 +205,36 @@
             updatePlace() {
                 this.$Progress.start();
 
-                // Add new user
                 this.placeForm.put(`api/place/${this.placeForm.id}`)
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadPlaces();
 
-                        // Close the modal and clean the form
                         $(this.$refs.placeModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Place updated successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
                 ;
             },
             deletePlace(place) {
-                swal({
+                swal.fire({
                     title: 'Are you sure?',
                     html: `You're going to delete place "<span class="font-weight-bold">${place.name}</span>"!`,
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
@@ -253,26 +243,22 @@
                     if (result.value) {
                         this.$Progress.start();
 
-                        // Delete
                         axios.delete(`api/place/${place.id}`)
                             .then(response => {
-                                // Update progress bar
                                 this.$Progress.finish();
 
-                                // Update the table
                                 this.loadPlaces()
 
-                                // Show the success message
-                                toast({
-                                    type: 'success',
+                                toast.fire({
+                                    icon: 'success',
                                     title: 'Place has been deleted'
                                 });
                             })
                             .catch(error => {
                                 this.$Progress.fail();
 
-                                toast({
-                                    type: 'error',
+                                toast.fire({
+                                    icon: 'error',
                                     title: 'Server error! Can`t delete the place.'
                                 });
                             })

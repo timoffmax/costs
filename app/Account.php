@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 /**
- * Class Account
+ * User account model
  *
  * @property int $id
  * @property string $name
@@ -18,12 +21,10 @@ namespace App;
  */
 class Account extends ParseRequestAbstractModel
 {
-    /**
-     * Field names
-     */
     public const ID = 'id';
     public const NAME = 'name';
     public const TYPE_ID = 'type_id';
+    public const CURRENCY_ID = 'currency_id';
     public const USER_ID = 'user_id';
     public const BALANCE = 'balance';
     public const CALCULATE_COSTS = 'calculate_costs';
@@ -32,6 +33,7 @@ class Account extends ParseRequestAbstractModel
         self::ID,
         self::NAME,
         self::TYPE_ID,
+        self::CURRENCY_ID,
         self::USER_ID,
         self::BALANCE,
         self::CALCULATE_COSTS,
@@ -52,12 +54,15 @@ class Account extends ParseRequestAbstractModel
     protected $table = 'account';
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * @inheritdoc
      */
     protected $fillable = [
-        'name', 'type_id', 'user_id', 'currency_id', 'balance', 'calculate_costs'
+        self::NAME,
+        self::TYPE_ID,
+        self::USER_ID,
+        self::CURRENCY_ID,
+        self::BALANCE,
+        self::CALCULATE_COSTS,
     ];
 
     /**
@@ -75,7 +80,7 @@ class Account extends ParseRequestAbstractModel
     /**
      * Get accounts of all users
      *
-     * @return Transaction|\Illuminate\Database\Eloquent\Builder
+     * @return Transaction|Builder
      */
     protected static function getAllModels()
     {
@@ -89,19 +94,19 @@ class Account extends ParseRequestAbstractModel
      * Get accounts of particular user
      *
      * @param User $user
-     * @return Transaction|\Illuminate\Database\Eloquent\Builder
+     * @return Transaction|Builder
      */
     protected static function getUserModels(User $user)
     {
         return self::getAllModels()
-            ->where(['user_id' => $user->id])
+            ->where([self::USER_ID => $user->id])
         ;
     }
 
     /**
      * Get the account owner
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function user()
     {
@@ -111,7 +116,7 @@ class Account extends ParseRequestAbstractModel
     /**
      * Get type of the account
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function type()
     {
@@ -121,7 +126,7 @@ class Account extends ParseRequestAbstractModel
     /**
      * Get currency of the account
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function currency()
     {

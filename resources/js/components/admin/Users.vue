@@ -208,26 +208,21 @@
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadUsers();
-
-                        // Close the modal and clean the form
                         $(this.$refs.userModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'User added successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
@@ -241,36 +236,31 @@
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadUsers();
-
-                        // Close the modal and clean the form
                         $(this.$refs.userModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'User updated successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
                 ;
             },
             deleteUser(user) {
-                swal({
+                swal.fire({
                     title: 'Are you sure?',
                     html: `You're going to delete user <span class="font-weight-bold">${user.name}</span>!`,
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
@@ -282,23 +272,20 @@
                         // Delete user
                         axios.delete(`api/user/${user.id}`)
                             .then(response => {
-                                // Update progress bar
                                 this.$Progress.finish();
 
-                                // Update the table
                                 this.loadUsers();
 
-                                // Show the success message
-                                toast({
-                                    type: 'success',
+                                toast.fire({
+                                    icon: 'success',
                                     title: 'User has been deleted'
                                 });
                             })
                             .catch(error => {
                                 this.$Progress.fail();
 
-                                toast({
-                                    type: 'error',
+                                toast.fire({
+                                    icon: 'error',
                                     title: 'Server error! Can`t delete the user.'
                                 });
                             })

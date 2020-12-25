@@ -161,12 +161,9 @@
         },
         methods: {
             loadProfile() {
-                // Get current user data
                 axios.get(`api/user/${window.user.id}`).then(
                     (response) => {
                         this.profile = response.data;
-
-                        // Fill form
                         this.profileForm.fill(this.profile);
                     },
                 );
@@ -174,38 +171,32 @@
             updateProfile() {
                 this.$Progress.start();
 
-                // Add new user
                 this.profileForm.put(`api/user/${window.user.id}`)
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh content
                         this.loadProfile();
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Profile updated successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
                 ;
             },
             togglePasswordFields() {
-                // Show / hide fields
                 this.showPasswordFields = !this.showPasswordFields;
 
-                // Clear
                 if (this.showPasswordFields) {
                     this.profileForm.password = null;
                     this.profileForm.passwordConfirmation = null;

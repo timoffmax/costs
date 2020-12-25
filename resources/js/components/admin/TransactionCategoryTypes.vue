@@ -113,21 +113,17 @@
             },
             showTransactionCategoryTypeModal(transactionCategoryType = null) {
                 if (transactionCategoryType) {
-                    // Set modal params
                     this.modal.mode = 'edit';
                     this.modal.title = 'Edit the transaction category type';
                     this.modal.buttonTitle = 'Save';
 
-                    // Fill form
                     this.transactionCategoryTypeForm.fill(transactionCategoryType);
                 } else {
-                    // Set modal params
                     this.modal.mode = 'create';
                     this.modal.title = 'Add a new transaction category type';
                     this.modal.buttonTitle = 'Create';
                 }
 
-                // Show modal
                 $(this.$refs.transactionCategoryTypeModal).modal('show');
 
                 return false;
@@ -135,31 +131,26 @@
             createTransactionCategoryType() {
                 this.$Progress.start();
 
-                // Add new user
                 this.transactionCategoryTypeForm.post('api/transactionCategoryType')
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadTransactionCategoryTypes();
 
-                        // Close the modal and clean the form
                         $(this.$refs.transactionCategoryTypeModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Transaction type added successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
@@ -168,41 +159,36 @@
             updateTransactionCategoryType() {
                 this.$Progress.start();
 
-                // Add new user
                 this.transactionCategoryTypeForm.put(`api/transactionCategoryType/${this.transactionCategoryTypeForm.id}`)
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadTransactionCategoryTypes();
 
-                        // Close the modal and clean the form
                         $(this.$refs.transactionCategoryTypeModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Transaction category type updated successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
                 ;
             },
             deleteTransactionCategoryType(transactionCategoryType) {
-                swal({
+                swal.fire({
                     title: 'Are you sure?',
                     html: `You're going to delete transaction category type "<span class="font-weight-bold">${transactionCategoryType.name}</span>"!`,
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
@@ -211,26 +197,22 @@
                     if (result.value) {
                         this.$Progress.start();
 
-                        // Delete
                         axios.delete(`api/transactionCategoryType/${transactionCategoryType.id}`)
                             .then(response => {
-                                // Update progress bar
                                 this.$Progress.finish();
 
-                                // Update the table
                                 this.loadTransactionCategoryTypes();
 
-                                // Show the success message
-                                toast({
-                                    type: 'success',
+                                toast.fire({
+                                    icon: 'success',
                                     title: 'Transaction category type has been deleted'
                                 });
                             })
                             .catch(error => {
                                 this.$Progress.fail();
 
-                                toast({
-                                    type: 'error',
+                                toast.fire({
+                                    icon: 'error',
                                     title: 'Server error! Can`t delete the transaction category type.'
                                 });
                             })

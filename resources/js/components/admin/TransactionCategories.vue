@@ -160,21 +160,17 @@
                 this.loadTransactionTypes();
 
                 if (transactionCategory) {
-                    // Set modal params
                     this.modal.mode = 'edit';
                     this.modal.title = 'Edit the transaction category';
                     this.modal.buttonTitle = 'Save';
 
-                    // Fill form
                     this.transactionCategoryForm.fill(transactionCategory);
                 } else {
-                    // Set modal params
                     this.modal.mode = 'create';
                     this.modal.title = 'Add a new transaction category';
                     this.modal.buttonTitle = 'Create';
                 }
 
-                // Show modal
                 $(this.$refs.transactionCategoryModal).modal('show');
 
                 return false;
@@ -201,31 +197,26 @@
             createTransactionCategory() {
                 this.$Progress.start();
 
-                // Add new user
                 this.transactionCategoryForm.post('api/transactionCategory')
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadTransactionCategories();
 
-                        // Close the modal and clean the form
                         $(this.$refs.transactionCategoryModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Transaction category added successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
@@ -234,41 +225,36 @@
             updateTransactionCategory() {
                 this.$Progress.start();
 
-                // Add new user
                 this.transactionCategoryForm.put(`api/transactionCategory/${this.transactionCategoryForm.id}`)
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadTransactionCategories();
 
-                        // Close the modal and clean the form
                         $(this.$refs.transactionCategoryModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Transaction category updated successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
                 ;
             },
             deleteTransactionCategory(transactionCategory) {
-                swal({
+                swal.fire({
                     title: 'Are you sure?',
                     html: `You're going to delete transaction category "<span class="font-weight-bold">${transactionCategory.name}</span>"!`,
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
@@ -277,26 +263,22 @@
                     if (result.value) {
                         this.$Progress.start();
 
-                        // Delete
                         axios.delete(`api/transactionCategory/${transactionCategory.id}`)
                             .then(response => {
-                                // Update progress bar
                                 this.$Progress.finish();
 
-                                // Update the table
                                 this.loadTransactionCategories();
 
-                                // Show the success message
-                                toast({
-                                    type: 'success',
+                                toast.fire({
+                                    icon: 'success',
                                     title: 'Transaction category has been deleted'
                                 });
                             })
                             .catch(error => {
                                 this.$Progress.fail();
 
-                                toast({
-                                    type: 'error',
+                                toast.fire({
+                                    icon: 'error',
                                     title: 'Server error! Can`t delete the transaction category.'
                                 });
                             })

@@ -143,22 +143,17 @@
             },
             showCurrencyModal(currency = null) {
                 if (currency) {
-                    // Set modal params
                     this.modal.mode = 'edit';
                     this.modal.title = 'Edit the currency';
                     this.modal.buttonTitle = 'Save';
 
-                    console.log(currency);
-                    // Fill form
                     this.currencyForm.fill(currency);
                 } else {
-                    // Set modal params
                     this.modal.mode = 'create';
                     this.modal.title = 'Add a new currency';
                     this.modal.buttonTitle = 'Create';
                 }
 
-                // Show modal
                 $(this.$refs.currencyModal).modal('show');
 
                 return false;
@@ -166,31 +161,26 @@
             createCurrency() {
                 this.$Progress.start();
 
-                // Add new user
                 this.currencyForm.post('api/currency')
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadCurrencies();
 
-                        // Close the modal and clean the form
                         $(this.$refs.currencyModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Currency added successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
@@ -199,41 +189,36 @@
             updateCurrency() {
                 this.$Progress.start();
 
-                // Add new user
                 this.currencyForm.put(`api/currency/${this.currencyForm.id}`)
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadCurrencies();
 
-                        // Close the modal and clean the form
                         $(this.$refs.currencyModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Currency updated successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
                 ;
             },
             deleteCurrency(currency) {
-                swal({
+                swal.fire({
                     title: 'Are you sure?',
                     html: `You're going to delete currency "<span class="font-weight-bold">${currency.name}</span>"!`,
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
@@ -242,26 +227,22 @@
                     if (result.value) {
                         this.$Progress.start();
 
-                        // Delete
                         axios.delete(`api/currency/${currency.id}`)
                             .then(response => {
-                                // Update progress bar
                                 this.$Progress.finish();
 
-                                // Update the table
                                 this.loadCurrencies();
 
-                                // Show the success message
-                                toast({
-                                    type: 'success',
+                                toast.fire({
+                                    icon: 'success',
                                     title: 'Currency has been deleted'
                                 });
                             })
                             .catch(error => {
                                 this.$Progress.fail();
 
-                                toast({
-                                    type: 'error',
+                                toast.fire({
+                                    icon: 'error',
                                     title: 'Server error! Can`t delete the currency.'
                                 });
                             })

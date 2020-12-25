@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
@@ -6,14 +7,13 @@ use App\AccountType;
 use App\Interfaces\RestApiControllerInterface;
 use Illuminate\Http\Request;
 
+/**
+ * User account type REST controller
+ */
 class AccountTypeController extends BaseController implements RestApiControllerInterface
 {
     /**
-     * Display a list of types
-     *
-     * @param Request $request
-     * @return AccountType[]|array|\Illuminate\Database\Eloquent\Collection
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @inheritDoc
      */
     public function index(Request $request)
     {
@@ -34,49 +34,39 @@ class AccountTypeController extends BaseController implements RestApiControllerI
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @inheritDoc
      */
     public function store(Request $request)
     {
         $this->authorize('create', AccountType::class);
 
-        // Validate data
         $this->validate($request, [
-            'name' => 'required|string|max:50',
+            AccountType::NAME => 'required|string|max:50',
+            AccountType::LABEL => 'required|string|max:50',
         ]);
 
-        return AccountType::create([
-            'name' => $request['name'],
+        $result = AccountType::create([
+            AccountType::NAME => $request[AccountType::NAME],
+            AccountType::LABEL => $request[AccountType::LABEL],
         ]);
+
+        return $result;
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @inheritDoc
      */
     public function show(int $id)
     {
-        $accountTypeModel = AccountType::findOrFail($id);
+        $result = AccountType::findOrFail($id);
 
-        $this->authorize('view', $accountTypeModel);
+        $this->authorize('view', $result);
 
-        return $accountTypeModel;
+        return $result;
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @inheritDoc
      */
     public function update(Request $request, int $id)
     {
@@ -84,24 +74,18 @@ class AccountTypeController extends BaseController implements RestApiControllerI
 
         $this->authorize('update', $accountTypeModel);
 
-        // Validate data
         $this->validate($request, [
-            'name' => 'required|string|max:50',
+            AccountType::NAME => 'required|string|max:50',
+            AccountType::LABEL => 'required|string|max:50',
         ]);
 
-        // Save
         $formData = $request->all();
         $accountTypeModel->fill($formData);
-
         $accountTypeModel->save();
     }
 
     /**
-     * Remove an account type
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @inheritDoc
      */
     public function destroy(int $id)
     {
