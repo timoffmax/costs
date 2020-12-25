@@ -60,6 +60,20 @@
   color: $yellow;
 }
 
+.cut-text {
+    display:inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 150px;
+    white-space: nowrap;
+}
+
+.cut-text:hover{
+    overflow: visible;
+    white-space: normal;
+    width: auto;
+}
+
 // Style buttons as links
 .btn.btn-link.btn-as-link {
   padding: 0;

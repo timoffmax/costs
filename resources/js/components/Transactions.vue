@@ -455,6 +455,7 @@
                         label: 'Comment',
                         field: 'comment',
                         thClass: 'text-center',
+                        tdClass: 'cut-text',
                         filterOptions: {
                             enabled: true,
                             trigger: 'enter',
