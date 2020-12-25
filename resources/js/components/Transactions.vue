@@ -593,11 +593,6 @@
                 this.transactionForm.reset();
             },
             showTransactionModal(transaction = null) {
-                toast.fire({
-                    icon: 'success',
-                    title: 'Transaction added successfully'
-                });
-
                 if (transaction) {
                     this.modal.mode = 'edit';
                     this.modal.title = 'Edit the transaction';
