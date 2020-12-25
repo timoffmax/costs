@@ -1,13 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
 use App\Account;
 use App\Interfaces\RestApiControllerInterface;
 use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * User accounts controller
+ */
 class AccountController extends BaseController implements RestApiControllerInterface
 {
     /**
@@ -15,7 +21,7 @@ class AccountController extends BaseController implements RestApiControllerInter
      *
      * @param Request $request
      * @return mixed
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function index(Request $request)
     {
@@ -38,9 +44,9 @@ class AccountController extends BaseController implements RestApiControllerInter
     /**
      * Store a newly created account
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @param Request $request
+     * @return Response
+     * @throws AuthorizationException
      */
     public function store(Request $request)
     {
@@ -53,12 +59,12 @@ class AccountController extends BaseController implements RestApiControllerInter
 
         // Validate data
         $this->validate($request, [
-            'name' => 'required|string|max:50',
-            'user_id' => 'required|integer|exists:users,id',
-            'type_id' => 'required|integer|exists:account_type,id',
-            'currency_id' => 'nullable|integer|exists:currency,id',
-            'balance' => 'required|numeric|between:0,9999999.99',
-            'calculate_costs' => 'nullable|boolean',
+            Account::NAME => 'required|string|max:50',
+            Account::USER_ID => 'required|integer|exists:users,id',
+            Account::TYPE_ID => 'required|integer|exists:account_type,id',
+            Account::CURRENCY_ID => 'nullable|integer|exists:currency,id',
+            Account::BALANCE => 'required|numeric|between:0,9999999.99',
+            Account::CALCULATE_COSTS => 'nullable|boolean',
         ]);
 
         $account->save();
@@ -68,8 +74,8 @@ class AccountController extends BaseController implements RestApiControllerInter
      * Display the specified account.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return Response
+     * @throws AuthorizationException
      */
     public function show(int $id)
     {
@@ -86,10 +92,10 @@ class AccountController extends BaseController implements RestApiControllerInter
     /**
      * Update an account
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return Response
+     * @throws AuthorizationException
      */
     public function update(Request $request, int $id)
     {
@@ -117,8 +123,8 @@ class AccountController extends BaseController implements RestApiControllerInter
      * Remove an account
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return Response
+     * @throws AuthorizationException
      */
     public function destroy(int $id)
     {

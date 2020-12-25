@@ -113,21 +113,17 @@
             },
             showTransactionTypeModal(transactionType = null) {
                 if (transactionType) {
-                    // Set modal params
                     this.modal.mode = 'edit';
                     this.modal.title = 'Edit the transaction type';
                     this.modal.buttonTitle = 'Save';
 
-                    // Fill form
                     this.transactionTypeForm.fill(transactionType);
                 } else {
-                    // Set modal params
                     this.modal.mode = 'create';
                     this.modal.title = 'Add a new transaction type';
                     this.modal.buttonTitle = 'Create';
                 }
 
-                // Show modal
                 $(this.$refs.transactionTypeModal).modal('show');
 
                 return false;
@@ -135,31 +131,26 @@
             createTransactionType() {
                 this.$Progress.start();
 
-                // Add new user
                 this.transactionTypeForm.post('api/transactionType')
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadTransactionTypes();
 
-                        // Close the modal and clean the form
                         $(this.$refs.transactionTypeModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Transaction type added successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
@@ -168,41 +159,36 @@
             updateTransactionType() {
                 this.$Progress.start();
 
-                // Add new user
                 this.transactionTypeForm.put(`api/transactionType/${this.transactionTypeForm.id}`)
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadTransactionTypes();
 
-                        // Close the modal and clean the form
                         $(this.$refs.transactionTypeModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Transaction type updated successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
                 ;
             },
             deleteTransactionType(transactionType) {
-                swal({
+                swal.fire({
                     title: 'Are you sure?',
                     html: `You're going to delete transaction type "<span class="font-weight-bold">${transactionType.name}</span>"!`,
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
@@ -211,26 +197,22 @@
                     if (result.value) {
                         this.$Progress.start();
 
-                        // Delete
                         axios.delete(`api/transactionType/${transactionType.id}`)
                             .then(response => {
-                                // Update progress bar
                                 this.$Progress.finish();
 
-                                // Update the table
                                 this.loadTransactionTypes();
 
-                                // Show the success message
-                                toast({
-                                    type: 'success',
+                                toast.fire({
+                                    icon: 'success',
                                     title: 'Transaction type has been deleted'
                                 });
                             })
                             .catch(error => {
                                 this.$Progress.fail();
 
-                                toast({
-                                    type: 'error',
+                                toast.fire({
+                                    icon: 'error',
                                     title: 'Server error! Can`t delete the transaction type.'
                                 });
                             })
