@@ -70,6 +70,14 @@
                                        placeholder="Name">
                                 <has-error :form="accountTypeForm" field="name"></has-error>
                             </div>
+                            <div class="form-group">
+                                <input type="text"
+                                       v-model="accountTypeForm.label"
+                                       class="form-control"
+                                       :class="{'is-invalid': accountTypeForm.errors.has('label')}"
+                                       placeholder="Label">
+                                <has-error :form="accountTypeForm" field="label"></has-error>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -83,6 +91,8 @@
 </template>
 
 <script>
+    import swal from "sweetalert2";
+
     export default {
         data() {
             return {
@@ -96,6 +106,7 @@
                 accountTypeForm: new Form({
                     id : null,
                     name: '',
+                    label: '',
                 }),
             };
         },
@@ -113,21 +124,17 @@
             },
             showAccountTypeModal(accountType = null) {
                 if (accountType) {
-                    // Set modal params
                     this.modal.mode = 'edit';
                     this.modal.title = 'Edit the account type';
                     this.modal.buttonTitle = 'Save';
 
-                    // Fill form
                     this.accountTypeForm.fill(accountType);
                 } else {
-                    // Set modal params
                     this.modal.mode = 'create';
                     this.modal.title = 'Add a new account type';
                     this.modal.buttonTitle = 'Create';
                 }
 
-                // Show modal
                 $(this.$refs.accountTypeModal).modal('show');
 
                 return false;
@@ -135,31 +142,25 @@
             createAccountType() {
                 this.$Progress.start();
 
-                // Add new user
                 this.accountTypeForm.post('api/accountType')
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadAccountTypes();
-
-                        // Close the modal and clean the form
                         $(this.$refs.accountTypeModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Account type added successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
@@ -168,69 +169,59 @@
             updateAccountType() {
                 this.$Progress.start();
 
-                // Add new user
                 this.accountTypeForm.put(`api/accountType/${this.accountTypeForm.id}`)
                     .then(response => {
                         this.$Progress.finish();
 
-                        // Refresh the table content
                         this.loadAccountTypes();
-
-                        // Close the modal and clean the form
                         $(this.$refs.accountTypeModal).modal('hide');
 
-                        // Show success message
-                        toast({
-                            type: 'success',
+                        toast.fire({
+                            icon: 'success',
                             title: 'Account type updated successfully'
                         });
                     })
                     .catch(error => {
                         this.$Progress.fail();
 
-                        // Show error message
                         let responseData = error.response.data;
 
-                        toast({
-                            type: 'error',
+                        toast.fire({
+                            icon: 'error',
                             title: responseData.message
                         });
                     })
                 ;
             },
             deleteAccountType(accountType) {
-                swal({
+                swal.fire({
                     title: 'Are you sure?',
                     html: `You're going to delete account type "<span class="font-weight-bold">${accountType.name}</span>"!`,
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: 'Yes, delete it!',
                 }).then((result) => {
                     if (result.value) {
                         this.$Progress.start();
 
-                        // Delete
                         axios.delete(`api/accountType/${accountType.id}`)
                             .then(response => {
-                                // Update progress bar
                                 this.$Progress.finish();
 
-                                // Update the table
                                 this.loadAccountTypes();
 
-                                // Show the success message
-                                toast({
-                                    type: 'success',
+                                toast.fire({
+                                    icon: 'success',
                                     title: 'Account type has been deleted'
                                 });
                             })
                             .catch(error => {
                                 this.$Progress.fail();
 
-                                toast({
-                                    type: 'error',
+                                toast.fire({
+                                    icon: 'error',
                                     title: 'Server error! Can`t delete the account type.'
                                 });
                             })
