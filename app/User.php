@@ -75,7 +75,11 @@ class User extends Authenticatable
      */
     public function accounts()
     {
-        return $this->hasMany(Account::class, 'user_id')->orderBy('name');
+        $result = $this->hasMany(Account::class, Account::USER_ID);
+        $result->orderBy(Account::NAME);
+        $result->where([Account::IS_ARCHIVED => 0]);
+
+        return $result;
     }
 
     /**
@@ -85,7 +89,11 @@ class User extends Authenticatable
      */
     public function places()
     {
-        return $this->hasMany(Place::class, 'user_id')->orderBy('name');
+        $result = $this->hasMany(Place::class, Place::USER_ID);
+        $result->orderBy(Place::NAME);
+        $result->where([Place::IS_ARCHIVED => 0]);
+
+        return $result;
     }
 
     /**

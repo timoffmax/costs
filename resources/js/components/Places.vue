@@ -74,6 +74,15 @@
                                        placeholder="Name">
                                 <has-error :form="placeForm" field="name"></has-error>
                             </div>
+                            <div class="form-group">
+                                <label class="toggle">
+                                    <input @change="toggleIsArchived()" class="toggle__input" type="checkbox" :checked="placeForm.is_archived">
+                                    <span class="toggle__label">
+                                        <span class="toggle__text">Archived</span>
+                                    </span>
+                                </label>
+                                <has-error :form="placeForm" field="is_archived"></has-error>
+                            </div>
                             <div class="form-group" v-if="isAdminMode">
                                 <select v-model="placeForm.user_id"
                                        class="form-control"
@@ -115,6 +124,7 @@
                     id : null,
                     user_id: null,
                     name: '',
+                    is_archived: 0,
                 }),
             };
         },
@@ -265,6 +275,9 @@
                         ;
                     }
                 })
+            },
+            toggleIsArchived() {
+                this.placeForm.is_archived = !this.placeForm.is_archived;
             },
         },
         computed: {

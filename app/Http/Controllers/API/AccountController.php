@@ -65,6 +65,7 @@ class AccountController extends BaseController implements RestApiControllerInter
             Account::CURRENCY_ID => 'nullable|integer|exists:currency,id',
             Account::BALANCE => 'required|numeric|between:0,9999999.99',
             Account::CALCULATE_COSTS => 'nullable|boolean',
+            Account::IS_ARCHIVED => 'nullable|boolean',
         ]);
 
         $account->save();
@@ -113,6 +114,7 @@ class AccountController extends BaseController implements RestApiControllerInter
             'type_id' => 'required|integer|exists:account_type,id',
             'balance' => 'required|numeric|between:0,9999999.99',
             'calculate_costs' => 'nullable|boolean',
+            Account::IS_ARCHIVED => 'nullable|boolean',
         ]);
 
         $accountModel->fill($formData);
