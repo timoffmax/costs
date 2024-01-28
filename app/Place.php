@@ -3,14 +3,18 @@
 namespace App;
 
 /**
- * Class Place
- *
  * @property string $name
  * @property int $user_id
+ * @property bool $is_archived
  * @property User $user
  */
 class Place extends ParseRequestAbstractModel
 {
+    public const ID = 'id';
+    public const NAME = 'name';
+    public const USER_ID = 'user_id';
+    public const IS_ARCHIVED = 'is_archived';
+
     /**
      * Don't use 'created_at' and 'updated_at' fields
      *
@@ -31,8 +35,9 @@ class Place extends ParseRequestAbstractModel
      * @var array
      */
     protected $fillable = [
-        'name',
-        'user_id',
+        self::NAME,
+        self::USER_ID,
+        self::IS_ARCHIVED,
     ];
 
     /**
@@ -49,7 +54,9 @@ class Place extends ParseRequestAbstractModel
      */
     protected static function getAllModels()
     {
-        return self::with('user');
+        $result = self::with('user');
+
+        return $result;
     }
 
     /**
@@ -60,7 +67,11 @@ class Place extends ParseRequestAbstractModel
      */
     protected static function getUserModels(User $user)
     {
-        return self::getAllModels()->where(['user_id' => $user->id]);
+        $result = self::getAllModels();
+        $result->orderBy(self::IS_ARCHIVED);
+        $result->where([self::USER_ID => $user->id]);
+
+        return $result;
     }
 
     /**

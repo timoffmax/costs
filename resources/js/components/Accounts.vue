@@ -162,6 +162,15 @@
                                 </label>
                                 <has-error :form="accountForm" field="calculate_costs"></has-error>
                             </div>
+                            <div class="form-group">
+                                <label class="toggle">
+                                    <input @change="toggleIsArchived()" class="toggle__input" type="checkbox" :checked="accountForm.is_archived">
+                                    <span class="toggle__label">
+                                        <span class="toggle__text">Archived</span>
+                                    </span>
+                                </label>
+                                <has-error :form="accountForm" field="is_archived"></has-error>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -200,6 +209,7 @@
                     balance: null,
                     currency_id: null,
                     calculate_costs: 1,
+                    is_archived: 0,
                 }),
             };
         },
@@ -370,7 +380,10 @@
             },
             toggleCalculateCosts() {
                 this.accountForm.calculate_costs = !this.accountForm.calculate_costs;
-            }
+            },
+            toggleIsArchived() {
+                this.accountForm.is_archived = !this.accountForm.is_archived;
+            },
         },
         computed: {
             formAction() {

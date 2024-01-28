@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $user_id
  * @property float $balance
  * @property bool $calculate_costs
+ * @property bool $is_archived
  * @property AccountType $type
  * @property User $user
  * @property Currency $currency
@@ -28,6 +29,7 @@ class Account extends ParseRequestAbstractModel
     public const USER_ID = 'user_id';
     public const BALANCE = 'balance';
     public const CALCULATE_COSTS = 'calculate_costs';
+    public const IS_ARCHIVED = 'is_archived';
 
     public const FIELDS = [
         self::ID,
@@ -37,6 +39,7 @@ class Account extends ParseRequestAbstractModel
         self::USER_ID,
         self::BALANCE,
         self::CALCULATE_COSTS,
+        self::IS_ARCHIVED,
     ];
 
     /**
@@ -63,6 +66,7 @@ class Account extends ParseRequestAbstractModel
         self::CURRENCY_ID,
         self::BALANCE,
         self::CALCULATE_COSTS,
+        self::IS_ARCHIVED,
     ];
 
     /**
@@ -98,9 +102,11 @@ class Account extends ParseRequestAbstractModel
      */
     protected static function getUserModels(User $user)
     {
-        return self::getAllModels()
-            ->where([self::USER_ID => $user->id])
-        ;
+        $result = self::getAllModels();
+        $result->orderBy(self::IS_ARCHIVED);
+        $result->where([self::USER_ID => $user->id]);
+
+        return $result;
     }
 
     /**

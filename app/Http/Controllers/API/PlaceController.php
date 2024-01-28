@@ -58,6 +58,7 @@ class PlaceController extends BaseController implements RestApiControllerInterfa
         $this->validate($request, [
             'name' => 'required|string|max:50',
             'user_id' => 'required|integer|exists:users,id',
+            Place::IS_ARCHIVED => 'nullable|boolean',
         ]);
 
         $place->save();
@@ -103,6 +104,7 @@ class PlaceController extends BaseController implements RestApiControllerInterfa
         $this->validate($request, [
             'name' => 'required|string|max:50',
             'user_id' => 'required|integer',
+            Place::IS_ARCHIVED => 'nullable|boolean',
         ]);
 
         $placeModel->fill($formData);
