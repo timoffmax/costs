@@ -69,6 +69,7 @@ class Place extends ParseRequestAbstractModel
     {
         $result = self::getAllModels();
         $result->orderBy(self::IS_ARCHIVED);
+        $result->orderBy(self::NAME);
         $result->where([self::USER_ID => $user->id]);
 
         return $result;
