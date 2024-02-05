@@ -59,10 +59,13 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr v-for="account in accounts.data">
+                                            <tr v-for="account in accounts.data" :class="isArchived(account) ? 'text-muted' : ''">
                                                 <td>{{ account.id }}</td>
                                                 <td v-if="isAdminMode"><router-link :to="`/user/${account.user.id}`">{{ account.user.name }}</router-link></td>
-                                                <td>{{ account.name }}</td>
+                                                <td>
+                                                    <span v-show="isArchived(account)" class="badge badge-danger">ARCHIVED</span>
+                                                    {{ account.name }}
+                                                </td>
                                                 <td>{{ account.type.label | capitalize }}</td>
                                                 <td class="text-right">{{ account.balance | price(account.currency) }}</td>
                                                 <td class="text-right">
@@ -380,6 +383,9 @@
             },
             toggleCalculateCosts() {
                 this.accountForm.calculate_costs = !this.accountForm.calculate_costs;
+            },
+            isArchived(account) {
+                return account.is_archived;
             },
             toggleIsArchived() {
                 this.accountForm.is_archived = !this.accountForm.is_archived;

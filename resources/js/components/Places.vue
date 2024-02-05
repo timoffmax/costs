@@ -24,10 +24,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="place in places.data">
+                                <tr v-for="place in places.data" :class="isArchived(place) ? 'text-muted' : ''">
                                     <td>{{ place.id }}</td>
                                     <td v-if="isAdminMode"><router-link :to="`/user/${place.user.id}`">{{ place.user.name }}</router-link></td>
-                                    <td>{{ place.name }}</td>
+                                    <td>
+                                        <span v-show="isArchived(place)" class="badge badge-danger">ARCHIVED</span>
+                                        {{ place.name }}
+                                    </td>
                                     <td class="text-right">
                                         <button type="button" class="btn btn-link btn-as-link" v-if="$gate.allow('update', 'place', place)" @click="showPlaceModal(place)">
                                             <i class="fas fa-edit text-green"></i>
@@ -275,6 +278,9 @@
                         ;
                     }
                 })
+            },
+            isArchived(place) {
+                return place.is_archived;
             },
             toggleIsArchived() {
                 this.placeForm.is_archived = !this.placeForm.is_archived;
